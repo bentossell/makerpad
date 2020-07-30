@@ -1,13 +1,4 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyAyeQF-e3zLH63-EQPb8TmNT6kPbPDQ-9Q",
-  authDomain: "makerpad-94656.firebaseapp.com",
-  databaseURL: "https://makerpad-94656.firebaseio.com",
-  projectId: "makerpad-94656",
-  storageBucket: "makerpad-94656.appspot.com",
-  messagingSenderId: "605558417729",
-  appId: "1:605558417729:web:335367a103d85d967519c0",
-  measurementId: "G-Y9ZL70K32T"
-}
+const firebaseConfig = process.env.firebaseConfig
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
 firebase.analytics()

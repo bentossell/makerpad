@@ -2,6 +2,7 @@
 // TODO: Ability to add to dashboard/complete/delete for different CMS types - eg add tools to my dashboard
 // TODO: Public profile to mirror dashboard
 const USERS = db.collection('memberstack_users')
+const USER_TUTORIAL = db.collection('user_tutorial')
 
 async function getUserFromMemberstack() {
 
@@ -40,26 +41,40 @@ function createProject() {
     .catch(error => handleError(error))
 }
 
+function followCompany(companyId) {
+
+}
+
 // TODO: Like others projects
 function likeProject(projectId) {
   USERS.doc(currentUser.id).collection('projects').doc(projectId).set({
     liked: true
-  }).catch(error => handleError(error))
+  })
+    .then(doc => console.log('Project liked'))
+    .catch(error => handleError(error))
 }
 
 // TODO: Mark tutorials to watch later
 function markTutorialWatchLater(tutorialId) {
-  USERS.doc(currentUser.id).collection('tutorials').doc(tutorialId).set({
+  updateTutorial(tutorialId, {
     watchLater: true
-  }).catch(error => handleError(error))
+  })
 }
 
 // TODO: Mark tutorials as complete
 function markTutorialComplete(tutorialId) {
-  USERS.doc(currentUser.id).collection('tutorials').doc(tutorialId).set({
+  updateTutorial(tutorialId, {
     complete: true,
     watchLater: false
-  }).catch(error => handleError(error))
+  })
+}
+
+function updateTutorial(tutorialId, object) {
+  USERS.doc(currentUser.id).collection('tutorials').doc(tutorialId).set(object, { merge: true })
+    .catch(error => handleError(error))
+
+  USER_TUTORIAL.doc(`${currentUser.id}-${tutorialId}`).set(object, { merge: true })
+    .catch(error => handleError(error))
 }
 
 // TODO: Profile picture, URLS, emails,

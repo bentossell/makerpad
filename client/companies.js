@@ -1,3 +1,20 @@
+function getCompanyFromUrl() {
+  var url = window.location.pathname
+  return url.substring(url.lastIndexOf('/') + 1)
+}
+
+function checkRelationships() {
+
+}
+
+// $('.cc-follow-count').text(followNum);
+
+$('.cc-follow-product').click(() => {
+  followProduct(getCompanyFromUrl())
+  $('.cc-follow-product.cc-checked').show()
+  $('.cc-follow-product.cc-unchecked').hide()
+})
+
 async function populateCompanies() {
   getUser()
   console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
