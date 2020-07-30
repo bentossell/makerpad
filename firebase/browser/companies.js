@@ -1,8 +1,8 @@
-(async function populateCompanies() {
+async function populateCompanies() {
   getUser()
   console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
   let companies = await db.collection('companies').get().then(snapshot => {
-    return snapshot.docs.map(doc => doc.data());
+    return snapshot.docs.map(doc => doc.data())
   })
 
   for (company of companies) {
@@ -13,4 +13,4 @@
       <p class="mt-2 text-blue-600">${company.name}</p>
     </a>`)
   }
-})()
+}

@@ -10,6 +10,10 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+
+    <!-- Memberstack -->
+    <script src="https://api.memberstack.io/static/memberstack.js?webflow"
+      data-memberstack-id="2a3426d0e4e6d15973f59f121515b10a"> </script>
   </head>
 
   <body>
@@ -19,12 +23,26 @@
 
     </div>
 
-    <div class="mb-4 mx-auto w-full sm:w-1/2 flex items-center">
-      <img class="user-image inline mr-4 h-12 w-12 rounded hidden" src="" />
-      <span id="username" class="font-bold text-xl"></span>
+    <div>
+      <div id="firebase-error" class="p-6 text-red-800 bg-red-300"></div>
+      <div id="success-notification" class="p-6 text-green-800 bg-green-300"></div>
     </div>
-    <div class="border w-full sm:w-1/2 mx-4 sm:mx-auto rounded">
-      <div class="bg-gray-100 border-b p-4 font-bold">Tools Used</div>
+
+    <a href="#/ms/login">MEMBERSTACK</a>
+
+    <form action="#/ms/login">
+      <input type="text" name="data-ms-member" value="email">
+      <input type="text" name="data-ms-member" value="password">
+      <button type="submit">Submit</button>
+    </form>
+
+
+    <div class="flex items-center w-full mx-auto mb-4 sm:w-1/2">
+      <img class="hidden inline w-12 h-12 mr-4 rounded user-image" src="" />
+      <span id="username" class="text-xl font-bold"></span>
+    </div>
+    <div class="w-full mx-4 border rounded sm:w-1/2 sm:mx-auto">
+      <div class="p-4 font-bold bg-gray-100 border-b">Tools Used</div>
       <div id="companies" class="grid md:grid-cols-2 xl:grid-cols-4"></div>
     </div>
 
