@@ -42,13 +42,13 @@ function createProject() {
 }
 
 function followCompany(companyId) {
-
+  updateCompany(companyId, { followed: true })
 }
 
 // TODO: Like others projects
-function likeProject(projectId) {
+function followProject(projectId) {
   USERS.doc(currentUser.id).collection('projects').doc(projectId).set({
-    liked: true
+    followed: true
   })
     .then(doc => console.log('Project liked'))
     .catch(error => handleError(error))
@@ -69,11 +69,19 @@ function markTutorialComplete(tutorialId) {
   })
 }
 
-function updateTutorial(tutorialId, object) {
-  USERS.doc(currentUser.id).collection('tutorials').doc(tutorialId).set(object, { merge: true })
+function updateTutorial(id, object) {
+  USERS.doc(currentUser.id).collection('tutorials').doc(id).set(object, { merge: true })
     .catch(error => handleError(error))
 
-  USER_TUTORIAL.doc(`${currentUser.id}-${tutorialId}`).set(object, { merge: true })
+  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .catch(error => handleError(error))
+}
+
+function updateCompany(id, object) {
+  USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+    .catch(error => handleError(error))
+
+  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .catch(error => handleError(error))
 }
 
