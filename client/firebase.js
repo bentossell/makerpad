@@ -13,6 +13,7 @@ firebase.initializeApp(firebaseConfig)
 firebase.analytics()
 
 const db = firebase.firestore()
+const storage = firebase.storage()
 
 var currentUser = {}
 var firebaseUser = {}

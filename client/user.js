@@ -85,4 +85,11 @@ function updateCompany(id, object) {
     .catch(error => handleError(error))
 }
 
+function updateProfileImage(file) {
+  storage.ref()
+    .child(`profile_images/${currentUser.id}`)
+    .put(file)
+    .catch(error => handleError(error))
+}
+
 // TODO: Profile picture, URLS, emails,
