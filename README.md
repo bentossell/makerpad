@@ -3,29 +3,38 @@
 ### Updating environment variables
 ```
 firebase functions:config:set webflow.key="REPLACE_WITH_YOUR_KEY"
+firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
 ```
 
 ### Links to CDN
 
-#### Base Firebase code
+#### Base code (Main Page)
 ```html
-  <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/firebase.js"><script>
+<!-- Firebase setup code -->
+<script type="text/javascript" src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/firebasejs/7.16.0/firebase-storage.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/firebase.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/user.js"></script>
 ```
+
+### Individual pages
 
 #### Tutorials
 ```html
-  <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/tutorials.js"><script>
+<!-- Firebase tutorial code -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/tutorials.js"></script>
 ```
 
 #### Companies
 ```html
-  <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/companies.js"><script>
+<!-- Firebase company code -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/companies.js"></script>
 ```
 #### Projects
 ```html
-  <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/projects.js"><script>
+<!-- Firebase project code -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/bentossell/makerpad/client/projects.js"></script>
 ```

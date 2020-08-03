@@ -3,6 +3,7 @@
 // TODO: Public profile to mirror dashboard
 const USERS = db.collection('memberstack_users')
 const USER_TUTORIAL = db.collection('user_tutorial')
+const USER_COMPANY = db.collection('user_company')
 
 async function getUserFromMemberstack() {
 
@@ -81,7 +82,7 @@ function updateCompany(id, object) {
   USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
     .catch(error => handleError(error))
 
-  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+  USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .catch(error => handleError(error))
 }
 
