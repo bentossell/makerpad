@@ -12,7 +12,6 @@ $('.cc-follow-product').click(() => {
   $('.cc-follow-product.cc-checked').show()
   $('.cc-follow-product.cc-unchecked').hide()
 })
-
 // $('.cc-follow-count').text(followNum);
 
 // async function populateCompanies() {
