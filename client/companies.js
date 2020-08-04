@@ -3,8 +3,21 @@ function getCompanyFromUrl() {
   return url.substring(url.lastIndexOf('/') + 1)
 }
 
-function checkRelationships() {
+function followCompany(companyId) {
+  updateCompany(companyId, {
+    followed: true
+  })
+}
 
+function updateCompany(id, object) {
+  USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+    .catch(error => handleError(error))
+
+  USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .catch(error => handleError(error))
+
+  object[`users.${currentUser.id}`] = object
+  COMPANY.doc(id).update(object)
 }
 
 $('.cc-follow-product').click(() => {
@@ -14,19 +27,19 @@ $('.cc-follow-product').click(() => {
 })
 // $('.cc-follow-count').text(followNum);
 
-// async function populateCompanies() {
-//   getUser()
-//   console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
-//   let companies = await db.collection('companies').get().then(snapshot => {
-//     return snapshot.docs.map(doc => doc.data())
-//   })
+async function populateCompanies() {
+  getUser()
+  console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
+  let companies = await db.collection('companies').get().then(snapshot => {
+    return snapshot.docs.map(doc => doc.data())
+  })
 
-//   for (company of companies) {
-//     $('#companies').append(`
-//     <a href=https://makerpad.co/company/${company.name} 
-//       class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-//       <img class="w-10 h-10 rounded" src="${company.image}" />
-//       <p class="mt-2 text-blue-600">${company.name}</p>
-//     </a>`)
-//   }
-// }
+  for (company of companies) {
+    $('#followed-companies').append(`
+    <a href=https://makerpad.co/company/${company.name} 
+      class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
+      <img class="w-10 h-10 rounded" src="${company.image}" />
+      <p class="mt-2 text-blue-600">${company.name}</p>
+    </a>`)
+  }
+}

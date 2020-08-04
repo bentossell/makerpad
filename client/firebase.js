@@ -15,8 +15,15 @@ firebase.analytics()
 const db = firebase.firestore()
 const storage = firebase.storage()
 
-var currentUser = {}
+var currentUser = { id: 'UNKNOWN' }
 var firebaseUser = {}
+
+const USERS = db.collection('memberstack_users')
+const TUTORIALS = db.collection('tutorials')
+const PROJECTS = db.collection('p')
+const USER_TUTORIAL = db.collection('user_tutorial')
+const USER_COMPANY = db.collection('user_company')
+const USER_PROJECT = db.collection('user_project')
 
 MemberStack.onReady.then(async function (member) {
   if (member.id) {
@@ -35,14 +42,14 @@ function handleError(error) {
   Sentry.captureException(error)
   $('#firebase-error').text(error)
   $('#firebase-error').show()
-  setTimeout(() => $('#firebase-error').hide(), 3000)
+  setTimeout(() => $('#firebase-error').hide(), 4000)
 }
 
 function handleSuccess(message) {
   console.log(message)
-  $('#success-notification').text(message)
-  $('#success-notification').show()
-  setTimeout(() => $('#success-notification').hide(), 3000)
+  $('#firebase-success').text(message)
+  $('#firebase-success').show()
+  setTimeout(() => $('#firebase-success').hide(), 4000)
 }
 
 // firebaseAuth()
@@ -63,6 +70,13 @@ function firebaseAuth() {
   })
 }
 
+function objectifyForm(formArray) {
+  var returnArray = {}
+  for (var i = 0; i < formArray.length; i++) {
+    returnArray[formArray[i]['name']] = formArray[i]['value'];
+  }
+  return returnArray;
+}
 
 // function firebaseUi() {
 //   var firebaseAuthUi = new firebaseui.auth.AuthUI(firebase.auth())

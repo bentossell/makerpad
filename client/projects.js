@@ -1,21 +1,33 @@
-const increment = firebase.firestore.FieldValue.increment(1)
-const decrement = firebase.firestore.FieldValue.increment(-1)
-
-// function viewedTutorial(id = 'C36CUuTgkhr1p6P8cQn5') {
-//   TUTORIALS
-//     .doc(id)
-//     .update({ views: increment })
-//     .then(doc => console.log(doc))
-//     .catch(error => console.log(error))
-// }
 function getProjectFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
 }
 
-function checkRelationships() {
+let batch = db.batch()
+
+function createProject(data) {
+  db.collection('projects').add({
+    user: currentUser.id,
+    ref: db.doc(`memberstack_users/${currentUser.id}`),
+    ...data
+  })
+    .then(() => {
+      handleSuccess('Project added')
+      $('#wf-form-Submit-Project').reset()
+    })
+    .catch(error => handleError(error))
+}
+
+function resetForm() {
 
 }
+
+$('#wf-form-Submit-Project').submit(function (event) {
+  event.preventDefault()
+  let data = objectifyForm($(this).serializeArray())
+  console.log(data)
+  createProject(data)
+})
 
 // $('.cc-saved-counter').text(savedNum)
 // $('.cc-completed-counter').text(completeNum)

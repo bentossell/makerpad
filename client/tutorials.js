@@ -1,20 +1,38 @@
 const increment = firebase.firestore.FieldValue.increment(1)
 const decrement = firebase.firestore.FieldValue.increment(-1)
 
-// function viewedTutorial(id = 'C36CUuTgkhr1p6P8cQn5') {
-//   TUTORIALS
-//     .doc(id)
-//     .update({ views: increment })
-//     .then(doc => console.log(doc))
-//     .catch(error => console.log(error))
-// }
+function viewedTutorial(id = 'C36CUuTgkhr1p6P8cQn5') {
+  TUTORIALS
+    .doc(id)
+    .update({ views: increment })
+    .then(doc => console.log(doc))
+    .catch(error => console.log(error))
+}
+
 function getTutorialFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
 }
 
-function checkRelationships() {
+function markTutorialWatchLater(tutorialId) {
+  updateTutorial(tutorialId, {
+    watchLater: true
+  })
+}
 
+function markTutorialComplete(tutorialId) {
+  updateTutorial(tutorialId, {
+    complete: true,
+    watchLater: false
+  })
+}
+
+function updateTutorial(id, object) {
+  USERS.doc(currentUser.id).collection('tutorials').doc(id).set(object, { merge: true })
+    .catch(error => handleError(error))
+
+  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .catch(error => handleError(error))
 }
 
 // $('.cc-saved-counter').text(savedNum)
