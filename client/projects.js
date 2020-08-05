@@ -17,11 +17,11 @@ function getProjectFromUrl() {
   return url.substring(url.lastIndexOf('/') + 1)
 }
 
-function createProject(data) {
+async function createProject(data) {
   let image = $('#image')[0].files[0]
   data.slug = slugify(data.name)
 
-  if (slugExists()) return handleError('Project name already exists.')
+  if (await slugExists()) return handleError('Project name already exists.')
 
   db.collection('projects').doc(data.slug).set({
     user: currentUser.id,
@@ -33,7 +33,7 @@ function createProject(data) {
       storage
         .ref()
         .child(`project_images/${data.slug}`)
-        .put(file)
+        .put(image)
       handleSuccess('Project added')
       $('#wf-form-Submit-Project')[0].reset()
     })
@@ -61,8 +61,12 @@ async function updateProject(id, object) {
   //   .catch(error => handleError(error))
 }
 
-function slugExists() {
-  return false
+function slugExists(slug) {
+  return PROJECT.doc(slug).get()
+    .then(doc => {
+      if (doc.exists) return true
+      return false
+    })
 }
 
 $('#wf-form-Submit-Project').submit(function (event) {

@@ -53,3 +53,7 @@ firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
 
 ### Companies
 - **#followed-companies**
+
+## Reference
+Add data to firestore
+https://firebase.google.com/docs/firestore/manage-data/add-data
