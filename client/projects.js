@@ -1,3 +1,17 @@
+async function renderProject() {
+  db.collection('projects').doc(getProjectFromUrl).get()
+    .then(doc => {
+      let data = doc.data()
+      console.log(data)
+      $('#project-name').text(data.name)
+      $('#project-tagline').text(data.tagline)
+      $('#project-details').text(data.details)
+      $('#project-url').text(data.url)
+      $('#project-image').src(data.image)
+    })
+    .catch(error => handleError(error))
+}
+
 function getProjectFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
@@ -11,7 +25,6 @@ function createProject(data) {
     ...data
   })
     .then(doc => {
-      console.log(doc)
       console.log(image)
       storage
         .ref()
