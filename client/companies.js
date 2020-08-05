@@ -9,19 +9,24 @@ function followCompany(companyId) {
   })
 }
 
-function updateCompany(id, object) {
-  USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+async function updateCompany(id, object) {
+  await USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+    .then(() => console.log('user/companies updated'))
     .catch(error => handleError(error))
 
-  USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+  await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .then(() => console.log('user_company updated'))
     .catch(error => handleError(error))
 
   object[`users.${currentUser.id}`] = object
-  COMPANY.doc(id).update(object)
+  await COMPANY.doc(id).update(object)
+    .then(() => console.log('company updated'))
+    .catch(error => handleError(error))
 }
 
 $('.cc-follow-product').click(() => {
-  followCompany(getCompanyFromUrl())
+  let company = getCompanyFromUrl()
+  followCompany(company)
   $('.cc-follow-product.cc-checked').show()
   $('.cc-follow-product.cc-unchecked').hide()
 })

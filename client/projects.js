@@ -18,6 +18,27 @@ function createProject(data) {
     .catch(error => handleError(error))
 }
 
+function followProject(companyId) {
+  updateCompany(companyId, {
+    followed: true
+  })
+}
+
+async function updateProject(id, object) {
+  await PROJECT.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+    .then(() => console.log('user/companies updated'))
+    .catch(error => handleError(error))
+
+  await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .then(() => console.log('user_company updated'))
+    .catch(error => handleError(error))
+
+  object[`users.${currentUser.id}`] = object
+  await PROJECT.doc(id).update(object)
+    .then(() => console.log('company updated'))
+    .catch(error => handleError(error))
+}
+
 $('#wf-form-Submit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
@@ -29,7 +50,8 @@ $('#wf-form-Submit-Project').submit(function (event) {
 // $('.cc-completed-counter').text(completeNum)
 
 $('.cc-save-item').click(() => {
-  followProject(getProjectFromUrl())
+  let project = getProjectFromUrl()
+  followProject(project)
   $('.cc-save-item.cc-checked').show()
   $('.cc-save-item.cc-unchecked').hide()
 })

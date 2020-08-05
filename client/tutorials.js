@@ -39,13 +39,15 @@ function updateTutorial(id, object) {
 // $('.cc-completed-counter').text(completeNum)
 
 $('.cc-save-item').click(() => {
-  markTutorialWatchLater(getTutorialFromUrl())
+  let tutorial = getTutorialFromUrl()
+  markTutorialWatchLater(tutorial)
   $('.cc-save-item.cc-checked').show()
   $('.cc-save-item.cc-unchecked').hide()
 })
 
 $('.cc-mark-as-complete').click(() => {
-  markTutorialComplete(getTutorialFromUrl())
+  let tutorial = getTutorialFromUrl()
+  markTutorialComplete(tutorial)
   $('.cc-mark-as-complete.cc-checked').show()
   $('.cc-mark-as-complete.cc-unchecked').hide()
 })
