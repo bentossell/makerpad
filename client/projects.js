@@ -40,9 +40,19 @@ async function createProject(data) {
     .catch(error => handleError(error))
 }
 
-function followProject(companyId) {
-  updateCompany(companyId, {
+function followProject(projectId) {
+  updateCompany(projectId, {
+    userId: currentUser.id,
+    projectId,
     followed: true
+  })
+}
+
+function unfollowProject(projectId) {
+  updateCompany(projectId, {
+    userId: currentUser.id,
+    projectId,
+    followed: false
   })
 }
 

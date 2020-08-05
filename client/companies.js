@@ -7,24 +7,29 @@ function getCompanyFromUrl() {
 
 function followCompany(companyId) {
   updateCompany(companyId, {
+    userId: currentUser.id,
+    companyId,
     followed: true
   })
 }
 
 function unfollowCompany(companyId) {
   updateCompany(companyId, {
+    userId: currentUser.id,
+    companyId,
     followed: false
   })
 }
 
 async function updateCompany(id, object) {
+  await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .then(() => console.log('user_company updated'))
+    .catch(error => handleError(error))
+
   await USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
     .then(() => console.log('user/companies updated'))
     .catch(error => handleError(error))
 
-  await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(() => console.log('user_company updated'))
-    .catch(error => handleError(error))
 
   // object[`users.${currentUser.id}`] = object
   // await COMPANY.doc(id).update(object)

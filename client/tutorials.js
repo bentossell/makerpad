@@ -16,22 +16,26 @@ function getTutorialFromUrl() {
 
 function markTutorialWatchLater(tutorialId) {
   updateTutorial(tutorialId, {
+    userId: currentUser.id,
+    tutorialId,
     watchLater: true
   })
 }
 
 function markTutorialComplete(tutorialId) {
   updateTutorial(tutorialId, {
+    userId: currentUser.id,
+    tutorialId,
     complete: true,
     watchLater: false
   })
 }
 
 function updateTutorial(id, object) {
-  USERS.doc(currentUser.id).collection('tutorials').doc(id).set(object, { merge: true })
+  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .catch(error => handleError(error))
 
-  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+  USERS.doc(currentUser.id).collection('tutorials').doc(id).set(object, { merge: true })
     .catch(error => handleError(error))
 }
 
