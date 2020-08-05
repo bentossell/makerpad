@@ -20,7 +20,10 @@ function getProjectFromUrl() {
 function createProject(data) {
   let image = $('#image')[0].files[0]
   data.slug = slugify(data.name)
-  db.collection('projects').add({
+
+  if (slugExists()) return handleError('Project name already exists.')
+
+  db.collection('projects').doc(data.slug).set({
     user: currentUser.id,
     ref: db.doc(`memberstack_users/${currentUser.id}`),
     ...data
@@ -56,6 +59,10 @@ async function updateProject(id, object) {
   await PROJECT.doc(id).update(object)
     .then(() => console.log('company updated'))
     .catch(error => handleError(error))
+}
+
+function slugExists() {
+  return false
 }
 
 $('#wf-form-Submit-Project').submit(function (event) {
