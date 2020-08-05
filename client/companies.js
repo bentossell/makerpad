@@ -5,19 +5,11 @@ function getCompanyFromUrl() {
   return url.substring(url.lastIndexOf('/') + 1)
 }
 
-function followCompany(companyId) {
+function followCompany(companyId, reverse) {
   updateCompany(companyId, {
     userId: currentUser.id,
     companyId,
-    followed: true
-  })
-}
-
-function unfollowCompany(companyId) {
-  updateCompany(companyId, {
-    userId: currentUser.id,
-    companyId,
-    followed: false
+    followed: reverse ? false : true
   })
 }
 
@@ -37,17 +29,20 @@ async function updateCompany(id, object) {
   //   .catch(error => handleError(error))
 }
 
-$('.cc-follow-product.cc-checked').click(() => {
-  unfollowCompany(company)
-  $('.cc-follow-product.cc-checked').hide()
-  $('.cc-follow-product.cc-unchecked').show()
-})
-
+// follow
 $('.cc-follow-product.cc-unchecked').click(() => {
   followCompany(company)
   $('.cc-follow-product.cc-checked').show()
   $('.cc-follow-product.cc-unchecked').hide()
 })
+
+// unfollow
+$('.cc-follow-product.cc-checked').click(() => {
+  followCompany(company, true)
+  $('.cc-follow-product.cc-checked').hide()
+  $('.cc-follow-product.cc-unchecked').show()
+})
+
 // $('.cc-follow-count').text(followNum);
 
 async function populateCompanies() {

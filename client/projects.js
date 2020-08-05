@@ -40,19 +40,11 @@ async function createProject(data) {
     .catch(error => handleError(error))
 }
 
-function followProject(projectId) {
+function followProject(projectId, reverse) {
   updateCompany(projectId, {
     userId: currentUser.id,
     projectId,
-    followed: true
-  })
-}
-
-function unfollowProject(projectId) {
-  updateCompany(projectId, {
-    userId: currentUser.id,
-    projectId,
-    followed: false
+    followed: reverse ? false : true
   })
 }
 
@@ -89,9 +81,18 @@ $('#wf-form-Submit-Project').submit(function (event) {
 // $('.cc-saved-counter').text(savedNum)
 // $('.cc-completed-counter').text(completeNum)
 
-$('.cc-save-item').click(() => {
+// follow
+$('.cc-save-item.cc-unchecked').click(() => {
   let project = getProjectFromUrl()
   followProject(project)
   $('.cc-save-item.cc-checked').show()
   $('.cc-save-item.cc-unchecked').hide()
+})
+
+// unfollow
+$('.cc-save-item.cc-checked').click(() => {
+  let project = getProjectFromUrl()
+  followProject(project, true)
+  $('.cc-save-item.cc-checked').hide()
+  $('.cc-save-item.cc-unchecked').show()
 })

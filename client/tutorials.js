@@ -14,20 +14,20 @@ function getTutorialFromUrl() {
   return url.substring(url.lastIndexOf('/') + 1)
 }
 
-function markTutorialWatchLater(tutorialId) {
+function markTutorialWatchLater(tutorialId, reverse) {
   updateTutorial(tutorialId, {
     userId: currentUser.id,
     tutorialId,
-    watchLater: true
+    watchLater: reverse ? false : true
   })
 }
 
-function markTutorialComplete(tutorialId) {
+function markTutorialComplete(tutorialId, reverse) {
   updateTutorial(tutorialId, {
     userId: currentUser.id,
     tutorialId,
-    complete: true,
-    watchLater: false
+    complete: reverse ? false : true,
+    watchLater: reverse ? true : false
   })
 }
 
@@ -53,7 +53,7 @@ $('.cc-save-item.cc-unchecked').click(() => {
 // unmark watch later
 $('.cc-save-item.cc-checked').click(() => {
   let tutorial = getTutorialFromUrl()
-  markTutorialWatchLater(tutorial)
+  markTutorialWatchLater(tutorial, true)
   $('.cc-save-item.cc-checked').hide()
   $('.cc-save-item.cc-unchecked').show()
 })
@@ -69,7 +69,7 @@ $('.cc-mark-as-complete.cc-unchecked').click(() => {
 // unmark complete
 $('.cc-mark-as-complete.cc-checked').click(() => {
   let tutorial = getTutorialFromUrl()
-  markTutorialComplete(tutorial)
+  markTutorialComplete(tutorial, true)
   $('.cc-mark-as-complete.cc-checked').hide()
   $('.cc-mark-as-complete.cc-unchecked').show()
 })
