@@ -80,7 +80,7 @@ function objectifyForm(formArray) {
 }
 
 function slugify(text) {
-  text
+  return text
     .toString()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
