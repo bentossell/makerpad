@@ -45,11 +45,11 @@ firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
 ## DOM Elements being targeted
 
 ### Users
-**#username**
-**.user-image**
+- **#username**
+- **.user-image**
 
 ### Projects
-**#wf-form-Submit-Project**
+- **#wf-form-Submit-Project**
 
 ### Companies
-**#followed-companies**
+- **#followed-companies**

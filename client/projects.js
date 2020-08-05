@@ -19,6 +19,7 @@ function getProjectFromUrl() {
 
 function createProject(data) {
   let image = $('#image')[0].files[0]
+  data.slug = slugify(data.name)
   db.collection('projects').add({
     user: currentUser.id,
     ref: db.doc(`memberstack_users/${currentUser.id}`),

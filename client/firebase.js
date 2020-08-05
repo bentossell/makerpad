@@ -79,6 +79,18 @@ function objectifyForm(formArray) {
   return returnArray;
 }
 
+function slugify(text) {
+  text
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+}
+
 // function firebaseUi() {
 //   var firebaseAuthUi = new firebaseui.auth.AuthUI(firebase.auth())
 //   firebaseAuthUi.start('#firebaseui-auth-container', {
