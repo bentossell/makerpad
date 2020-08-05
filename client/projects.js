@@ -3,8 +3,6 @@ function getProjectFromUrl() {
   return url.substring(url.lastIndexOf('/') + 1)
 }
 
-let batch = db.batch()
-
 function createProject(data) {
   db.collection('projects').add({
     user: currentUser.id,
