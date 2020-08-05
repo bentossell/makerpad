@@ -26,10 +26,10 @@ async function updateCompany(id, object) {
     .then(() => console.log('user_company updated'))
     .catch(error => handleError(error))
 
-  object[`users.${currentUser.id}`] = object
-  await COMPANY.doc(id).update(object)
-    .then(() => console.log('company updated'))
-    .catch(error => handleError(error))
+  // object[`users.${currentUser.id}`] = object
+  // await COMPANY.doc(id).update(object)
+  //   .then(() => console.log('company updated'))
+  //   .catch(error => handleError(error))
 }
 
 $('.cc-follow-product.cc-checked').click(() => {

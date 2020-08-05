@@ -55,10 +55,10 @@ async function updateProject(id, object) {
     .then(() => console.log('user_company updated'))
     .catch(error => handleError(error))
 
-  object[`users.${currentUser.id}`] = object
-  await PROJECT.doc(id).update(object)
-    .then(() => console.log('company updated'))
-    .catch(error => handleError(error))
+  // object[`users.${currentUser.id}`] = object
+  // await PROJECT.doc(id).update(object)
+  //   .then(() => console.log('company updated'))
+  //   .catch(error => handleError(error))
 }
 
 function slugExists() {
