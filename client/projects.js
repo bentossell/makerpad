@@ -4,12 +4,19 @@ function getProjectFromUrl() {
 }
 
 function createProject(data) {
+  let image = $('#image')[0].files[0]
   db.collection('projects').add({
     user: currentUser.id,
     ref: db.doc(`memberstack_users/${currentUser.id}`),
     ...data
   })
-    .then(() => {
+    .then(doc => {
+      console.log(doc)
+      console.log(image)
+      storage
+        .ref()
+        .child(`project_images/${doc.id}`)
+        .put(file)
       handleSuccess('Project added')
       $('#wf-form-Submit-Project')[0].reset()
     })
