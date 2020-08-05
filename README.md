@@ -10,6 +10,8 @@ firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
 
 #### Base code (Main Page)
 ```html
+<!-- Sentry for error logging -->
+<script src='https://js.sentry-cdn.com/dd1a9266f9ab4089af3422b735840179.min.js' crossorigin="anonymous"></script>
 <!-- Firebase setup code -->
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>

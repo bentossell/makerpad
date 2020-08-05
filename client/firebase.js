@@ -40,16 +40,16 @@ MemberStack.onReady.then(async function (member) {
 function handleError(error) {
   console.error(error)
   Sentry.captureException(error)
-  $('#firebase-error').text(error)
-  $('#firebase-error').show()
-  setTimeout(() => $('#firebase-error').hide(), 4000)
+  $('#firebase-notification').text(error)
+  $('#firebase-notification').show()
+  setTimeout(() => $('#firebase-notification').hide(), 4000)
 }
 
 function handleSuccess(message) {
   console.log(message)
-  $('#firebase-success').text(message)
-  $('#firebase-success').show()
-  setTimeout(() => $('#firebase-success').hide(), 4000)
+  $('#firebase-notification').text(message)
+  $('#firebase-notification').show()
+  setTimeout(() => $('#firebase-notification').hide(), 4000)
 }
 
 // firebaseAuth()

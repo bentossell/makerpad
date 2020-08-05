@@ -13,13 +13,9 @@ function createProject(data) {
   })
     .then(() => {
       handleSuccess('Project added')
-      $('#wf-form-Submit-Project').reset()
+      $('#wf-form-Submit-Project')[0].reset()
     })
     .catch(error => handleError(error))
-}
-
-function resetForm() {
-
 }
 
 $('#wf-form-Submit-Project').submit(function (event) {
