@@ -42,16 +42,34 @@ function updateTutorial(id, object) {
 // $('.cc-saved-counter').text(savedNum)
 // $('.cc-completed-counter').text(completeNum)
 
-$('.cc-save-item').click(() => {
+// mark watch later
+$('.cc-save-item.cc-unchecked').click(() => {
   let tutorial = getTutorialFromUrl()
   markTutorialWatchLater(tutorial)
   $('.cc-save-item.cc-checked').show()
   $('.cc-save-item.cc-unchecked').hide()
 })
 
-$('.cc-mark-as-complete').click(() => {
+// unmark watch later
+$('.cc-save-item.cc-checked').click(() => {
+  let tutorial = getTutorialFromUrl()
+  markTutorialWatchLater(tutorial)
+  $('.cc-save-item.cc-checked').hide()
+  $('.cc-save-item.cc-unchecked').show()
+})
+
+// mark complete
+$('.cc-mark-as-complete.cc-unchecked').click(() => {
   let tutorial = getTutorialFromUrl()
   markTutorialComplete(tutorial)
   $('.cc-mark-as-complete.cc-checked').show()
   $('.cc-mark-as-complete.cc-unchecked').hide()
+})
+
+// unmark complete
+$('.cc-mark-as-complete.cc-checked').click(() => {
+  let tutorial = getTutorialFromUrl()
+  markTutorialComplete(tutorial)
+  $('.cc-mark-as-complete.cc-checked').hide()
+  $('.cc-mark-as-complete.cc-unchecked').show()
 })
