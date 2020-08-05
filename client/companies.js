@@ -1,3 +1,5 @@
+let company = getCompanyFromUrl()
+
 function getCompanyFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
@@ -31,14 +33,12 @@ async function updateCompany(id, object) {
 }
 
 $('.cc-follow-product.cc-checked').click(() => {
-  let company = getCompanyFromUrl()
   unfollowCompany(company)
   $('.cc-follow-product.cc-checked').hide()
   $('.cc-follow-product.cc-unchecked').show()
 })
 
 $('.cc-follow-product.cc-unchecked').click(() => {
-  let company = getCompanyFromUrl()
   followCompany(company)
   $('.cc-follow-product.cc-checked').show()
   $('.cc-follow-product.cc-unchecked').hide()
