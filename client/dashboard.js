@@ -1,4 +1,15 @@
-// TODO: Profile picture, URLS, emails,
+async function renderUser() {
+    USERS.doc(getProjectFromUrl).get()
+        .then(doc => {
+            let data = doc.data()
+            console.log(data)
+            $('#user-name').text(data.name)
+            $('#user-image').text(data['profile-pic'])
+            $('#user-location').text(data.location)
+        })
+        .catch(error => handleError(error))
+}
+
 function updateProfileImage(file) {
     storage.ref()
         .child(`profile_images/${currentUser.id}`)
