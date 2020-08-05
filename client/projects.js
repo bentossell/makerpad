@@ -32,7 +32,7 @@ function createProject(data) {
       console.log(image)
       storage
         .ref()
-        .child(`project_images/${doc.id}`)
+        .child(`project_images/${data.slug}`)
         .put(file)
       handleSuccess('Project added')
       $('#wf-form-Submit-Project')[0].reset()
