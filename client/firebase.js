@@ -21,10 +21,17 @@ var firebaseUser = {}
 const USERS = db.collection('memberstack_users')
 
 MemberStack.onReady.then(async function (member) {
+  console.log(member)
+  currentUser = member
   if (member.id) {
-    db.collection('memberstack_users').doc(member.id).get()
+    USERS.doc(member.id).get()
       .then(doc => {
-        currentUser = doc.data()
+        if (doc.exists) {
+          firebaseUser = doc.data()
+        } else {
+          let info = memberstack.information
+          USERS.doc(member.id).set(info, { merge: true })
+        }
       })
       .catch(error => console.log(error))
   } else {
