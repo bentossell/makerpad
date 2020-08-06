@@ -71,6 +71,77 @@
     <script src="tutorials.js"></script>
     <script src="dashboard.js"></script>
 
+    <script>
+      MemberStack.onReady.then(async function (member) {
+
+        // Checks if member is logged in
+        if (member.loggedIn) {
+
+          const metadata = await member.getMetaData();
+
+          // If no metadata.video exists, create it in MemberStack.
+          metadata.videos = metadata.videos || [];
+
+          // Defines the webflow video ID to a const of itemID (Pull this from the CMS)
+          const itemID = "{{wf {&quot;path&quot;:&quot;item-id&quot;,&quot;type&quot;:&quot;PlainText&quot;\} }}"
+
+          // If they have the item ID in their profile, hide the form, show the 'completed button'
+          if (metadata.videos.includes(itemID)) {
+            document.getElementById('mark-as-watched').style.display = 'none';
+            document.getElementById('video-complete').style.display = 'block';
+          }
+
+          // When the button is clicked, if the itemID doesn't exist on their profile
+          // add it, then push the metadata to MemberStack. 
+          $('#mark-as-watched').click(function () {
+
+            if (metadata.videos.indexOf(itemID) === -1) {
+
+              metadata.videos.push(itemID);
+
+              member.updateMetaData(metadata);
+
+            }
+          });
+        }
+      });
+    </script>
+
+    <script>
+      MemberStack.onReady.then(async function (member) {
+
+        // Checks if member is logged in
+        if (member.loggedIn) {
+
+          const metadata = await member.getMetaData();
+
+          // If no metadata.video exists, create it in MemberStack.
+          metadata.watchlist = metadata.watchlist || [];
+
+          // Defines the webflow video ID to a const of itemID (Pull this from the CMS)
+          const itemID = "{{wf {&quot;path&quot;:&quot;item-id&quot;,&quot;type&quot;:&quot;PlainText&quot;\} }}"
+
+          // If they have the item ID in their profile, hide the form, show the 'completed button'
+          if (metadata.watchlist.includes(itemID)) {
+            document.getElementById('mark-as-listed').style.display = 'none';
+            document.getElementById('listed').style.display = 'block';
+          }
+
+          // When the button is clicked, if the itemID doesn't exist on their profile
+          // add it, then push the metadata to MemberStack. 
+          $('#mark-as-listed').click(function () {
+
+            if (metadata.watchlist.indexOf(itemID) === -1) {
+
+              metadata.watchlist.push(itemID);
+
+              member.updateMetaData(metadata);
+
+            }
+          });
+        }
+      });
+    </script>
 
   </body>
 

@@ -1,5 +1,7 @@
-const increment = firebase.firestore.FieldValue.increment(1)
-const decrement = firebase.firestore.FieldValue.increment(-1)
+let increment = firebase.firestore.FieldValue.increment(1)
+let decrement = firebase.firestore.FieldValue.increment(-1)
+
+let tutorial = getTutorialFromUrl()
 
 function viewedTutorial(id = 'C36CUuTgkhr1p6P8cQn5') {
   TUTORIALS
@@ -33,9 +35,11 @@ function markTutorialComplete(tutorialId, reverse) {
 
 function updateTutorial(id, object) {
   USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .then(doc => console.log(object))
     .catch(error => handleError(error))
 
-  USERS.doc(currentUser.id).collection('tutorials').doc(id).set(object, { merge: true })
+  USERS.doc(currentUser.id).collection('tutorial').doc(id).set(object, { merge: true })
+    .then(doc => console.log(object))
     .catch(error => handleError(error))
 }
 
@@ -44,7 +48,6 @@ function updateTutorial(id, object) {
 
 // mark watch later
 $('.cc-save-item.cc-unchecked').click(() => {
-  let tutorial = getTutorialFromUrl()
   markTutorialWatchLater(tutorial)
   $('.cc-save-item.cc-checked').show()
   $('.cc-save-item.cc-unchecked').hide()
@@ -52,7 +55,6 @@ $('.cc-save-item.cc-unchecked').click(() => {
 
 // unmark watch later
 $('.cc-save-item.cc-checked').click(() => {
-  let tutorial = getTutorialFromUrl()
   markTutorialWatchLater(tutorial, true)
   $('.cc-save-item.cc-checked').hide()
   $('.cc-save-item.cc-unchecked').show()
@@ -60,7 +62,6 @@ $('.cc-save-item.cc-checked').click(() => {
 
 // mark complete
 $('.cc-mark-as-complete.cc-unchecked').click(() => {
-  let tutorial = getTutorialFromUrl()
   markTutorialComplete(tutorial)
   $('.cc-mark-as-complete.cc-checked').show()
   $('.cc-mark-as-complete.cc-unchecked').hide()
@@ -68,7 +69,6 @@ $('.cc-mark-as-complete.cc-unchecked').click(() => {
 
 // unmark complete
 $('.cc-mark-as-complete.cc-checked').click(() => {
-  let tutorial = getTutorialFromUrl()
   markTutorialComplete(tutorial, true)
   $('.cc-mark-as-complete.cc-checked').hide()
   $('.cc-mark-as-complete.cc-unchecked').show()

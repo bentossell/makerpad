@@ -21,23 +21,27 @@ async function createProject(data) {
   let image = $('#image')[0].files[0]
   data.slug = slugify(data.name)
 
-  if (await slugExists()) return handleError('Project name already exists.')
+  // if (await slugExists(data.slug)) return handleError('Project name already exists.')
 
-  db.collection('projects').doc(data.slug).set({
-    user: currentUser.id,
-    ref: db.doc(`memberstack_users/${currentUser.id}`),
-    ...data
-  })
-    .then(doc => {
-      console.log(image)
-      storage
-        .ref()
-        .child(`project_images/${data.slug}`)
-        .put(image)
-      handleSuccess('Project added')
-      $('#wf-form-Submit-Project')[0].reset()
+  if (await slugExists(data.slug) == false) {
+    return db.collection('projects').doc(data.slug).set({
+      user: currentUser.id,
+      ref: db.doc(`memberstack_users/${currentUser.id}`),
+      ...data
     })
-    .catch(error => handleError(error))
+      .then(doc => {
+        console.log(image)
+        storage
+          .ref()
+          .child(`project_images/${data.slug}`)
+          .put(image)
+        handleSuccess('Project added')
+        $('#wf-form-Submit-Project')[0].reset()
+      })
+      .catch(error => handleError(error))
+  } else {
+    return handleError('Project name already exists.')
+  }
 }
 
 function followProject(projectId, reverse) {
@@ -49,12 +53,12 @@ function followProject(projectId, reverse) {
 }
 
 async function updateProject(id, object) {
-  await PROJECT.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
-    .then(() => console.log('user/companies updated'))
+  await PROJECTS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+    .then(() => console.log(object))
     .catch(error => handleError(error))
 
   await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(() => console.log('user_company updated'))
+    .then(() => console.log(object))
     .catch(error => handleError(error))
 
   // object[`users.${currentUser.id}`] = object
@@ -64,7 +68,7 @@ async function updateProject(id, object) {
 }
 
 function slugExists(slug) {
-  return PROJECT.doc(slug).get()
+  return PROJECTS.doc(slug).get()
     .then(doc => {
       if (doc.exists) return true
       return false

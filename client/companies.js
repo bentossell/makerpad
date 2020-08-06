@@ -15,11 +15,11 @@ function followCompany(companyId, reverse) {
 
 async function updateCompany(id, object) {
   await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(() => console.log('user_company updated'))
+    .then(() => console.log(object))
     .catch(error => handleError(error))
 
   await USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
-    .then(() => console.log('user/companies updated'))
+    .then(() => console.log(object))
     .catch(error => handleError(error))
 
 
