@@ -1,3 +1,6 @@
+const COMPANY = db.collection('companies')
+const USER_COMPANY = db.collection('user_company')
+
 let company = getCompanyFromUrl()
 
 function getCompanyFromUrl() {

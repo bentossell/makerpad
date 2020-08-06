@@ -19,7 +19,7 @@ firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-storage.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@latest/client/firebase.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@latest/client/user.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@1.7/client/user.js"></script>
 ```
 
 ### Individual pages
@@ -27,19 +27,19 @@ firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
 #### Tutorials
 ```html
 <!-- Firebase tutorial code -->
-<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@latest/client/tutorials.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@1.7/client/tutorials.js"></script>
 ```
 
 #### Companies
 ```html
 <!-- Firebase company code -->
-<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@latest/client/companies.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@1.7/client/companies.js"></script>
 ```
 
 #### Projects
 ```html
 <!-- Firebase project code -->
-<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@latest/client/projects.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@1.7/client/projects.js"></script>
 ```
 
 ## DOM Elements being targeted

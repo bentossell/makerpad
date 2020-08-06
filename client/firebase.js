@@ -19,12 +19,6 @@ var currentUser = { id: 'UNKNOWN' }
 var firebaseUser = {}
 
 const USERS = db.collection('memberstack_users')
-const TUTORIALS = db.collection('tutorials')
-const PROJECTS = db.collection('projects')
-const COMPANY = db.collection('companies')
-const USER_TUTORIAL = db.collection('user_tutorial')
-const USER_COMPANY = db.collection('user_company')
-const USER_PROJECT = db.collection('user_project')
 
 MemberStack.onReady.then(async function (member) {
   if (member.id) {
@@ -40,7 +34,6 @@ MemberStack.onReady.then(async function (member) {
 
 function handleError(error) {
   console.error(error)
-  Sentry.captureException(error)
   $('#firebase-notification').text(error)
   $('#firebase-notification').show()
   setTimeout(() => $('#firebase-notification').hide(), 4000)

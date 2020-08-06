@@ -1,3 +1,6 @@
+const PROJECTS = db.collection('projects')
+const USER_PROJECT = db.collection('user_project')
+
 async function renderProject() {
   db.collection('projects').doc(getProjectFromUrl).get()
     .then(doc => {
@@ -18,7 +21,6 @@ function getProjectFromUrl() {
 }
 
 async function createProject(data) {
-  let image = $('#image')[0].files[0]
   data.slug = slugify(data.name)
 
   // if (await slugExists(data.slug)) return handleError('Project name already exists.')
@@ -26,15 +28,17 @@ async function createProject(data) {
   if (await slugExists(data.slug) == false) {
     return db.collection('projects').doc(data.slug).set({
       user: currentUser.id,
-      ref: db.doc(`memberstack_users/${currentUser.id}`),
       ...data
     })
       .then(doc => {
-        console.log(image)
-        storage
-          .ref()
-          .child(`project_images/${data.slug}`)
-          .put(image)
+        let image = $('#image')[0].files[0] || null
+        if (image) {
+          console.log(image)
+          storage
+            .ref()
+            .child(`project_images/${data.slug}`)
+            .put(image)
+        }
         handleSuccess('Project added')
         $('#wf-form-Submit-Project')[0].reset()
       })

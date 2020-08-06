@@ -1,3 +1,6 @@
+const TUTORIALS = db.collection('tutorials')
+const USER_TUTORIAL = db.collection('user_tutorial')
+
 let increment = firebase.firestore.FieldValue.increment(1)
 let decrement = firebase.firestore.FieldValue.increment(-1)
 
