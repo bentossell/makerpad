@@ -1,4 +1,4 @@
-const TUTORIALS = db.collection('tutorials')
+const TUTORIAL = db.collection('tutorial')
 const USER_TUTORIAL = db.collection('user_tutorial')
 
 let increment = firebase.firestore.FieldValue.increment(1)
@@ -6,8 +6,8 @@ let decrement = firebase.firestore.FieldValue.increment(-1)
 
 let tutorial = getTutorialFromUrl()
 
-function viewedTutorial(id = 'C36CUuTgkhr1p6P8cQn5') {
-  TUTORIALS
+function viewedTutorial(id) {
+  TUTORIAL
     .doc(id)
     .update({ views: increment })
     .then(doc => console.log(doc))

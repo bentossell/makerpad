@@ -1,4 +1,4 @@
-const COMPANY = db.collection('companies')
+const COMPANY = db.collection('company')
 const USER_COMPANY = db.collection('user_company')
 
 let company = getCompanyFromUrl()
@@ -21,7 +21,7 @@ async function updateCompany(id, object) {
     .then(() => console.log(object))
     .catch(error => handleError(error))
 
-  await USERS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+  await USERS.doc(currentUser.id).collection('company').doc(id).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(error => handleError(error))
 
@@ -51,7 +51,7 @@ $('.cc-follow-product.cc-checked').click(() => {
 async function populateCompanies() {
   getUser()
   console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
-  let companies = await db.collection('companies').get().then(snapshot => {
+  let companies = await COMPANY.get().then(snapshot => {
     return snapshot.docs.map(doc => doc.data())
   })
 

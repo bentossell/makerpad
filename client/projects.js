@@ -49,7 +49,7 @@ async function createProject(data) {
 }
 
 function followProject(projectId, reverse) {
-  updateCompany(projectId, {
+  updateProject(projectId, {
     userId: currentUser.id,
     projectId,
     followed: reverse ? false : true
@@ -57,7 +57,7 @@ function followProject(projectId, reverse) {
 }
 
 async function updateProject(id, object) {
-  await PROJECTS.doc(currentUser.id).collection('companies').doc(id).set(object, { merge: true })
+  await PROJECTS.doc(currentUser.id).collection('projects').doc(id).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(error => handleError(error))
 

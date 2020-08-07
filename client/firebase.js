@@ -31,6 +31,7 @@ MemberStack.onReady.then(async function (member) {
         } else {
           let info = memberstack.information
           USERS.doc(member.id).set(info, { merge: true })
+            .then(doc => firebaseUser = doc.data())
         }
       })
       .catch(error => console.log(error))
