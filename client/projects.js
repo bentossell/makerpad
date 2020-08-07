@@ -25,8 +25,8 @@ async function createProject(data) {
 
   // if (await slugExists(data.slug)) return handleError('Project name already exists.')
 
-  if (await slugExists(data.slug) == false) {
-    return db.collection('projects').doc(data.slug).set({
+  if (await slugExists(data.slug, 'projects') == false) {
+    return PROJECTS.doc(data.slug).set({
       user: currentUser.id,
       ...data
     })
@@ -69,14 +69,6 @@ async function updateProject(id, object) {
   // await PROJECT.doc(id).update(object)
   //   .then(() => console.log('company updated'))
   //   .catch(error => handleError(error))
-}
-
-function slugExists(slug) {
-  return PROJECTS.doc(slug).get()
-    .then(doc => {
-      if (doc.exists) return true
-      return false
-    })
 }
 
 $('#wf-form-Submit-Project').submit(function (event) {

@@ -92,6 +92,14 @@ function slugify(text) {
     .replace(/--+/g, '-')
 }
 
+function slugExists(slug, collection) {
+  return db.collection(collection).doc(slug).get()
+    .then(doc => {
+      if (doc.exists) return true
+      return false
+    })
+}
+
 // function firebaseUi() {
 //   var firebaseAuthUi = new firebaseui.auth.AuthUI(firebase.auth())
 //   firebaseAuthUi.start('#firebaseui-auth-container', {
