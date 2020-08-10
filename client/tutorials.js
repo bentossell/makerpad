@@ -1,9 +1,3 @@
-const TUTORIAL = db.collection('tutorial')
-const USER_TUTORIAL = db.collection('user_tutorial')
-
-let increment = firebase.firestore.FieldValue.increment(1)
-let decrement = firebase.firestore.FieldValue.increment(-1)
-
 let tutorial = getTutorialFromUrl()
 
 function viewedTutorial(id) {
@@ -31,7 +25,7 @@ function markTutorialComplete(tutorialId, reverse) {
   updateTutorial(tutorialId, {
     userId: currentUser.id,
     tutorialId,
-    complete: reverse ? false : true,
+    completed: reverse ? false : true,
     watchLater: reverse ? true : false
   })
 }
@@ -41,13 +35,35 @@ function updateTutorial(id, object) {
     .then(doc => console.log(object))
     .catch(error => handleError(error))
 
-  USERS.doc(currentUser.id).collection('tutorial').doc(id).set(object, { merge: true })
-    .then(doc => console.log(object))
-    .catch(error => handleError(error))
+  // USERS.doc(currentUser.id).collection('tutorial').doc(id).set(object, { merge: true })
+  //   .then(doc => console.log(object))
+  //   .catch(error => handleError(error))
 }
 
-// $('.cc-saved-counter').text(savedNum)
-// $('.cc-completed-counter').text(completeNum)
+function userSavedTutorial(id) {
+  return USER_TUTORIAL
+    .where("userId", "==", currentUser.id)
+    .where("tutorialId", "==", id)
+    .limit(1).get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      console.log(snapshot.docs[0].data())
+      return snapshot.docs[0].data()
+    })
+    .catch(error => console.log(error))
+}
+
+$().ready(async () => {
+  let isSaved = await userSavedTutorial(tutorial)
+  if (isSaved.watchLater == true) {
+    $('.cc-save-item.cc-checked').show()
+    $('.cc-save-item.cc-unchecked').hide()
+  }
+  if (isSaved.completed == true) {
+    $('.cc-mark-as-complete.cc-checked').show()
+    $('.cc-mark-as-complete.cc-unchecked').hide()
+  }
+})
 
 // mark watch later
 $('.cc-save-item.cc-unchecked').click(() => {

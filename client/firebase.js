@@ -18,7 +18,15 @@ const storage = firebase.storage()
 var currentUser = { id: 'UNKNOWN' }
 var firebaseUser = {}
 
+const COMPANY = db.collection('company')
+const TUTORIAL = db.collection('tutorial')
 const USERS = db.collection('memberstack_users')
+const USER_TUTORIAL = db.collection('user_tutorial')
+const USER_USER = db.collection('user_user')
+const USER_COMPANY = db.collection('user_company')
+
+let increment = firebase.firestore.FieldValue.increment(1)
+let decrement = firebase.firestore.FieldValue.increment(-1)
 
 MemberStack.onReady.then(async function (member) {
   console.log(member)

@@ -57,18 +57,14 @@ function followProject(projectId, reverse) {
 }
 
 async function updateProject(id, object) {
-  await PROJECTS.doc(currentUser.id).collection('projects').doc(id).set(object, { merge: true })
-    .then(() => console.log(object))
-    .catch(error => handleError(error))
 
   await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(error => handleError(error))
 
-  // object[`users.${currentUser.id}`] = object
-  // await PROJECT.doc(id).update(object)
-  //   .then(() => console.log('company updated'))
-  //   .catch(error => handleError(error))
+  await PROJECTS.doc(currentUser.id).collection('projects').doc(id).set(object, { merge: true })
+    .then(() => console.log(object))
+    .catch(error => handleError(error))
 }
 
 $('#wf-form-Submit-Project').submit(function (event) {
@@ -77,9 +73,6 @@ $('#wf-form-Submit-Project').submit(function (event) {
   console.log(data)
   createProject(data)
 })
-
-// $('.cc-saved-counter').text(savedNum)
-// $('.cc-completed-counter').text(completeNum)
 
 // follow
 $('.cc-save-item.cc-unchecked').click(() => {

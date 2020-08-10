@@ -10,6 +10,11 @@ $('#wf-form-Editing-Profile').submit(function (event) {
   updateUser(data)
 })
 
+$('#wf-form-Recommendation').submit(function (event) {
+  event.preventDefault()
+  recommendUser(getUserFromUrl())
+})
+
 async function getUser() {
   let user = {}
   // let userId = new URLSearchParams(window.location.search).get('user')
@@ -63,4 +68,54 @@ function searchUserBySlug(slug) {
       console.log(snapshot.docs[0].data())
     })
     .catch(error => console.log(error))
+}
+
+function recommendUser(user) {
+  return USER_USER.doc(user).set({
+    recommended: true,
+    userId: currentUser.id,
+    targetUser: user
+  })
+}
+
+function getUserTutorials() {
+  return USER_TUTORIAL
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let data = snapshot.docs.map(doc => doc.data())
+      currentUser.tutorials = data
+      firebaseUser.tutorials = data
+      return data
+    })
+    .catch(error => console.log(error))
+}
+
+function getUserCompanies() {
+  return USER_COMPANY
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let data = snapshot.docs.map(doc => doc.data())
+      currentUser.companies = data
+      firebaseUser.companies = data
+      return data
+    })
+    .catch(error => console.log(error))
+}
+
+function populateUser() {
+  $('.user-full-name').text(currentUser['full-name'])
+  $('.user-bio').text(currentUser.bio)
+  $('.user-location').text(currentUser.location)
+  $('.user-twitter').text(currentUser.twitter)
+  $('.user-website').text(currentUser.website)
+  $('.user-newsletter').text(currentUser.newsletter)
+  $('.user-youtube').text(currentUser.youtube)
+}
+
+function userCompletedTutorial() {
+
 }

@@ -1,6 +1,3 @@
-const COMPANY = db.collection('company')
-const USER_COMPANY = db.collection('user_company')
-
 let company = getCompanyFromUrl()
 
 function getCompanyFromUrl() {
@@ -21,16 +18,30 @@ async function updateCompany(id, object) {
     .then(() => console.log(object))
     .catch(error => handleError(error))
 
-  await USERS.doc(currentUser.id).collection('company').doc(id).set(object, { merge: true })
-    .then(() => console.log(object))
-    .catch(error => handleError(error))
-
-
-  // object[`users.${currentUser.id}`] = object
-  // await COMPANY.doc(id).update(object)
-  //   .then(() => console.log('company updated'))
+  // await USERS.doc(currentUser.id).collection('company').doc(id).set(object, { merge: true })
+  //   .then(() => console.log(object))
   //   .catch(error => handleError(error))
 }
+
+function userFollowsCompany(id) {
+  return USER_TUTORIAL
+    .where("userId", "==", currentUser.id)
+    .where("companyId", "==", id)
+    .limit(1).get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      console.log(snapshot.docs[0].data())
+    })
+    .catch(error => console.log(error))
+}
+
+$().ready(async () => {
+  let isSaved = await userSavedTutorial(company)
+  if (isSaved.followed == true) {
+    $('.cc-follow-product.cc-checked').show()
+    $('.cc-follow-product.cc-unchecked').hide()
+  }
+})
 
 // follow
 $('.cc-follow-product.cc-unchecked').click(() => {
@@ -46,17 +57,13 @@ $('.cc-follow-product.cc-checked').click(() => {
   $('.cc-follow-product.cc-unchecked').show()
 })
 
-// $('.cc-follow-count').text(followNum);
-
 async function populateCompanies() {
   getUser()
   console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
-  let companies = await COMPANY.get().then(snapshot => {
-    return snapshot.docs.map(doc => doc.data())
-  })
+  let companies = await getUserCompanies()
 
   for (company of companies) {
-    $('#followed-companies').append(`
+    $('#tools-used').append(`
     <a href=https://makerpad.co/company/${company.name} 
       class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
       <img class="w-10 h-10 rounded" src="${company.image}" />
