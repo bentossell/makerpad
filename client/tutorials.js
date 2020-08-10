@@ -53,6 +53,20 @@ function userSavedTutorial(id) {
     .catch(error => console.log(error))
 }
 
+function tutorialFollowers() {
+  return USER_TUTORIAL
+    .where("tutorialId", "==", tutorial)
+    .get()
+    .then(snapshot => {
+      let docs = snapshot.docs.map(doc => doc.data())
+      console.log(docs)
+      let saved = docs.filter(item => item.watchLater == true)
+      let completed = docs.filter(item => item.completed == true)
+      $('.cc-completed-counter').text(saved.length)
+      $('.cc-saved-counter').text(completed.length)
+    })
+}
+
 $().ready(async () => {
   let isSaved = await userSavedTutorial(tutorial)
   if (isSaved.watchLater == true) {
