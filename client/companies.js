@@ -24,7 +24,7 @@ async function updateCompany(id, object) {
 }
 
 function userFollowsCompany(id) {
-  return USER_TUTORIAL
+  return USER_COMPANY
     .where("userId", "==", currentUser.id)
     .where("companyId", "==", id)
     .limit(1).get()
@@ -35,8 +35,17 @@ function userFollowsCompany(id) {
     .catch(error => console.log(error))
 }
 
+function companyFollowers() {
+  return USER_COMPANY
+    .where("companyId", "==", company)
+    .get()
+    .then(snapshot => {
+      $('.cc-follow-count').text(snapshot.size)
+    })
+}
+
 $().ready(async () => {
-  let isSaved = await userSavedTutorial(company)
+  let isSaved = await userFollowsCompany(company)
   if (isSaved.followed == true) {
     $('.cc-follow-product.cc-checked').show()
     $('.cc-follow-product.cc-unchecked').hide()
@@ -56,18 +65,3 @@ $('.cc-follow-product.cc-checked').click(() => {
   $('.cc-follow-product.cc-checked').hide()
   $('.cc-follow-product.cc-unchecked').show()
 })
-
-async function populateCompanies() {
-  getUser()
-  console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
-  let companies = await getUserCompanies()
-
-  for (company of companies) {
-    $('#tools-used').append(`
-    <a href=https://makerpad.co/company/${company.name} 
-      class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-      <img class="w-10 h-10 rounded" src="${company.image}" />
-      <p class="mt-2 text-blue-600">${company.name}</p>
-    </a>`)
-  }
-}
