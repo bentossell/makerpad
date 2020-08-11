@@ -1,9 +1,9 @@
 // migrateCompanies()
 // migrateTutorials()
-
+migrateRecommends()
 async function migrateCompanies() {
   let users = []
-  await db.collection('user').get()
+  await db.collection('u').get()
     .then(snapshot => {
       return snapshot.forEach(doc => {
         users.push(doc.data())
@@ -63,9 +63,46 @@ async function migrateTutorials() {
   // console.log(users.length)
 }
 
+async function migrateRecommends() {
+  let users = []
+  await db.collection('u').get()
+    .then(snapshot => {
+      return snapshot.forEach(doc => {
+        users.push(doc.data())
+      })
+    })
+
+  for (let user of users) {
+    if (user['recommender']) {
+      for (let company of user['recommender']) {
+        // let companySlug = await getItemSlug(company)
+        let { email } = await getItem(company)
+        let memberstackId = await searchMemberstackUserByEmail(email)
+        console.log(user.slug, memberstackId)
+        if (!user.slug || !memberstackId) continue
+        await db.collection('user_user').doc(`${memberstackId}-${user.slug}`).set({
+          // cmsId: company,
+          // cmsUser: user._id,
+          recommendedUser: user.slug,
+          userId: memberstackId,
+          recommended: true
+        })
+      }
+    }
+  }
+  // let memberstackId = await searchMemberstackUserByEmail(email)
+  // console.log(users.length)
+}
+
 function getItemSlug(_id) {
   return db.collection('WEBFLOW_ITEMS').doc(_id).get()
     .then(doc => doc.data().slug)
+    .catch(error => handleError(error))
+}
+
+function getItem(_id) {
+  return db.collection('WEBFLOW_ITEMS').doc(_id).get()
+    .then(doc => doc.data())
     .catch(error => handleError(error))
 }
 

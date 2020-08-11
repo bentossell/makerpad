@@ -68,6 +68,25 @@ function tutorialFollowers() {
     })
 }
 
+// Listen for updates to users tutorials or companies
+USER_TUTORIAL
+  .onSnapshot(function (snapshot) {
+    let userTutorials = snapshot.docs.map(doc => doc.data())
+    console.log('user_tutorial updated', userTutorials)
+    firebaseUser.tutorials = userTutorials
+  }, function (error) {
+    handleError(error)
+  })
+
+USER_COMPANY
+  .onSnapshot(function (snapshot) {
+    let userCompanies = snapshot.docs.map(doc => doc.data())
+    console.log('user_tutorial updated', userTutorials)
+    firebaseUser.companies = userCompanies
+  }, function (error) {
+    handleError(error)
+  })
+
 $().ready(async () => {
   let isSaved = await userSavedTutorial(tutorial)
   if (isSaved.watchLater == true) {

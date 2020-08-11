@@ -15,6 +15,18 @@ $('#wf-form-Recommendation').submit(function (event) {
   recommendUser(getUserFromUrl())
 })
 
+$('.follow-user-button').submit(function (event) {
+  followUser(getUserFromUrl())
+  $('.follow-user-button').hide()
+  $('.unfollow-user-button').show()
+})
+
+$('.unfollow-user-button').submit(function (event) {
+  followUser(getUserFromUrl(), true)
+  $('.follow-user-button').show()
+  $('.unfollow-user-button').hide()
+})
+
 async function getUser() {
   let user = {}
   // let userId = new URLSearchParams(window.location.search).get('user')
@@ -71,11 +83,23 @@ function searchUserBySlug(slug) {
 }
 
 function recommendUser(user) {
-  return USER_USER.doc(user).set({
-    recommended: true,
+  return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
-    targetUser: user
-  })
+    recommendedUser: user,
+    recommended: true
+  }, { merge: true })
+    .then(() => console.log('user recommended'))
+    .catch(error => console.log(error))
+}
+
+function followUser(user, reverse) {
+  return USER_USER.doc(`${currentUser.id}-${user}`).set({
+    userId: currentUser.id,
+    followedUser: user,
+    followed: reverse ? false : true
+  }, { merge: true })
+    .then(() => console.log(reverse ? 'user unfollowed' : 'user followed'))
+    .catch(error => console.log(error))
 }
 
 function getUserTutorials() {
@@ -110,10 +134,14 @@ function populateUser() {
   $('.user-full-name').text(currentUser['full-name'])
   $('.user-bio').text(currentUser.bio)
   $('.user-location').text(currentUser.location)
-  $('.user-twitter').text(currentUser.twitter)
-  $('.user-website').text(currentUser.website)
-  $('.user-newsletter').text(currentUser.newsletter)
-  $('.user-youtube').text(currentUser.youtube)
+  $('.user-twitter').attr('href', currentUser.twitter)
+  $('.user-website').attr('href', currentUser.website)
+  $('.user-newsletter').attr('href', currentUser.newsletter)
+  $('.user-youtube').attr('href', currentUser.youtube)
+
+  populateProjects()
+  populateTutorials()
+  populateCompanies()
 }
 
 async function populateCompanies() {
@@ -131,6 +159,32 @@ async function populateCompanies() {
   }
 }
 
-function userCompletedTutorial() {
+async function populateTutorials() {
+  getUser()
+  console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
+  let companies = await getUserCompanies()
 
+  for (company of companies) {
+    $('#tools-used').append(`
+    <a href=https://makerpad.co/company/${company.name} 
+      class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
+      <img class="w-10 h-10 rounded" src="${company.image}" />
+      <p class="mt-2 text-blue-600">${company.name}</p>
+    </a>`)
+  }
+}
+
+async function populateProjects() {
+  getUser()
+  console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
+  let companies = await getUserCompanies()
+
+  for (company of companies) {
+    $('#tools-used').append(`
+    <a href=https://makerpad.co/company/${company.name} 
+      class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
+      <img class="w-10 h-10 rounded" src="${company.image}" />
+      <p class="mt-2 text-blue-600">${company.name}</p>
+    </a>`)
+  }
 }
