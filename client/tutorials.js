@@ -62,8 +62,9 @@ function tutorialFollowers() {
       console.log(docs)
       let saved = docs.filter(item => item.watchLater == true)
       let completed = docs.filter(item => item.completed == true)
-      $('.cc-completed-counter').text(saved.length)
-      $('.cc-saved-counter').text(completed.length)
+      console.log({ completed, saved })
+      $('.cc-completed-counter').text(completed.length)
+      $('.cc-saved-counter').text(saved.length)
     })
 }
 
@@ -77,6 +78,7 @@ $().ready(async () => {
     $('.cc-mark-as-complete.cc-checked').show()
     $('.cc-mark-as-complete.cc-unchecked').hide()
   }
+  tutorialFollowers()
 })
 
 // mark watch later

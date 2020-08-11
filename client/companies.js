@@ -31,6 +31,7 @@ function userFollowsCompany(id) {
     .then(snapshot => {
       if (snapshot.empty) return false
       console.log(snapshot.docs[0].data())
+      return snapshot.docs[0].data()
     })
     .catch(error => console.log(error))
 }
@@ -50,6 +51,7 @@ $().ready(async () => {
     $('.cc-follow-product.cc-checked').show()
     $('.cc-follow-product.cc-unchecked').hide()
   }
+  companyFollowers()
 })
 
 // follow
