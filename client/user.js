@@ -1,3 +1,5 @@
+let userSlug = getUserFromUrl()
+
 function getUserFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
@@ -102,89 +104,77 @@ function followUser(user, reverse) {
     .catch(error => console.log(error))
 }
 
-function getUserTutorials() {
-  return USER_TUTORIAL
-    .where("userId", "==", currentUser.id)
+function getUserCollection(collection) {
+  return collection
+    .where("userId", "==", getUserFromUrl())
     .get()
     .then(snapshot => {
       if (snapshot.empty) return false
       let data = snapshot.docs.map(doc => doc.data())
-      currentUser.tutorials = data
-      firebaseUser.tutorials = data
-      return data
-    })
-    .catch(error => console.log(error))
-}
-
-function getUserCompanies() {
-  return USER_COMPANY
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let data = snapshot.docs.map(doc => doc.data())
-      currentUser.companies = data
-      firebaseUser.companies = data
       return data
     })
     .catch(error => console.log(error))
 }
 
 function populateUser() {
-  $('.user-full-name').text(currentUser['full-name'])
-  $('.user-bio').text(currentUser.bio)
-  $('.user-location').text(currentUser.location)
-  $('.user-twitter').attr('href', currentUser.twitter)
-  $('.user-website').attr('href', currentUser.website)
-  $('.user-newsletter').attr('href', currentUser.newsletter)
-  $('.user-youtube').attr('href', currentUser.youtube)
+  userSlug = getUserFromUrl()
+  if (userSlug) {
+    U.doc(userSlug).get().then(doc => {
+      if (!doc.exists) return
+      let userProfile = doc.data()
+      $('.user-full-name').text(userProfile['full-name'])
+      $('.user-bio').text(userProfile.bio)
+      $('.user-location').text(userProfile.location)
+      $('.user-twitter').attr('href', userProfile.twitter)
+      $('.user-website').attr('href', userProfile.website)
+      $('.user-newsletter').attr('href', userProfile.newsletter)
+      $('.user-youtube').attr('href', userProfile.youtube)
+    })
 
-  populateProjects()
-  populateTutorials()
-  populateCompanies()
+    populateProjects()
+    populateTutorials()
+    populateCompanies()
+  }
 }
 
 async function populateCompanies() {
-  getUser()
-  console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
-  let companies = await getUserCompanies()
+  let items = await getUserCollection(USER_COMPANY)
+  console.log(items)
 
-  for (company of companies) {
+  for (item of items) {
     $('#tools-used').append(`
-    <a href=https://makerpad.co/company/${company.name} 
+    <a href=https://makerpad.co/company/${item.name} 
       class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-      <img class="w-10 h-10 rounded" src="${company.image}" />
-      <p class="mt-2 text-blue-600">${company.name}</p>
+      <img class="w-10 h-10 rounded" src="${item.image}" />
+      <p class="mt-2 text-blue-600">${item.name}</p>
     </a>`)
   }
 }
 
 async function populateTutorials() {
-  getUser()
-  console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
-  let companies = await getUserCompanies()
+  let items = await getUserCollection(USER_TUTORIAL)
+  console.log(items)
 
-  for (company of companies) {
+  for (item of items) {
     $('#tools-used').append(`
-    <a href=https://makerpad.co/company/${company.name} 
+    <a href=https://makerpad.co/company/${item.name} 
       class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-      <img class="w-10 h-10 rounded" src="${company.image}" />
-      <p class="mt-2 text-blue-600">${company.name}</p>
+      <img class="w-10 h-10 rounded" src="${item.image}" />
+      <p class="mt-2 text-blue-600">${item.name}</p>
     </a>`)
   }
 }
 
 async function populateProjects() {
-  getUser()
-  console.log(window.location.href.substring(window.location.href.lastIndexOf('/')))
-  let companies = await getUserCompanies()
+  let items = await getUserCollection(USER_PROJECT)
+  console.log(items)
 
-  for (company of companies) {
+  for (item of items) {
     $('#tools-used').append(`
-    <a href=https://makerpad.co/company/${company.name} 
+    <a href=https://makerpad.co/company/${item.name} 
       class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-      <img class="w-10 h-10 rounded" src="${company.image}" />
-      <p class="mt-2 text-blue-600">${company.name}</p>
+      <img class="w-10 h-10 rounded" src="${item.image}" />
+      <p class="mt-2 text-blue-600">${item.name}</p>
     </a>`)
   }
 }
