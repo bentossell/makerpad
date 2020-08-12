@@ -1,6 +1,29 @@
 // migrateCompanies()
 // migrateTutorials()
-migrateRecommends()
+// migrateRecommends()
+fillUserNames()
+async function fillUserNames() {
+  let users = []
+  await db.collection('u').get()
+    .then(snapshot => {
+      return snapshot.forEach(doc => {
+        users.push(doc.data())
+      })
+    })
+
+  for (let user of users) {
+    let memberstackId = await searchMemberstackUserByEmail(user.email)
+    if (!memberstackId) continue
+    // let slug = await getItemSlug(company)
+    console.log(`${memberstackId} - ${user.slug}`)
+    await db.collection('memberstack_users').doc(memberstackId).update({
+      username: user.slug
+    })
+  }
+  // let memberstackId = await searchMemberstackUserByEmail(email)
+  // console.log(users.length)
+}
+
 async function migrateCompanies() {
   let users = []
   await db.collection('u').get()

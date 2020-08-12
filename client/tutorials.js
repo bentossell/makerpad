@@ -21,25 +21,6 @@ function markTutorialWatchLater(tutorialId, reverse) {
   })
 }
 
-function markTutorialComplete(tutorialId, reverse) {
-  updateTutorial(tutorialId, {
-    userId: currentUser.id,
-    tutorialId,
-    completed: reverse ? false : true,
-    watchLater: reverse ? true : false
-  })
-}
-
-function updateTutorial(id, object) {
-  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(doc => console.log(object))
-    .catch(error => handleError(error))
-
-  // USERS.doc(currentUser.id).collection('tutorial').doc(id).set(object, { merge: true })
-  //   .then(doc => console.log(object))
-  //   .catch(error => handleError(error))
-}
-
 function userSavedTutorial(id) {
   return USER_TUTORIAL
     .where("userId", "==", currentUser.id)
@@ -117,13 +98,9 @@ $('.cc-save-item.cc-checked').click(() => {
 // mark complete
 $('.cc-mark-as-complete.cc-unchecked').click(() => {
   markTutorialComplete(tutorial)
-  $('.cc-mark-as-complete.cc-checked').show()
-  $('.cc-mark-as-complete.cc-unchecked').hide()
 })
 
 // unmark complete
 $('.cc-mark-as-complete.cc-checked').click(() => {
   markTutorialComplete(tutorial, true)
-  $('.cc-mark-as-complete.cc-checked').hide()
-  $('.cc-mark-as-complete.cc-unchecked').show()
 })

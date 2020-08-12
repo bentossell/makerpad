@@ -51,6 +51,28 @@ MemberStack.onReady.then(async function (member) {
   }
 })
 
+function getUserNameFromMemberstackId(memberstackId) {
+  return USERS.doc(memberstackId).get()
+    .then(doc => {
+      if (doc.exists) {
+        let data = doc.data()
+        return data.username
+      } else {
+        return false
+      }
+    })
+    .catch(error => console.error(error))
+}
+
+function getMemberstackIdFromUsername(username) {
+  return USERS.where("username", "==", username).get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      console.log(snapshot.docs[0].data())
+    })
+    .catch(error => console.log(error))
+}
+
 function handleError(error) {
   console.error(error)
   $('#firebase-notification').text(error)
@@ -109,6 +131,33 @@ function slugExists(slug, collection) {
       if (doc.exists) return true
       return false
     })
+}
+
+$().ready(async () => {
+  // total company follows
+  // set users tutorials, companies, user
+})
+
+function markTutorialComplete(tutorialId, reverse) {
+  updateTutorial(tutorialId, {
+    userId: currentUser.id,
+    tutorialId,
+    completed: reverse ? false : true,
+    watchLater: reverse ? true : false
+  })
+  if (reverse) {
+    $('.cc-mark-as-complete.cc-checked').hide()
+    $('.cc-mark-as-complete.cc-unchecked').show()
+  } else {
+    $('.cc-mark-as-complete.cc-checked').show()
+    $('.cc-mark-as-complete.cc-unchecked').hide()
+  }
+}
+
+function updateTutorial(id, object) {
+  USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .then(doc => console.log(object))
+    .catch(error => handleError(error))
 }
 
 // function firebaseUi() {
