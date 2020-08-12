@@ -17,13 +17,13 @@ $('#wf-form-Recommendation').submit(function (event) {
   recommendUser(getUserFromUrl())
 })
 
-$('.follow-user-button').submit(function (event) {
+$('.follow-user-button').click(function (event) {
   followUser(getUserFromUrl())
   $('.follow-user-button').hide()
   $('.unfollow-user-button').show()
 })
 
-$('.unfollow-user-button').submit(function (event) {
+$('.unfollow-user-button').click(function (event) {
   followUser(getUserFromUrl(), true)
   $('.follow-user-button').show()
   $('.unfollow-user-button').hide()
@@ -106,10 +106,10 @@ function followUser(user, reverse) {
 
 function getUserCollection(collection) {
   return collection
-    .where("userId", "==", getUserFromUrl())
+    .where("username", "==", userSlug)
     .get()
     .then(snapshot => {
-      if (snapshot.empty) return false
+      if (snapshot.empty) return []
       let data = snapshot.docs.map(doc => doc.data())
       return data
     })
@@ -122,13 +122,14 @@ function populateUser() {
     U.doc(userSlug).get().then(doc => {
       if (!doc.exists) return
       let userProfile = doc.data()
+      console.log(userProfile)
       $('.user-full-name').text(userProfile['full-name'])
       $('.user-bio').text(userProfile.bio)
       $('.user-location').text(userProfile.location)
-      $('.user-twitter').attr('href', userProfile.twitter)
-      $('.user-website').attr('href', userProfile.website)
+      $('.user-twitter').attr('href', userProfile['twitter-url'])
+      $('.user-website').attr('href', userProfile['website-url'])
       $('.user-newsletter').attr('href', userProfile.newsletter)
-      $('.user-youtube').attr('href', userProfile.youtube)
+      $('.user-youtube').attr('href', userProfile['youtube-channel'])
     })
 
     populateProjects()
@@ -140,41 +141,80 @@ function populateUser() {
 async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
   console.log(items)
+  if (!items) return console.log('no items found')
 
   for (item of items) {
-    $('#tools-used').append(`
-    <a href=https://makerpad.co/company/${item.name} 
-      class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-      <img class="w-10 h-10 rounded" src="${item.image}" />
-      <p class="mt-2 text-blue-600">${item.name}</p>
-    </a>`)
+    let company = item.company
+    $('.tools-followed').append(`
+      <div id="w-node-28d9c17ddbae-b8840649" class="div-block-917 user-tool-list">
+        <div class="div-block-167"><img width="40"
+            src="${company.logo.url}" alt="${company.name}"
+            class="image-37 tool-img">
+          <div class="div-block-168 vertical">
+            <div class="div-block-169">
+              <h4 class="heading-259 tool-name">${company.name}</h4><img
+                src="https://assets-global.website-files.com/5c1a1fb9f264d636fe4b69fa/5cc1f1edad50d9c97c425e83_check-badge%20copy%202.svg"
+                width="15" tooltipster="top" alt="" class="image-41 tool-verified tooltipstered">
+            </div>
+            <div class="text-block-438 tool-tagline">This is some text inside of a div block.</div>
+          </div>
+        </div>
+        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${1} followers</div>
+        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${1} reviews</div>
+        <a id="w-node-99eeb6584ca7-b8840649" href="#" class="profile-button tool-profile-link w-button">
+          Company Profile
+        </a>
+      </div>
+      `)
   }
 }
 
 async function populateTutorials() {
   let items = await getUserCollection(USER_TUTORIAL)
   console.log(items)
+  if (!items) return
 
   for (item of items) {
-    $('#tools-used').append(`
-    <a href=https://makerpad.co/company/${item.name} 
-      class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-      <img class="w-10 h-10 rounded" src="${item.image}" />
-      <p class="mt-2 text-blue-600">${item.name}</p>
-    </a>`)
+    let tutorial = item.tutorial
+    $('.tutorial-watchlist').append(`
+      <div id="w-node-7fb832c002a6-b8840649" class="div-block-917 user-tutorial-list">
+        <div class="div-block-167">
+          <div class="div-block-169">
+            <h4 class="heading-259 tutorial-name">${tutorial.name}</h4>
+          </div>
+        </div>
+        <div id="w-node-463d8f97bb89-b8840649">
+          <div data-ms-content="profile" class="dashboard-component save-complete">
+            <a href="#" class="cc-mark-as-complete cc-unchecked w-inline-block">
+              <div>Mark as complete</div>
+            </a>
+            <a href="#" class="cc-mark-as-complete cc-checked w-inline-block">
+              <div>
+                Completed (
+                <span class="cc-completed-counter">${tutorial.completed}</span>
+                )
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>`)
   }
 }
 
 async function populateProjects() {
   let items = await getUserCollection(USER_PROJECT)
   console.log(items)
+  if (!items) return
 
   for (item of items) {
-    $('#tools-used').append(`
-    <a href=https://makerpad.co/company/${item.name} 
-      class="m-4 p-6 flex flex-col items-center border border-gray-300 justify-center rounded-lg">
-      <img class="w-10 h-10 rounded" src="${item.image}" />
-      <p class="mt-2 text-blue-600">${item.name}</p>
-    </a>`)
+    let project = item.project
+    $('.user-projects').append(`
+      <a href="#" class="user-project w-inline-block">
+        <img
+          src="${project.url}"
+          alt=""
+          class="image-175 project-image" />
+        <h5 class="project-heading">Heading</h5>
+      </a>`)
   }
 }

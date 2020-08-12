@@ -1,6 +1,3 @@
-const PROJECTS = db.collection('projects')
-const USER_PROJECT = db.collection('user_project')
-
 async function renderProject() {
   db.collection('projects').doc(getProjectFromUrl).get()
     .then(doc => {
@@ -27,7 +24,7 @@ async function createProject(data) {
 
   if (await slugExists(data.slug, 'projects') == false) {
     return PROJECTS.doc(data.slug).set({
-      user: currentUser.id,
+      userId: currentUser.id,
       ...data
     })
       .then(doc => {
