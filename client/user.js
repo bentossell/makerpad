@@ -241,20 +241,20 @@ async function populateTutorials() {
 }
 
 async function populateProjects() {
-  $('.tutorial-watchlist').empty()
-  let items = await getUserCollection(USER_PROJECT)
+  $('.user-projects').empty()
+  let items = await getUserCollection(PROJECTS)
   console.log(items)
   if (!items) return
 
   for (item of items) {
-    let project = item.project
+    let project = item
     $('.user-projects').append(`
       <a href="#" class="user-project w-inline-block">
         <img
-          src="${project.url}"
-          alt=""
+          src="https://firebasestorage.googleapis.com/v0/b/makerpad-94656.appspot.com/o/project_images%2F${project.slug}?alt=media&token=e54eebb6-e1cc-4e33-ba7e-e60365ff6420"
+          alt="${project.name}"
           class="image-175 project-image" />
-        <h5 class="project-heading">Heading</h5>
+        <h5 class="project-heading">${project.name}</h5>
       </a>`)
   }
 }
