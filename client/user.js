@@ -251,7 +251,7 @@ async function populateProjects() {
     $('.user-projects').append(`
       <a href="#" class="user-project w-inline-block">
         <img
-          src="https://firebasestorage.googleapis.com/v0/b/makerpad-94656.appspot.com/o/project_images%2F${project.slug}?alt=media&token=e54eebb6-e1cc-4e33-ba7e-e60365ff6420"
+          src="${project.imageUrl}"
           alt="${project.name}"
           class="image-175 project-image" />
         <h5 class="project-heading">${project.name}</h5>

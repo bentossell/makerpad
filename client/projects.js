@@ -35,6 +35,12 @@ async function createProject(data) {
             .ref()
             .child(`project_images/${data.slug}`)
             .put(image)
+            .then((snapshot) => {
+              console.log(snapshot.ref.getDownloadURL())
+              snapshot.ref.getDownloadURL().then((imageUrl) => {
+                PROJECTS.doc(data.slug).update({ imageUrl })
+              })
+            })
         }
         handleSuccess('Project added')
         $('#wf-form-Submit-Project')[0].reset()
