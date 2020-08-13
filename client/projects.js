@@ -25,6 +25,7 @@ function getProjectFromUrl() {
 }
 
 async function createProject(data) {
+  if (!currentUser) return
   data.slug = slugify(data.name)
 
   // if (await slugExists(data.slug)) return handleError('Project name already exists.')
@@ -59,6 +60,7 @@ async function createProject(data) {
 }
 
 function followProject(projectId, reverse) {
+  if (!currentUser) return
   updateProject(projectId, {
     userId: currentUser.id,
     projectId,

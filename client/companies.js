@@ -19,6 +19,7 @@ function getCompanyFromUrl() {
 }
 
 function followCompany(companyId, reverse) {
+  if (!currentUser) return
   updateCompany(companyId, {
     userId: currentUser.id,
     companyId,
@@ -30,13 +31,10 @@ async function updateCompany(id, object) {
   await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(error => handleError(error))
-
-  // await USERS.doc(currentUser.id).collection('company').doc(id).set(object, { merge: true })
-  //   .then(() => console.log(object))
-  //   .catch(error => handleError(error))
 }
 
 function userFollowsCompany(id) {
+  if (!currentUser) return
   return USER_COMPANY
     .where("userId", "==", currentUser.id)
     .where("companyId", "==", id)

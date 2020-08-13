@@ -4,12 +4,15 @@ let userUsers = []
 
 $().ready(async () => {
   userSlug = getUserFromUrl()
+  getUserUsers()
   let isFollowed = await userFollowsUser(userSlug)
   if (isFollowed.followed == true) {
     $('.follow-user-button').hide()
     $('.unfollow-user-button').show()
   }
-  getUserUsers()
+  if (thisIsMyUser()) {
+    $('.my-user-content').show()
+  }
 })
 
 function getUserFromUrl() {
@@ -19,15 +22,15 @@ function getUserFromUrl() {
 
 $('#wf-form-Recommendation').submit(function (event) {
   event.preventDefault()
-  recommendUser(getUserFromUrl())
+  recommendUser(userSlug)
 })
 
 $('.follow-user-button').click(function (event) {
-  followUser(getUserFromUrl())
+  followUser(userSlug)
 })
 
 $('.unfollow-user-button').click(function (event) {
-  followUser(getUserFromUrl(), true)
+  followUser(userSlug, true)
 })
 
 async function getUser() {
@@ -44,7 +47,7 @@ async function getUser() {
     .catch(error => console.log(error))
 
   // or search
-  if (userId) searchUserBySlug(getUserFromUrl())
+  if (userId) searchUserBySlug(userSlug)
 }
 
 function getUserUsers() {
@@ -73,7 +76,7 @@ function searchUserBySlug(slug) {
 }
 
 function recommendUser(user) {
-  if (user === firebaseUser.username) return
+  if (thisIsMyUser() || !currentUser) return
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
     targetUser: user,
@@ -84,7 +87,7 @@ function recommendUser(user) {
 }
 
 function followUser(user, reverse) {
-  if (user === firebaseUser.username) return console.log("Can't follow yourself")
+  if (thisIsMyUser() || !currentUser) return console.log("Can't follow yourself")
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
     targetUser: user,
@@ -104,6 +107,7 @@ function followUser(user, reverse) {
 }
 
 function userFollowsUser(id) {
+  if (!currentUser || currentUser.id) return
   return USER_USER
     .where("userId", "==", currentUser.id)
     .where("targetUser", "==", id)
@@ -115,6 +119,10 @@ function userFollowsUser(id) {
       return snapshot.docs[0].data()
     })
     .catch(error => console.log(error))
+}
+
+function thisIsMyUser() {
+  return firebaseUser.username === userSlug
 }
 
 function getUserCollection(collection) {
@@ -130,7 +138,7 @@ function getUserCollection(collection) {
 }
 
 function populateUser() {
-  userSlug = getUserFromUrl()
+  if (!userSlug) userSlug = getUserFromUrl()
   if (userSlug) {
     U.doc(userSlug).get().then(doc => {
       if (!doc.exists) return

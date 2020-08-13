@@ -15,7 +15,7 @@ firebase.analytics()
 const db = firebase.firestore()
 const storage = firebase.storage()
 
-var currentUser = { id: 'UNKNOWN' }
+var currentUser = {}
 var firebaseUser = {}
 
 const COMPANY = db.collection('company')

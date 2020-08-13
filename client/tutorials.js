@@ -28,6 +28,7 @@ function getTutorialFromUrl() {
 }
 
 function markTutorialWatchLater(tutorialId, reverse) {
+  if (!currentUser) return
   updateTutorial(tutorialId, {
     userId: currentUser.id,
     tutorialId,
@@ -36,6 +37,7 @@ function markTutorialWatchLater(tutorialId, reverse) {
 }
 
 function userSavedTutorial(id) {
+  if (!currentUser) return
   return USER_TUTORIAL
     .where("userId", "==", currentUser.id)
     .where("tutorialId", "==", id)
