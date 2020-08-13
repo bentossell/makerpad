@@ -1,5 +1,19 @@
 let tutorial = getTutorialFromUrl()
 
+$().ready(async () => {
+  tutorial = getTutorialFromUrl()
+  let isSaved = await userSavedTutorial(tutorial)
+  if (isSaved.watchLater == true) {
+    $('.cc-save-item.cc-checked').show()
+    $('.cc-save-item.cc-unchecked').hide()
+  }
+  if (isSaved.completed == true) {
+    $('.cc-mark-as-complete.cc-checked').show()
+    $('.cc-mark-as-complete.cc-unchecked').hide()
+  }
+  tutorialFollowers()
+})
+
 function viewedTutorial(id) {
   TUTORIAL
     .doc(id)
@@ -48,19 +62,6 @@ function tutorialFollowers() {
       $('.cc-saved-counter').text(saved.length)
     })
 }
-
-$().ready(async () => {
-  let isSaved = await userSavedTutorial(tutorial)
-  if (isSaved.watchLater == true) {
-    $('.cc-save-item.cc-checked').show()
-    $('.cc-save-item.cc-unchecked').hide()
-  }
-  if (isSaved.completed == true) {
-    $('.cc-mark-as-complete.cc-checked').show()
-    $('.cc-mark-as-complete.cc-unchecked').hide()
-  }
-  tutorialFollowers()
-})
 
 // mark watch later
 $('.cc-save-item.cc-unchecked').click(() => {

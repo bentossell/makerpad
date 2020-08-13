@@ -75,15 +75,13 @@ function getMemberstackIdFromUsername(username) {
 
 function handleError(error) {
   console.error(error)
-  $('#firebase-notification').text(error)
-  $('#firebase-notification').show()
+  $('#firebase-notification').text(error).show()
   setTimeout(() => $('#firebase-notification').hide(), 4000)
 }
 
 function handleSuccess(message) {
   console.log(message)
-  $('#firebase-notification').text(message)
-  $('#firebase-notification').show()
+  $('#firebase-notification').text(message).show()
   setTimeout(() => $('#firebase-notification').hide(), 4000)
 }
 

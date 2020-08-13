@@ -3,6 +3,7 @@ populateUser()
 let userUsers = []
 
 $().ready(async () => {
+  userSlug = getUserFromUrl()
   let isFollowed = await userFollowsUser(userSlug)
   if (isFollowed.followed == true) {
     $('.follow-user-button').hide()
@@ -53,7 +54,7 @@ function getUserUsers() {
       console.log(userUsers)
 
       let followingCount = userUsers.filter(item => item.username === userSlug && item.followed == true).length
-      let followedCount = userUsers.filter(item => item.followedUser === userSlug && item.followed == true).length
+      let followedCount = userUsers.filter(item => item.targetUser === userSlug && item.followed == true).length
       console.log(followingCount, followedCount)
 
       $('.user-followers-count').text(followedCount + ' Followers')
@@ -72,9 +73,10 @@ function searchUserBySlug(slug) {
 }
 
 function recommendUser(user) {
+  if (user === firebaseUser.username) return
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
-    recommendedUser: user,
+    targetUser: user,
     recommended: true
   }, { merge: true })
     .then(() => console.log('user recommended'))
@@ -82,9 +84,10 @@ function recommendUser(user) {
 }
 
 function followUser(user, reverse) {
+  if (user === firebaseUser.username) return console.log("Can't follow yourself")
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
-    followedUser: user,
+    targetUser: user,
     followed: reverse ? false : true
   }, { merge: true })
     .then(() => {
@@ -103,7 +106,8 @@ function followUser(user, reverse) {
 function userFollowsUser(id) {
   return USER_USER
     .where("userId", "==", currentUser.id)
-    .where("followedUser", "==", id)
+    .where("targetUser", "==", id)
+    .where("followed", "==", true)
     .limit(1).get()
     .then(snapshot => {
       if (snapshot.empty) return false

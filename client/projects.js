@@ -1,13 +1,17 @@
+let project = getProjectFromUrl()
+renderProject()
+
 async function renderProject() {
-  db.collection('projects').doc(getProjectFromUrl).get()
+  if (!project) project = getProjectFromUrl()
+  PROJECTS.doc(project).get()
     .then(doc => {
       let data = doc.data()
       console.log(data)
-      $('#project-name').text(data.name)
-      $('#project-tagline').text(data.tagline)
-      $('#project-details').text(data.details)
-      $('#project-url').text(data.url)
-      $('#project-image').src(data.image)
+      $('.p-name').text(data.name)
+      $('.p-tagline').text(data.tagline)
+      $('.p-link').text(data.url)
+      $('.p-img').attr('src', data.imageUrl)
+      $('.p-description').text(data.details)
     })
     .catch(error => handleError(error))
 }
@@ -79,7 +83,6 @@ $('#wf-form-Submit-Project').submit(function (event) {
 
 // follow
 $('.cc-save-item.cc-unchecked').click(() => {
-  let project = getProjectFromUrl()
   followProject(project)
   $('.cc-save-item.cc-checked').show()
   $('.cc-save-item.cc-unchecked').hide()
@@ -87,7 +90,6 @@ $('.cc-save-item.cc-unchecked').click(() => {
 
 // unfollow
 $('.cc-save-item.cc-checked').click(() => {
-  let project = getProjectFromUrl()
   followProject(project, true)
   $('.cc-save-item.cc-checked').hide()
   $('.cc-save-item.cc-unchecked').show()

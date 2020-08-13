@@ -2,6 +2,24 @@
 // migrateTutorials()
 // migrateRecommends()
 // fillUserNames()
+// changeTargetUsers()
+
+async function changeTargetUsers() {
+  db.collection('user_user').get()
+    .then(snapshot => {
+      snapshot.forEach(snap => {
+        let data = snap.data()
+        console.log(data)
+        if (data.recommendedUser) {
+          snap.ref.update({ targetUser: data.recommendedUser, recommendedUser: firebase.firestore.FieldValue.delete() })
+        }
+        if (data.followedUser) {
+          snap.ref.update({ targetUser: data.followedUser, followedUser: firebase.firestore.FieldValue.delete() })
+        }
+      })
+    })
+}
+
 async function fillUserNames() {
   let users = []
   await db.collection('u').get()
@@ -106,7 +124,7 @@ async function migrateRecommends() {
         await db.collection('user_user').doc(`${memberstackId}-${user.slug}`).set({
           // cmsId: company,
           // cmsUser: user._id,
-          recommendedUser: user.slug,
+          targetUser: user.slug,
           userId: memberstackId,
           recommended: true
         })

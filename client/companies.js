@@ -1,5 +1,18 @@
 let company = getCompanyFromUrl()
 
+$().ready(async () => {
+  company = getCompanyFromUrl()
+  console.log('company: ' + company)
+  if (company) {
+    let isSaved = await userFollowsCompany(company)
+    if (isSaved.followed == true) {
+      $('.cc-follow-product.cc-checked').show()
+      $('.cc-follow-product.cc-unchecked').hide()
+    }
+    companyFollowers()
+  }
+})
+
 function getCompanyFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
@@ -44,15 +57,6 @@ function companyFollowers() {
       $('.cc-follow-count').text(snapshot.size)
     })
 }
-
-$().ready(async () => {
-  let isSaved = await userFollowsCompany(company)
-  if (isSaved.followed == true) {
-    $('.cc-follow-product.cc-checked').show()
-    $('.cc-follow-product.cc-unchecked').hide()
-  }
-  companyFollowers()
-})
 
 // follow
 $('.cc-follow-product.cc-unchecked').click(() => {
