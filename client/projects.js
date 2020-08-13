@@ -9,9 +9,12 @@ async function renderProject() {
       console.log(data)
       $('.p-name').text(data.name)
       $('.p-tagline').text(data.tagline)
-      $('.p-link').text(data.url)
+      $('.p-link').attr('href', data.url)
       $('.p-img').attr('src', data.imageUrl)
       $('.p-description').text(data.details)
+      $('.project-user-link').attr('href', `https://makerpad.co/u/${data.username}`)
+      $('.project-user-avatar').attr('src', data.user['profile.pic'])
+      $('.project-user-full-name').text(data.user['full-name'])
     })
     .catch(error => handleError(error))
 }
