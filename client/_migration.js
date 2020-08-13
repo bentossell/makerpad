@@ -1,7 +1,7 @@
 // migrateCompanies()
 // migrateTutorials()
 // migrateRecommends()
-fillUserNames()
+// fillUserNames()
 async function fillUserNames() {
   let users = []
   await db.collection('u').get()

@@ -1,5 +1,6 @@
 let userSlug = getUserFromUrl()
 populateUser()
+let userUsers = []
 
 $().ready(async () => {
   let isFollowed = await userFollowsUser(userSlug)
@@ -7,19 +8,13 @@ $().ready(async () => {
     $('.follow-user-button').hide()
     $('.unfollow-user-button').show()
   }
+  getUserUsers()
 })
 
 function getUserFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
 }
-
-$('#wf-form-Editing-Profile').submit(function (event) {
-  event.preventDefault()
-  let data = objectifyForm($(this).serializeArray())
-  console.log(data)
-  updateUser(data)
-})
 
 $('#wf-form-Recommendation').submit(function (event) {
   event.preventDefault()
@@ -51,38 +46,23 @@ async function getUser() {
   if (userId) searchUserBySlug(getUserFromUrl())
 }
 
-async function updateUser(data) {
-  if (await searchUserBySlug(data.username) == false) {
-    return USERS.doc(currentUser.id).set({
-      user: currentUser.id,
-      ...data
+function getUserUsers() {
+  USER_USER.get()
+    .then(snapshot => {
+      userUsers = snapshot.docs.map(doc => doc.data())
+      console.log(userUsers)
+
+      let followingCount = userUsers.filter(item => item.username === userSlug && item.followed == true).length
+      let followedCount = userUsers.filter(item => item.followedUser === userSlug && item.followed == true).length
+      console.log(followingCount, followedCount)
+
+      $('.user-followers-count').text(followedCount + ' Followers')
+      $('.user-following-count').text(followingCount + ' Following')
     })
-      .then(() => {
-        let image = $('#profile-pic')[0].files[0] || null
-        if (image) {
-          console.log(image)
-          storage
-            .ref()
-            .child(`profile_pictures/${data.username}`)
-            .put(image)
-          // store memberstack redundantly for now
-          storage
-            .ref()
-            .child(`memberstack_pictures/${currentUser.id}`)
-            .put(image)
-        }
-        // METADATA
-        handleSuccess('User updated')
-        $('#wf-form-Editing-Profile')[0].reset()
-      })
-      .catch(error => handleError(error))
-  } else {
-    return handleError('Username already exists')
-  }
 }
 
 function searchUserBySlug(slug) {
-  return USERS.where("slug", "==", slug).limit(1).get()
+  return USERS.where("username", "==", slug).limit(1).get()
     .then(snapshot => {
       if (snapshot.empty) return false
       console.log(snapshot.docs[0].data())
@@ -121,7 +101,7 @@ function followUser(user, reverse) {
 }
 
 function userFollowsUser(id) {
-  return USER_TUTORIAL
+  return USER_USER
     .where("userId", "==", currentUser.id)
     .where("followedUser", "==", id)
     .limit(1).get()
@@ -178,7 +158,7 @@ async function populateCompanies() {
   for (item of items) {
     let company = item.company
     $('.tools-followed').append(`
-      <div id="w-node-28d9c17ddbae-b8840649" class="div-block-917 user-tool-list">
+      <div id="w-node-28d9c17ddbae-b8840649" data-tutorial="${company.companyId}" class="div-block-917 user-tool-list">
         <div class="div-block-167"><img width="40"
             src="${company.logo.url}" alt="${company.name}"
             class="image-37 tool-img">
@@ -217,16 +197,18 @@ async function populateTutorials() {
   for (item of items) {
     let tutorial = item.tutorial
     $('.tutorial-watchlist').append(`
-      <div id="w-node-7fb832c002a6-b8840649" class="div-block-917 user-tutorial-list">
+      <div id="w-node-7fb832c002a6-b8840649" data-tutorial="${tutorial.tutorialId}" class="div-block-917 user-tutorial-list">
         <div class="div-block-167">
           <div class="div-block-169">
-            <h4 class="heading-259 tutorial-name">${tutorial.name}</h4>
+            <a href="https://makerpad.co/tutorial/${tutorial.slug}">
+              <h4 class="heading-259 tutorial-name">${tutorial.name}</h4>
+            </a>
           </div>
         </div>
         <div></div>
         <div id="w-node-463d8f97bb89-b8840649">
           <div data-ms-content="profile" class="dashboard-component save-complete">
-            <button class="cc-mark-as-complete cc-unchecked w-inline-block">
+            <button stlyle="display:none;" class="cc-mark-as-complete cc-unchecked w-inline-block">
               <div>Mark as complete</div>
             </button>
             <button class="cc-mark-as-complete cc-checked w-inline-block">
@@ -249,7 +231,7 @@ async function populateProjects() {
   for (item of items) {
     let project = item
     $('.user-projects').append(`
-      <a href="#" class="user-project w-inline-block">
+      <a href="https://makerpad.co/p/${project.slug}" class="user-project w-inline-block" data-project="${project.slug}">
         <img
           src="${project.imageUrl}"
           alt="${project.name}"

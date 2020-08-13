@@ -160,6 +160,25 @@ function updateTutorial(id, object) {
     .catch(error => handleError(error))
 }
 
+// // Listen for updates to users tutorials or companies
+// USER_TUTORIAL
+//   .onSnapshot(function (snapshot) {
+//     let userTutorials = snapshot.docs.map(doc => doc.data())
+//     console.log('user_tutorial updated', userTutorials)
+//     firebaseUser.tutorials = userTutorials
+//   }, function (error) {
+//     handleError(error)
+//   })
+
+// USER_COMPANY
+//   .onSnapshot(function (snapshot) {
+//     let userCompanies = snapshot.docs.map(doc => doc.data())
+//     console.log('user_tutorial updated', userTutorials)
+//     firebaseUser.companies = userCompanies
+//   }, function (error) {
+//     handleError(error)
+//   })
+
 // function firebaseUi() {
 //   var firebaseAuthUi = new firebaseui.auth.AuthUI(firebase.auth())
 //   firebaseAuthUi.start('#firebaseui-auth-container', {
