@@ -12,8 +12,8 @@ async function renderProject() {
       $('.p-link').attr('href', data.url)
       $('.p-img').attr('src', data.imageUrl)
       $('.p-description').text(data.details)
-      $('.project-user-link').attr('href', `https://makerpad.co/u/${data.username}`)
-      $('.project-user-avatar').attr('src', data.user['profile.pic'])
+      $('.project-user-link').attr('href', `/u/${data.username}`)
+      $('.project-user-avatar').attr('src', data.user['profile-pic'])
       $('.project-user-full-name').text(data.user['full-name'])
     })
     .catch(error => handleError(error))
@@ -67,12 +67,7 @@ function followProject(projectId, reverse) {
 }
 
 async function updateProject(id, object) {
-
   await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(() => console.log(object))
-    .catch(error => handleError(error))
-
-  await PROJECTS.doc(currentUser.id).collection('projects').doc(id).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(error => handleError(error))
 }
@@ -85,15 +80,15 @@ $('#wf-form-Submit-Project').submit(function (event) {
 })
 
 // follow
-$('.cc-save-item.cc-unchecked').click(() => {
+$('.like-project-button').click(() => {
   followProject(project)
-  $('.cc-save-item.cc-checked').show()
-  $('.cc-save-item.cc-unchecked').hide()
+  $('.unlike-project-button').show()
+  $('.like-project-button').hide()
 })
 
 // unfollow
-$('.cc-save-item.cc-checked').click(() => {
+$('.unlike-project-button').click(() => {
   followProject(project, true)
-  $('.cc-save-item.cc-checked').hide()
-  $('.cc-save-item.cc-unchecked').show()
+  $('.unlike-project-button').hide()
+  $('.like-project-button').show()
 })
