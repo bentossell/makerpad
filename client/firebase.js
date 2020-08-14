@@ -32,14 +32,14 @@ const USER_PROJECT = db.collection('user_project')
 const USER_USER = db.collection('user_user')
 const USER_COMPANY = db.collection('user_company')
 
-let increment = firebase.firestore.FieldValue.increment(1)
-let decrement = firebase.firestore.FieldValue.increment(-1)
+var increment = firebase.firestore.FieldValue.increment(1)
+var decrement = firebase.firestore.FieldValue.increment(-1)
 
 MemberStack.onReady.then(async function (member) {
   console.log(member)
   currentUser = member
-  getCollections()
   if (member.id) {
+    getCollections()
     USERS.doc(member.id).get()
       .then(doc => {
         if (doc.exists) {
@@ -232,6 +232,9 @@ function markTutorialComplete(tutorialId, reverse) {
     tutorialId,
     completed: reverse ? false : true,
     watchLater: reverse ? true : false
+  })
+  TUTORIAL.doc(tutorialId).update({
+    completes: reverse ? decrement : increment
   })
   if (reverse) {
     $('.cc-mark-as-complete.cc-checked').hide()

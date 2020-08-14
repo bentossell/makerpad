@@ -145,10 +145,10 @@ async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
   console.log(items)
   if (!items) return console.log('no items found')
-  let reviews = 1
 
   for (item of items) {
     let company = item.company
+    company.reviews = 0
     $('.tools-followed').append(`
       <div id="w-node-28d9c17ddbae-b8840649" data-company="${company.companyId}" class="div-block-917 user-tool-list">
         <div class="div-block-167"><img width="40"
@@ -164,8 +164,8 @@ async function populateCompanies() {
             <div class="text-block-438 tool-tagline">${company.tagline}</div>
           </div>
         </div>
-        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${company.likes} followers</div>
-        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${reviews} reviews</div>
+        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${company.likes ? 'company.likes' + followers : ''}</div>
+        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${company.likes ? 'company.likes' + followers : ''} reviews</div>
         <a id="w-node-99eeb6584ca7-b8840649" href="/company/${company.slug}" class="profile-button tool-profile-link w-button">
           Company Profile
         </a>
@@ -235,8 +235,10 @@ async function populateProjects() {
       <div class="div-block-924 project-div-footer">
         <h5 class="project-heading">${project.name}</h5>
         <div>
-          <a href="#" onclick="followProject(${project.slug})" class="like-button like-project-button w-button">Like</a>
-          <a href="#" onclick="followProject(${project.slug}, true)" class="like-button unlike-project-button w-button">Liked</a>
+          ${!userLikesProject(project.slug) ?
+        `<a href="#" onclick="followProject('${project.slug}')" class="like-button like-project-button w-button">Like</a>` :
+        `<a href="#" onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button">Liked</a>`
+      }
         </div>
       </div>
     </div>`)

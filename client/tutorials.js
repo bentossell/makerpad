@@ -36,6 +36,9 @@ function markTutorialWatchLater(tutorialId, reverse) {
     tutorialId,
     watchLater: reverse ? false : true
   })
+  TUTORIAL.doc(tutorialId).update({
+    saves: reverse ? decrement : increment
+  })
 }
 
 // function userSavedTutorial(id) {
@@ -53,6 +56,7 @@ function markTutorialWatchLater(tutorialId, reverse) {
 // }
 
 function tutorialFollowers() {
+  if (!currentUser.id) return false
   return USER_TUTORIAL
     .where("tutorialId", "==", tutorial)
     .get()

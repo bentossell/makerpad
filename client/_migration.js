@@ -5,15 +5,20 @@
 // changeTargetUsers()
 // addCompanyLikes()
 function addCompanyLikes() {
-  db.collection('user_company').get()
+  db.collection('user_tutorial').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         let data = doc.data()
-        if (data.followed == true) {
-          db.doc(`company/${data.companyId}`).update({
-            likes: increment
-          })
+        if (data.watchLater || data.completed) {
+          db.doc(`tutorial/${data.tutorialId}`).update({
+            saves: increment
+          }).then(() => console.log(data))
         }
+        // if (data.completed == true) {
+        //   db.doc(`tutorial/${data.tutorialId}`).update({
+        //     completes: increment
+        //   }).then(() => console.log(data))
+        // }
       })
     })
 }
