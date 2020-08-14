@@ -21,6 +21,8 @@ var userTutorial = []
 var userProject = []
 var userUser = []
 var userCompany = []
+var companyCollection = []
+var projectCollection = []
 
 const COMPANY = db.collection('company')
 const TUTORIAL = db.collection('tutorial')
@@ -39,7 +41,6 @@ MemberStack.onReady.then(async function (member) {
   console.log(member)
   currentUser = member
   if (member.id) {
-    getCollections()
     USERS.doc(member.id).get()
       .then(doc => {
         if (doc.exists) {
@@ -161,51 +162,6 @@ function userLikesProject(id) {
 
 function userFollowsUser(id) {
   return userUser.some(item => item.targetUser === id && item.followed == true)
-}
-
-async function getCollections() {
-  USER_PROJECT
-    .where("userId", "==", currentUser.id)
-    .where("followed", "==", true)
-    .get()
-    .then(snapshot => {
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userProject = records
-      return records
-    })
-
-  USER_USER
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userUser = records
-      return records
-    })
-
-  USER_TUTORIAL
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userTutorial = records
-      return records
-    })
-
-  USER_COMPANY
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userCompany = records
-      return records
-    })
 }
 
 function followProject(projectId, reverse) {

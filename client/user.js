@@ -4,6 +4,7 @@ let userUsers = []
 
 $().ready(async () => {
   getUserUsers()
+  if (currentUser.id) getCollections()
   let isFollowed = userFollowsUser(getUserFromUrl())
   if (isFollowed) {
     $('.follow-user-button').hide()
@@ -140,6 +141,71 @@ async function getCompaniesData() {
   // let userCompanies = await db.collection('user_company')
 }
 
+async function getCollections() {
+  USER_PROJECT
+    .where("userId", "==", currentUser.id)
+    .where("followed", "==", true)
+    .get()
+    .then(snapshot => {
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userProject = records
+      return records
+    })
+
+  USER_USER
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userUser = records
+      return records
+    })
+
+  USER_TUTORIAL
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userTutorial = records
+      return records
+    })
+
+  USER_COMPANY
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userCompany = records
+      return records
+    })
+
+  COMPANY
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      companyCollection = records
+      return records
+    })
+
+  PROJECTS
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      projectCollection = records
+      return records
+    })
+}
+
 async function populateCompanies() {
   $('.tools-followed').empty()
   let items = await getUserCollection(USER_COMPANY)
@@ -148,6 +214,8 @@ async function populateCompanies() {
 
   for (item of items) {
     let company = item.company
+    let record = companyCollection.find(item => item.slug === company.slug)
+    if (record.likes) company.likes = record.likes
     company.reviews = 0
     $('.tools-followed').append(`
       <div id="w-node-28d9c17ddbae-b8840649" data-company="${company.companyId}" class="div-block-917 user-tool-list">
@@ -164,8 +232,8 @@ async function populateCompanies() {
             <div class="text-block-438 tool-tagline">${company.tagline}</div>
           </div>
         </div>
-        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${company.likes ? 'company.likes' + followers : ''}</div>
-        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${company.likes ? 'company.likes' + followers : ''} reviews</div>
+        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${company.likes ? company.likes + ' followers' : ''}</div>
+        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${company.reviews ? company.reviews + ' reviews' : ''}</div>
         <a id="w-node-99eeb6584ca7-b8840649" href="/company/${company.slug}" class="profile-button tool-profile-link w-button">
           Company Profile
         </a>

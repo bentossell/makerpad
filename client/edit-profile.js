@@ -1,3 +1,5 @@
+$('#username-2').val(firebaseUser.username)
+
 $('#wf-form-Editing-Profile').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
