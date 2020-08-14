@@ -1,4 +1,6 @@
-$('#username-2').val(firebaseUser.username)
+$().ready(() => {
+  $('#username-2').val(firebaseUser.username)
+})
 
 $('#wf-form-Editing-Profile').submit(function (event) {
   event.preventDefault()

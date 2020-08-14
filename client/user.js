@@ -4,7 +4,7 @@ let userUsers = []
 
 $().ready(async () => {
   getUserUsers()
-  if (currentUser.id) getCollections()
+  if (currentUser.id) await getCollections()
   let isFollowed = userFollowsUser(getUserFromUrl())
   if (isFollowed) {
     $('.follow-user-button').hide()
@@ -215,7 +215,7 @@ async function populateCompanies() {
   for (item of items) {
     let company = item.company
     let record = companyCollection.find(item => item.slug === company.slug)
-    if (record.likes) company.likes = record.likes
+    if (record && record.likes) company.likes = record.likes
     company.reviews = 0
     $('.tools-followed').append(`
       <div id="w-node-28d9c17ddbae-b8840649" data-company="${company.companyId}" class="div-block-917 user-tool-list">
