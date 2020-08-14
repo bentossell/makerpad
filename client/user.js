@@ -3,15 +3,11 @@ populateUser()
 let userUsers = []
 
 $().ready(async () => {
-  userSlug = getUserFromUrl()
   getUserUsers()
-  let isFollowed = await userFollowsUser(userSlug)
-  if (isFollowed.followed == true) {
+  let isFollowed = userFollowsUser(getUserFromUrl())
+  if (isFollowed) {
     $('.follow-user-button').hide()
     $('.unfollow-user-button').show()
-  }
-  if (thisIsMyUser()) {
-    $('.my-user-content').show()
   }
 })
 
@@ -33,23 +29,6 @@ $('.unfollow-user-button').click(function (event) {
   followUser(userSlug, true)
 })
 
-async function getUser() {
-  let user = {}
-  // let userId = new URLSearchParams(window.location.search).get('user')
-
-  if (userId) USERS.doc(userId).get()
-    .then(doc => {
-      user = doc.data()
-      $('#username').text(user.name)
-      $('.user-image').attr("src", user.profileImage).show()
-      console.log(user)
-    })
-    .catch(error => console.log(error))
-
-  // or search
-  if (userId) searchUserBySlug(userSlug)
-}
-
 function getUserUsers() {
   USER_USER.get()
     .then(snapshot => {
@@ -65,18 +44,8 @@ function getUserUsers() {
     })
 }
 
-function searchUserBySlug(slug) {
-  return USERS.where("username", "==", slug).limit(1).get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      console.log(snapshot.docs[0].data())
-      return true
-    })
-    .catch(error => console.log(error))
-}
-
 function recommendUser(user) {
-  if (thisIsMyUser() || !currentUser) return
+  if (thisIsMyUser() || !currentUser.id) return
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
     targetUser: user,
@@ -87,7 +56,7 @@ function recommendUser(user) {
 }
 
 function followUser(user, reverse) {
-  if (thisIsMyUser() || !currentUser) return console.log("Can't follow yourself")
+  if (thisIsMyUser() || !currentUser.id) return console.log("C'mon, can't follow yourself")
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
     targetUser: user,
@@ -106,20 +75,20 @@ function followUser(user, reverse) {
     .catch(error => console.log(error))
 }
 
-function userFollowsUser(id) {
-  if (!currentUser || currentUser.id) return
-  return USER_USER
-    .where("userId", "==", currentUser.id)
-    .where("targetUser", "==", id)
-    .where("followed", "==", true)
-    .limit(1).get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      console.log(snapshot.docs[0].data())
-      return snapshot.docs[0].data()
-    })
-    .catch(error => console.log(error))
-}
+// function userFollowsUser(id) {
+//   if (!currentUser || !currentUser.id) return
+//   return USER_USER
+//     .where("userId", "==", currentUser.id)
+//     .where("targetUser", "==", id)
+//     .where("followed", "==", true)
+//     .limit(1).get()
+//     .then(snapshot => {
+//       if (snapshot.empty) return false
+//       console.log(snapshot.docs[0].data())
+//       return snapshot.docs[0].data()
+//     })
+//     .catch(error => console.log(error))
+// }
 
 function thisIsMyUser() {
   return firebaseUser.username === userSlug
@@ -155,10 +124,20 @@ function populateUser() {
       $('.user-youtube').attr('href', userProfile['youtube-channel'])
     })
 
-    populateProjects()
     populateTutorials()
     populateCompanies()
+    populateProjects()
+
+    if (thisIsMyUser()) {
+      $('.current-user-content').show()
+    } else {
+      $('.current-user-content').hide()
+    }
   }
+}
+
+async function getCompaniesData() {
+  // let userCompanies = await db.collection('user_company')
 }
 
 async function populateCompanies() {
@@ -166,11 +145,12 @@ async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
   console.log(items)
   if (!items) return console.log('no items found')
+  let reviews = 1
 
   for (item of items) {
     let company = item.company
     $('.tools-followed').append(`
-      <div id="w-node-28d9c17ddbae-b8840649" data-tutorial="${company.companyId}" class="div-block-917 user-tool-list">
+      <div id="w-node-28d9c17ddbae-b8840649" data-company="${company.companyId}" class="div-block-917 user-tool-list">
         <div class="div-block-167"><img width="40"
             src="${company.logo.url}" alt="${company.name}"
             class="image-37 tool-img">
@@ -184,16 +164,16 @@ async function populateCompanies() {
             <div class="text-block-438 tool-tagline">${company.tagline}</div>
           </div>
         </div>
-        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${1} followers</div>
-        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${1} reviews</div>
-        <a id="w-node-99eeb6584ca7-b8840649" href="https://www.makerpad.co/company/${company.slug}" class="profile-button tool-profile-link w-button">
+        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${company.likes} followers</div>
+        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${reviews} reviews</div>
+        <a id="w-node-99eeb6584ca7-b8840649" href="/company/${company.slug}" class="profile-button tool-profile-link w-button">
           Company Profile
         </a>
       </div>
       `)
 
     $('.tools-condensed').append(`
-       <a href="https://www.makerpad.co/company/${company.slug}" class="user-tool tool-img w-inline-block">
+       <a href="/company/${company.slug}" class="user-tool tool-img w-inline-block">
          <img src="${company.logo.url}" width=40/>
        </a>
       `)
@@ -209,25 +189,27 @@ async function populateTutorials() {
   for (item of items) {
     let tutorial = item.tutorial
     $('.tutorial-watchlist').append(`
-      <div id="w-node-7fb832c002a6-b8840649" data-tutorial="${tutorial.tutorialId}" class="div-block-917 user-tutorial-list">
+      <div id="w-node-7fb832c002a6-b8840649" data-tutorial="${item.tutorialId}" class="div-block-917 user-tutorial-list">
         <div class="div-block-167">
           <div class="div-block-169">
-            <a href="https://makerpad.co/tutorial/${tutorial.slug}">
+            <a href="/tutorial/${tutorial.slug}" class="tutorial-list-link">
               <h4 class="heading-259 tutorial-name">${tutorial.name}</h4>
             </a>
           </div>
         </div>
         <div></div>
         <div id="w-node-463d8f97bb89-b8840649">
-          <div data-ms-content="profile" class="dashboard-component save-complete">
-            <button stlyle="display:none;" class="cc-mark-as-complete cc-unchecked w-inline-block">
-              <div>Mark as complete</div>
-            </button>
-            <button class="cc-mark-as-complete cc-checked w-inline-block">
-                Completed (
-                <span class="cc-completed-counter">${tutorial.completed}</span>
-                )
-            </button>
+          <div data-ms-content="profile" class="dashboard-component save-complete current-user-content">
+            ${userSavedTutorial(tutorial.slug) ?
+        `<button class="cc-mark-as-complete cc-unchecked w-inline-block">
+            <div>Mark as complete</div>
+          </button>` :
+        `<button class="cc-mark-as-complete cc-checked w-inline-block">
+            Completed (
+              <span class="cc-completed-counter">${tutorial.completed}</span>
+              )
+          </button>`
+      }
           </div>
         </div>
       </div>`)
@@ -243,12 +225,24 @@ async function populateProjects() {
   for (item of items) {
     let project = item
     $('.user-projects').append(`
-      <a href="https://makerpad.co/p/${project.slug}" class="user-project w-inline-block" data-project="${project.slug}">
+    <div class="project-div" data-project="${project.slug}">
+      <a href="/p/${project.slug}" class="user-project w-inline-block">
         <img
           src="${project.imageUrl}"
           alt="${project.name}"
           class="image-175 project-image" />
+      </a>
+      <div class="div-block-924 project-div-footer">
         <h5 class="project-heading">${project.name}</h5>
-      </a>`)
+        <div>
+          <a href="#" onclick="followProject(${project.slug})" class="like-button like-project-button w-button">Like</a>
+          <a href="#" onclick="followProject(${project.slug}, true)" class="like-button unlike-project-button w-button">Liked</a>
+        </div>
+      </div>
+    </div>`)
+
+    // $('.project-heading').text(project.name)
+    // $('.project-image').attr('src', project.imageUrl)
+    // $('.user-project').attr('href', `/p/${project.slug}`)
   }
 }

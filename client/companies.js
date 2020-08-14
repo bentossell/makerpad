@@ -3,9 +3,10 @@ let company = getCompanyFromUrl()
 $().ready(async () => {
   company = getCompanyFromUrl()
   console.log('company: ' + company)
-  if (company) {
-    let isSaved = await userFollowsCompany(company)
-    if (isSaved.followed == true) {
+  console.log('currentUser: ' + currentUser)
+  if (company && currentUser) {
+    let isSaved = userFollowsCompany(company)
+    if (isSaved) {
       $('.cc-follow-product.cc-checked').show()
       $('.cc-follow-product.cc-unchecked').hide()
     }
@@ -19,11 +20,14 @@ function getCompanyFromUrl() {
 }
 
 function followCompany(companyId, reverse) {
-  if (!currentUser) return
+  if (!currentUser.id) return
   updateCompany(companyId, {
     userId: currentUser.id,
     companyId,
     followed: reverse ? false : true
+  })
+  COMPANY.doc(companyId).update({
+    likes: reverse ? decrement : increment
   })
 }
 
@@ -33,19 +37,21 @@ async function updateCompany(id, object) {
     .catch(error => handleError(error))
 }
 
-function userFollowsCompany(id) {
-  if (!currentUser) return
-  return USER_COMPANY
-    .where("userId", "==", currentUser.id)
-    .where("companyId", "==", id)
-    .limit(1).get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      console.log(snapshot.docs[0].data())
-      return snapshot.docs[0].data()
-    })
-    .catch(error => console.log(error))
-}
+// function userFollowsCompany(id) {
+//   console.log(currentUser)
+//   if (currentUser && currentUser.id) {
+//     return USER_COMPANY
+//       .where("userId", "==", currentUser.id)
+//       .where("companyId", "==", id)
+//       .limit(1).get()
+//       .then(snapshot => {
+//         if (snapshot.empty) return false
+//         console.log(snapshot.docs[0].data())
+//         return snapshot.docs[0].data()
+//       })
+//       .catch(error => console.log(error))
+//   } else return false
+// }
 
 function companyFollowers() {
   return USER_COMPANY

@@ -2,14 +2,16 @@ let tutorial = getTutorialFromUrl()
 
 $().ready(async () => {
   tutorial = getTutorialFromUrl()
-  let isSaved = await userSavedTutorial(tutorial)
-  if (isSaved.watchLater == true) {
-    $('.cc-save-item.cc-checked').show()
-    $('.cc-save-item.cc-unchecked').hide()
-  }
-  if (isSaved.completed == true) {
-    $('.cc-mark-as-complete.cc-checked').show()
-    $('.cc-mark-as-complete.cc-unchecked').hide()
+  if (tutorial && currentUser) {
+    let isSaved = userSavedTutorial(tutorial)
+    if (isSaved) {
+      $('.cc-save-item.cc-checked').show()
+      $('.cc-save-item.cc-unchecked').hide()
+    }
+    if (isSaved.completed == true) {
+      $('.cc-mark-as-complete.cc-checked').show()
+      $('.cc-mark-as-complete.cc-unchecked').hide()
+    }
   }
   tutorialFollowers()
 })
@@ -28,7 +30,7 @@ function getTutorialFromUrl() {
 }
 
 function markTutorialWatchLater(tutorialId, reverse) {
-  if (!currentUser) return
+  if (!currentUser.id) return
   updateTutorial(tutorialId, {
     userId: currentUser.id,
     tutorialId,
@@ -36,19 +38,19 @@ function markTutorialWatchLater(tutorialId, reverse) {
   })
 }
 
-function userSavedTutorial(id) {
-  if (!currentUser) return
-  return USER_TUTORIAL
-    .where("userId", "==", currentUser.id)
-    .where("tutorialId", "==", id)
-    .limit(1).get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      console.log(snapshot.docs[0].data())
-      return snapshot.docs[0].data()
-    })
-    .catch(error => console.log(error))
-}
+// function userSavedTutorial(id) {
+//   if (!currentUser) return
+//   return USER_TUTORIAL
+//     .where("userId", "==", currentUser.id)
+//     .where("tutorialId", "==", id)
+//     .limit(1).get()
+//     .then(snapshot => {
+//       if (snapshot.empty) return false
+//       console.log(snapshot.docs[0].data())
+//       return snapshot.docs[0].data()
+//     })
+//     .catch(error => console.log(error))
+// }
 
 function tutorialFollowers() {
   return USER_TUTORIAL

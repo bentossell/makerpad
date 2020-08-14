@@ -1,8 +1,21 @@
 let project = getProjectFromUrl()
+console.log('Project: ' + project)
 renderProject()
 
+$().ready(async () => {
+  console.log('Ready, project: ' + project)
+  let isLiked = userLikesProject(project)
+  if (isLiked) {
+    $('.unlike-project-button').show()
+    $('.like-project-button').hide()
+  }
+  // if (isCurrentUserContent(project)) {
+  //   $('.my-user-content').show()
+  // }
+})
+
 async function renderProject() {
-  if (!project) project = getProjectFromUrl()
+  if (!project) project = await getProjectFromUrl()
   PROJECTS.doc(project).get()
     .then(doc => {
       let data = doc.data()
@@ -23,6 +36,22 @@ function getProjectFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
 }
+
+// function userLikesProject(id) {
+//   if (!currentUser || !currentUser.id) return console.log('currentUser ' + currentUser)
+//   return USER_PROJECT
+//     .where("userId", "==", currentUser.id)
+//     .where("projectId", "==", id)
+//     .where("followed", "==", true)
+//     .limit(1).get()
+//     .then(snapshot => {
+//       if (snapshot.empty) return false
+//       console.log('Current user likes project')
+//       console.log(snapshot.docs[0].data())
+//       return snapshot.docs[0].data()
+//     })
+//     .catch(error => console.log(error))
+// }
 
 async function createProject(data) {
   if (!currentUser) return
@@ -57,21 +86,6 @@ async function createProject(data) {
   } else {
     return handleError('Project name already exists.')
   }
-}
-
-function followProject(projectId, reverse) {
-  if (!currentUser) return
-  updateProject(projectId, {
-    userId: currentUser.id,
-    projectId,
-    followed: reverse ? false : true
-  })
-}
-
-async function updateProject(id, object) {
-  await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(() => console.log(object))
-    .catch(error => handleError(error))
 }
 
 $('#wf-form-Submit-Project').submit(function (event) {

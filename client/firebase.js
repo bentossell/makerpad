@@ -17,6 +17,10 @@ const storage = firebase.storage()
 
 var currentUser = {}
 var firebaseUser = {}
+var userTutorial = []
+var userProject = []
+var userUser = []
+var userCompany = []
 
 const COMPANY = db.collection('company')
 const TUTORIAL = db.collection('tutorial')
@@ -34,6 +38,7 @@ let decrement = firebase.firestore.FieldValue.increment(-1)
 MemberStack.onReady.then(async function (member) {
   console.log(member)
   currentUser = member
+  getCollections()
   if (member.id) {
     USERS.doc(member.id).get()
       .then(doc => {
@@ -135,7 +140,91 @@ function slugExists(slug, collection) {
 $().ready(async () => {
   // total company follows
   // set users tutorials, companies, user
+  // $('.current-user-content').hide()
 })
+
+function isCurrentUserContent(checkValue) {
+  return false
+}
+
+function userSavedTutorial(id) {
+  return userTutorial.some(item => item.tutorialId === id && item.watchLater == true)
+}
+
+function userFollowsCompany(id) {
+  return userCompany.some(item => item.companyId === id && item.followed == true)
+}
+
+function userLikesProject(id) {
+  return userProject.some(item => item.projectId === id && item.followed == true)
+}
+
+function userFollowsUser(id) {
+  return userUser.some(item => item.targetUser === id && item.followed == true)
+}
+
+async function getCollections() {
+  USER_PROJECT
+    .where("userId", "==", currentUser.id)
+    .where("followed", "==", true)
+    .get()
+    .then(snapshot => {
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userProject = records
+      return records
+    })
+
+  USER_USER
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userUser = records
+      return records
+    })
+
+  USER_TUTORIAL
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userTutorial = records
+      return records
+    })
+
+  USER_COMPANY
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userCompany = records
+      return records
+    })
+}
+
+function followProject(projectId, reverse) {
+  if (!currentUser) return console.log('no currentUser')
+  updateProject(projectId, {
+    userId: currentUser.id,
+    projectId,
+    followed: reverse ? false : true
+  })
+  PROJECTS.doc(projectId).update({
+    likes: reverse ? decrement : increment
+  })
+}
+
+async function updateProject(id, object) {
+  await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .then(() => console.log(object))
+    .catch(error => handleError(error))
+}
 
 function markTutorialComplete(tutorialId, reverse) {
   updateTutorial(tutorialId, {

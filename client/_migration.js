@@ -3,6 +3,20 @@
 // migrateRecommends()
 // fillUserNames()
 // changeTargetUsers()
+// addCompanyLikes()
+function addCompanyLikes() {
+  db.collection('user_company').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        if (data.followed == true) {
+          db.doc(`company/${data.companyId}`).update({
+            likes: increment
+          })
+        }
+      })
+    })
+}
 
 async function changeTargetUsers() {
   db.collection('user_user').get()
