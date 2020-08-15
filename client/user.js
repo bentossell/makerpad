@@ -1,10 +1,10 @@
 var userSlug = getUserFromUrl()
-populateUser()
 var userUsers = []
 
 $().ready(async () => {
-  getUserUsers()
   if (currentUser.id) await getCollections()
+  populateUser()
+  getUserUsers()
   let isFollowed = userFollowsUser(getUserFromUrl())
   if (isFollowed) {
     $('.follow-user-button').hide()
