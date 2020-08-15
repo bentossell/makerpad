@@ -94,7 +94,7 @@ async function migrateCompanies() {
 
 async function migrateTutorials() {
   let users = []
-  await db.collection('user').get()
+  await db.collection('u').get()
     .then(snapshot => {
       return snapshot.forEach(doc => {
         users.push(doc.data())

@@ -5,7 +5,7 @@ $().ready(async () => {
   if (currentUser.id) await getCollections()
   populateUser()
   getUserUsers()
-  let isFollowed = userFollowsUser(getUserFromUrl())
+  let isFollowed = await userFollowsUser(getUserFromUrl())
   if (isFollowed) {
     $('.follow-user-button').hide()
     $('.unfollow-user-button').show()
@@ -142,7 +142,7 @@ async function getCompaniesData() {
 }
 
 async function getCollections() {
-  USER_PROJECT
+  await USER_PROJECT
     .where("userId", "==", currentUser.id)
     .where("followed", "==", true)
     .get()
@@ -153,7 +153,7 @@ async function getCollections() {
       return records
     })
 
-  USER_USER
+  await USER_USER
     .where("userId", "==", currentUser.id)
     .get()
     .then(snapshot => {
@@ -163,7 +163,7 @@ async function getCollections() {
       return records
     })
 
-  USER_TUTORIAL
+  await USER_TUTORIAL
     .where("userId", "==", currentUser.id)
     .get()
     .then(snapshot => {
@@ -174,7 +174,7 @@ async function getCollections() {
       return records
     })
 
-  USER_COMPANY
+  await USER_COMPANY
     .where("userId", "==", currentUser.id)
     .get()
     .then(snapshot => {
@@ -185,7 +185,7 @@ async function getCollections() {
       return records
     })
 
-  COMPANY
+  await COMPANY
     .get()
     .then(snapshot => {
       if (snapshot.empty) return false
@@ -195,7 +195,7 @@ async function getCollections() {
       return records
     })
 
-  PROJECTS
+  await PROJECTS
     .get()
     .then(snapshot => {
       if (snapshot.empty) return false

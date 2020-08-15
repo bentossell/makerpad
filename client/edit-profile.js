@@ -10,7 +10,7 @@ $('#wf-form-Editing-Profile').submit(function (event) {
 })
 
 async function updateUser(data) {
-  if (await searchUserBySlug(data.username) == false) {
+  if (firebaseUser.username === data.username || await searchUserBySlug(data.username) == false) {
     return USERS.doc(currentUser.id).set({
       user: currentUser.id,
       ...data
@@ -29,6 +29,12 @@ async function updateUser(data) {
             .child(`memberstack_pictures/${currentUser.id}`)
             .put(image)
         }
+        MemberStack.onReady.then(function (member) {
+          member.updateProfile({
+            'full-name': data['full-name'],
+            'profile-link': `https://makerpad.co/u/${data.username}`
+          }, true)
+        })
         // METADATA
         handleSuccess('User updated')
         $('#wf-form-Editing-Profile')[0].reset()
@@ -42,7 +48,12 @@ async function updateUser(data) {
 function searchUserBySlug(slug) {
   return USERS.where("username", "==", slug).limit(1).get()
     .then(snapshot => {
-      if (snapshot.empty) return false
+      if (snapshot.empty) {
+        return db.collection('u').where("slug", "==", slug).limit(1).get()
+          .then(snapshot => {
+            return !snapshot.empty
+          })
+      }
       console.log(snapshot.docs[0].data())
       return true
     })
