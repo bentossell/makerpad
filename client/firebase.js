@@ -46,6 +46,7 @@ MemberStack.onReady.then(async function (member) {
         if (doc.exists) {
           firebaseUser = doc.data()
           $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
+          $('#username-2').val(firebaseUser.username)
         } else {
           var info = memberstack.information
           USERS.doc(member.id).set(info, { merge: true })

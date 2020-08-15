@@ -47,13 +47,14 @@ async function fillUserNames() {
         users.push(doc.data())
       })
     })
-
+  users = users.reverse()
   for (let user of users) {
     let memberstackId = await searchMemberstackUserByEmail(user.email)
-    if (!memberstackId) continue
+    if (!memberstackId.id) continue
+    if (memberstackId.username) continue
     // let slug = await getItemSlug(company)
-    console.log(`${memberstackId} - ${user.slug}`)
-    await db.collection('memberstack_users').doc(memberstackId).update({
+    console.log(`${memberstackId.id} - ${user.slug}`)
+    await db.collection('memberstack_users').doc(memberstackId.id).update({
       username: user.slug
     })
   }
@@ -172,6 +173,6 @@ function searchMemberstackUserByEmail(email) {
     .get()
     .then(snapshot => {
       if (snapshot.size == 0) return false
-      return snapshot.docs[0].id
+      return snapshot.docs[0].data()
     })
 }
