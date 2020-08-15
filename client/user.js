@@ -1,6 +1,6 @@
-let userSlug = getUserFromUrl()
+var userSlug = getUserFromUrl()
 populateUser()
-let userUsers = []
+var userUsers = []
 
 $().ready(async () => {
   getUserUsers()

@@ -1,4 +1,4 @@
-let project = getProjectFromUrl()
+var project = getProjectFromUrl()
 console.log('Project: ' + project)
 renderProject()
 

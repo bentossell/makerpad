@@ -1,4 +1,4 @@
-let company = getCompanyFromUrl()
+var company = getCompanyFromUrl()
 
 $().ready(async () => {
   company = getCompanyFromUrl()
