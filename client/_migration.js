@@ -4,6 +4,29 @@
 // fillUserNames()
 // changeTargetUsers()
 // addCompanyLikes()
+// tutorialCompanies()
+
+async function tutorialCompanies() {
+  await db.collection('tutorial').get()
+    .then(snapshot => {
+      snapshot.forEach(async doc => {
+        let data = doc.data()
+
+        if (data.companies) {
+          let companyArray = []
+          for (let company of data.companies) {
+            let slug = await getItemSlug(company)
+            companyArray.push(slug)
+          }
+          console.log(data.slug + ' ' + companyArray)
+          await doc.ref.update({
+            tools_used: companyArray
+          })
+        }
+      })
+    })
+}
+
 function addCompanyLikes() {
   db.collection('user_tutorial').get()
     .then(snapshot => {

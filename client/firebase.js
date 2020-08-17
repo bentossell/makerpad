@@ -178,6 +178,71 @@ function followProject(projectId, reverse) {
   })
 }
 
+async function getCollections() {
+  await USER_PROJECT
+    .where("userId", "==", currentUser.id)
+    .where("followed", "==", true)
+    .get()
+    .then(snapshot => {
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userProject = records
+      return records
+    })
+
+  await USER_USER
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userUser = records
+      return records
+    })
+
+  await USER_TUTORIAL
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userTutorial = records
+      return records
+    })
+
+  await USER_COMPANY
+    .where("userId", "==", currentUser.id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      userCompany = records
+      return records
+    })
+
+  await COMPANY
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      companyCollection = records
+      return records
+    })
+
+  await PROJECTS
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log(records)
+      projectCollection = records
+      return records
+    })
+}
+
 async function updateProject(id, object) {
   await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(() => console.log(object))
@@ -195,11 +260,11 @@ function markTutorialComplete(tutorialId, reverse) {
     completes: reverse ? decrement : increment
   })
   if (reverse) {
-    $('.cc-mark-as-complete.cc-checked').hide()
-    $('.cc-mark-as-complete.cc-unchecked').show()
+    $(`[data-tutorial="${tutorialId}"] .cc-mark-as-complete.cc-checked`).hide()
+    $(`[data-tutorial="${tutorialId}"] .cc-mark-as-complete.cc-unchecked`).show()
   } else {
-    $('.cc-mark-as-complete.cc-checked').show()
-    $('.cc-mark-as-complete.cc-unchecked').hide()
+    $(`[data-tutorial="${tutorialId}"] .cc-mark-as-complete.cc-checked`).show()
+    $(`[data-tutorial="${tutorialId}"] .cc-mark-as-complete.cc-unchecked`).hide()
   }
 }
 

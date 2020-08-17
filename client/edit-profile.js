@@ -23,6 +23,14 @@ async function updateUser(data) {
             .ref()
             .child(`profile_pictures/${data.username}`)
             .put(image)
+            .then()
+            .then((snapshot) => {
+              snapshot.ref.getDownloadURL().then((imageUrl) => {
+                U.doc(data.slug).update({ imageUrl })
+                USERS.doc(currentUser.id).update({ imageUrl })
+              })
+            })
+
           // store memberstack redundantly for now
           storage
             .ref()

@@ -88,9 +88,13 @@ $('.cc-save-item.cc-checked').click(() => {
 // mark complete
 $('.cc-mark-as-complete.cc-unchecked').click(() => {
   markTutorialComplete(tutorial)
+  $('.cc-mark-as-complete.cc-checked').hide()
+  $('.cc-mark-as-complete.cc-unchecked').show()
 })
 
 // unmark complete
 $('.cc-mark-as-complete.cc-checked').click(() => {
   markTutorialComplete(tutorial, true)
+  $('.cc-mark-as-complete.cc-checked').show()
+  $('.cc-mark-as-complete.cc-unchecked').hide()
 })

@@ -114,7 +114,7 @@ function populateUser() {
       if (!doc.exists) return
       let userProfile = doc.data()
       console.log(userProfile)
-      $('.user-full-name').text(userProfile['full-name'])
+      $('.user-full-name').text(userProfile.name)
       $('.user-username').text('@' + userProfile.slug)
       // CHANGE THIS!
       $('.user-bio').text(userProfile.bio)
@@ -134,76 +134,15 @@ function populateUser() {
     } else {
       $('.current-user-content').hide()
     }
+
+    try {
+
+    } catch (e) { }
   }
 }
 
 async function getCompaniesData() {
   // let userCompanies = await db.collection('user_company')
-}
-
-async function getCollections() {
-  await USER_PROJECT
-    .where("userId", "==", currentUser.id)
-    .where("followed", "==", true)
-    .get()
-    .then(snapshot => {
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userProject = records
-      return records
-    })
-
-  await USER_USER
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userUser = records
-      return records
-    })
-
-  await USER_TUTORIAL
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userTutorial = records
-      return records
-    })
-
-  await USER_COMPANY
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      userCompany = records
-      return records
-    })
-
-  await COMPANY
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      companyCollection = records
-      return records
-    })
-
-  await PROJECTS
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
-      projectCollection = records
-      return records
-    })
 }
 
 async function populateCompanies() {
@@ -265,22 +204,44 @@ async function populateTutorials() {
             </a>
           </div>
         </div>
-        <div></div>
+        <div id="tutorial-tools-${tutorial.slug}">
+
+        </div>
         <div id="w-node-463d8f97bb89-b8840649">
           <div data-ms-content="profile" class="dashboard-component save-complete current-user-content">
-            ${userSavedTutorial(tutorial.slug) ?
-        `<button class="cc-mark-as-complete cc-unchecked w-inline-block">
-            <div>Mark as complete</div>
-          </button>` :
-        `<button class="cc-mark-as-complete cc-checked w-inline-block">
-            Completed (
-              <span class="cc-completed-counter">${tutorial.completed}</span>
+            <button onclick="markTutorialComplete('${tutorial.slug}')" class="cc-mark-as-complete cc-unchecked w-inline-block">
+              <span>Mark as complete</span>
+            </button>
+            <button onclick="markTutorialComplete('${tutorial.slug}', true)" class="cc-mark-as-complete cc-checked w-inline-block">
+              Completed (
+                <span class="cc-completed-counter">${tutorial.completes || 1}</span>
               )
-          </button>`
-      }
+            </button>
           </div>
         </div>
-      </div>`)
+      </div>`
+    )
+
+    if (tutorial.tools_used) {
+      tutorial.tools_used.forEach(item => {
+        let company = companyCollection.find(com => com.slug === item)
+        $(`#tutorial-tools-${tutorial.slug}`).append(`
+          <a href="/company/${item}" class="user-tool tool-img w-inline-block">
+            <img src="${company.logo.url}" width="40/">
+          </a>
+          `)
+      })
+    }
+
+    if (userSavedTutorial(tutorial.slug)) {
+
+    }
+
+    if (thisIsMyUser()) {
+      $('.current-user-content').show()
+    } else {
+      $('.current-user-content').hide()
+    }
   }
 }
 
@@ -301,7 +262,9 @@ async function populateProjects() {
           class="image-175 project-image" />
       </a>
       <div class="div-block-924 project-div-footer">
-        <h5 class="project-heading">${project.name}</h5>
+        <a href="/p/${project.slug} class="user-project"
+          <h5 class="project-heading">${project.name}</h5>
+        </a>
         <div>
           ${!userLikesProject(project.slug) ?
         `<a href="#" onclick="followProject('${project.slug}')" class="like-button like-project-button w-button">Like</a>` :

@@ -3,11 +3,15 @@ console.log('Project: ' + project)
 renderProject()
 
 $().ready(async () => {
+  await getCollections()
   console.log('Ready, project: ' + project)
   let isLiked = userLikesProject(project)
   if (isLiked) {
     $('.unlike-project-button').show()
     $('.like-project-button').hide()
+  } else {
+    $('.unlike-project-button').hide()
+    $('.like-project-button').show()
   }
   // if (isCurrentUserContent(project)) {
   //   $('.my-user-content').show()
