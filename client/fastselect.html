@@ -9,7 +9,7 @@
     <meta name="description"
       content="Fastselect is lightweight browser plugin for enhanced select elements based on jQuery. Enables fast and sensible UI upgrade of select element with features like option searching and remote dataset loading.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="canonical" href="https://github.com/dbrekalo/fastselect/" />
+    <!-- <link rel="canonical" href="https://github.com/dbrekalo/fastselect/" /> -->
 
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,900&subset=latin,latin-ext' rel='stylesheet'
       type='text/css'>
@@ -44,12 +44,24 @@
   </head>
 
   <body>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-storage.js"></script>
+
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <script src="firebase.js"></script>
+    <script src="user.js"></script>
+    <script src="companies.js"></script>
+    <script src="projects.js"></script>
+    <script src="tutorials.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="_migration.js"></script>
 
     <!-- <form class="attireCodeToggleBlock" action=""> -->
 
-    <select class="multipleSelect" multiple name="language">
-      <option value="Afghanistan">Afghanistan</option>
-      <option value="Albania">Albania</option>
+    <select class="multipleSelect" multiple name="tags">
     </select>
     <button class="submitBtn" type="submit">Submit</button>
 

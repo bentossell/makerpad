@@ -56,7 +56,7 @@ function markTutorialWatchLater(tutorialId, reverse) {
 // }
 
 function tutorialFollowers() {
-  if (!currentUser.id) return false
+  if (!currentUser || !currentUser.id) return false
   return USER_TUTORIAL
     .where("tutorialId", "==", tutorial)
     .get()

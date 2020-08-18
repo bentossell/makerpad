@@ -164,10 +164,11 @@ async function populateCompanies() {
     let record = companyCollection.find(item => item.slug === company.slug)
     if (record && record.likes) company.likes = record.likes
     company.reviews = 0
+    let logo = (company.logo && company.logo.url) ? company.logo.url : ""
     $('.tools-followed').append(`
       <div id="w-node-28d9c17ddbae-b8840649" data-company="${company.companyId}" class="div-block-917 user-tool-list">
         <div class="div-block-167"><img width="40"
-            src="${company.logo.url}" alt="${company.name}"
+            src="${logo}" alt="${company.name}"
             class="image-37 tool-img">
           <div class="div-block-168 vertical">
             <div class="div-block-169">

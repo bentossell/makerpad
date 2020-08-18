@@ -23,6 +23,7 @@ $().ready(async () => {
 
 async function renderProject() {
   if (!project) project = await getProjectFromUrl()
+  if (project === 'add-project') return
   PROJECTS.doc(project).get()
     .then(doc => {
       let data = doc.data()
@@ -45,71 +46,74 @@ function getProjectFromUrl() {
 }
 
 function populateTags() {
-  $('#tags').append(`
+  if (!$('.multipleSelect')[0]) return console.log('no multiSelect found')
+  try {
+    $('.multipleSelect').append(`
     <optgroup label="Types" id="tags-types"></optgroup>
     <optgroup label="Challenges" id="tags-challenges"></optgroup>
     <optgroup label="Tools" id="tags-tools"></optgroup>
   `)
 
-  db.collection('company').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        // $('#tags-tools').append(`<option value="${doc.id}">${data.name}</option>`)
-        $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+    db.collection('company').get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let data = doc.data()
+          $('#tags-tools').append(`<option value="${doc.id}">${data.name}</option>`)
+          // $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+        })
       })
-    })
 
-  db.collection('type').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+    db.collection('type').get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let data = doc.data()
+          $('#tags-types').append(`<option value="${doc.id}">${data.name}</option>`)
+          // $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+        })
       })
-    })
 
-  db.collection('challenges').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+    db.collection('challenges').get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let data = doc.data()
+          $('#tags-challenges').append(`<option value="${doc.id}">${data.name}</option>`)
+          // $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+        })
       })
-    })
+  } catch (e) { }
 }
 
-function generateCheckboxHTML(id, name) {
-  return `
-  <div role="listitem" class="dropdown-checkbox-2 w-dyn-item">
-    <label class="w-checkbox checkbox-filter dropdown">
-      <input
-        type="checkbox"
-        onChange="handleTagUpdate('${id}', '${name}')"
-        id="checkbox-${id}"
-        name="${id}"
-        data-name="${id}"
-        class="w-checkbox-input jetboost-filter-trigger" />
-      <span class="dropdown-checkbox-label w-form-label">${name}</span>
-    </label>
-    <div class="w-embed">
-      <input type="hidden" class="jetboost-list-item" value="${id}" />
-    </div>
-  </div>`
-}
+// function generateCheckboxHTML(id, name) {
+//   return `
+//   <div role="listitem" class="dropdown-checkbox-2 w-dyn-item">
+//     <label class="w-checkbox checkbox-filter dropdown">
+//       <input
+//         type="checkbox"
+//         onChange="handleTagUpdate('${id}', '${name}')"
+//         id="checkbox-${id}"
+//         name="${id}"
+//         data-name="${id}"
+//         class="w-checkbox-input jetboost-filter-trigger" />
+//       <span class="dropdown-checkbox-label w-form-label">${name}</span>
+//     </label>
+//     <div class="w-embed">
+//       <input type="hidden" class="jetboost-list-item" value="${id}" />
+//     </div>
+//   </div>`
+// }
 
-$('#tags').change(() => console.log($(this.options)))
-
-function handleTagUpdate(id, name) {
-  console.log(id, name)
-  if (!activeTags.find(item => item.id == id)) {
-    activeTags.push({ id, name })
-  } else {
-    activeTags = activeTags.filter(item => item.id !== id)
-  }
-  $('#active-tags').empty()
-  for (let tag of activeTags) {
-    $('#active-tags').append(`<div class="link-34" style="margin-right: 5px;">${tag.name}</div>`)
-  }
-}
+// function handleTagUpdate(id, name) {
+//   console.log(id, name)
+//   if (!activeTags.find(item => item.id == id)) {
+//     activeTags.push({ id, name })
+//   } else {
+//     activeTags = activeTags.filter(item => item.id !== id)
+//   }
+//   $('#active-tags').empty()
+//   for (let tag of activeTags) {
+//     $('#active-tags').append(`<div class="link-34" style="margin-right: 5px;">${tag.name}</div>`)
+//   }
+// }
 
 // function userLikesProject(id) {
 //   if (!currentUser || !currentUser.id) return console.log('currentUser ' + currentUser)
@@ -165,6 +169,8 @@ async function createProject(data) {
 $('#wf-form-Submit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
+  let selectedTags = $('.multipleSelect').serializeArray().map(item => item.value)
+  data.tags = selectedTags
   console.log(data)
   createProject(data)
 })

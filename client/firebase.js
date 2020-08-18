@@ -51,7 +51,14 @@ MemberStack.onReady.then(async function (member) {
           console.log('new user detected, adding to firebase')
           var info = memberstack.information
           USERS.doc(member.id).set(info, { merge: true })
-            .then(doc => firebaseUser = doc.data())
+            .then(() => {
+              USERS.doc(member.id).get()
+                .then(doc => {
+                  firebaseUser = doc.data()
+                  $('#username-2').val(firebaseUser.username)
+                  $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
+                })
+            })
         }
       })
       .catch(error => console.log(error))
@@ -189,7 +196,7 @@ async function getCollections() {
     .get()
     .then(snapshot => {
       let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
+      console.log('got USER_PROJECT')
       userProject = records
       return records
     })
@@ -199,7 +206,7 @@ async function getCollections() {
     .get()
     .then(snapshot => {
       let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
+      console.log('got USER_USER')
       userUser = records
       return records
     })
@@ -210,7 +217,7 @@ async function getCollections() {
     .then(snapshot => {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
+      console.log('got USER_TUTORIAL')
       userTutorial = records
       return records
     })
@@ -221,7 +228,7 @@ async function getCollections() {
     .then(snapshot => {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
+      console.log('got USER_COMPANY')
       userCompany = records
       return records
     })
@@ -231,7 +238,7 @@ async function getCollections() {
     .then(snapshot => {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
+      console.log('got COMPANY')
       companyCollection = records
       return records
     })
@@ -241,7 +248,7 @@ async function getCollections() {
     .then(snapshot => {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
-      console.log(records)
+      console.log('got PROJECTS')
       projectCollection = records
       return records
     })
