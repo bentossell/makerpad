@@ -2,14 +2,7 @@ var userSlug = getUserFromUrl()
 var userUsers = []
 
 $().ready(async () => {
-  if (currentUser.id) await getCollections()
   populateUser()
-  getUserUsers()
-  let isFollowed = await userFollowsUser(getUserFromUrl())
-  if (isFollowed) {
-    $('.follow-user-button').hide()
-    $('.unfollow-user-button').show()
-  }
 })
 
 function getUserFromUrl() {
@@ -31,7 +24,7 @@ $('.unfollow-user-button').click(function (event) {
 })
 
 function getUserUsers() {
-  USER_USER.get()
+  return USER_USER.get()
     .then(snapshot => {
       userUsers = snapshot.docs.map(doc => doc.data())
       console.log(userUsers)
@@ -107,7 +100,7 @@ function getUserCollection(collection) {
     .catch(error => console.log(error))
 }
 
-function populateUser() {
+async function populateUser() {
   if (!userSlug) userSlug = getUserFromUrl()
   if (userSlug) {
     U.doc(userSlug).get().then(doc => {
@@ -125,6 +118,10 @@ function populateUser() {
       $('.user-youtube').attr('href', userProfile['youtube-channel'])
     })
 
+    getSampleHTML()
+    getUserUsers()
+
+    if (currentUser.id) await getCollections()
     populateTutorials()
     populateCompanies()
     populateProjects()
@@ -135,10 +132,22 @@ function populateUser() {
       $('.current-user-content').hide()
     }
 
+    let isFollowed = await userFollowsUser(getUserFromUrl())
+    if (isFollowed) {
+      $('.follow-user-button').hide()
+      $('.unfollow-user-button').show()
+    }
+
     try {
 
     } catch (e) { }
   }
+}
+
+function getSampleHTML() {
+  $('.tools-followed').empty()
+  $('.tutorial-watchlist').empty()
+  $('.user-projects').empty()
 }
 
 async function getCompaniesData() {
@@ -146,7 +155,6 @@ async function getCompaniesData() {
 }
 
 async function populateCompanies() {
-  $('.tools-followed').empty()
   let items = await getUserCollection(USER_COMPANY)
   console.log(items)
   if (!items) return console.log('no items found')
@@ -188,13 +196,14 @@ async function populateCompanies() {
 }
 
 async function populateTutorials() {
-  $('.tutorial-watchlist').empty()
   let items = await getUserCollection(USER_TUTORIAL)
   console.log(items)
   if (!items) return
 
   for (item of items) {
     let tutorial = item.tutorial
+    console.log(item)
+    if (item.completed == true) return
     $('.tutorial-watchlist').append(`
       <div id="w-node-7fb832c002a6-b8840649" data-tutorial="${item.tutorialId}" class="div-block-917 user-tutorial-list">
         <div class="div-block-167">
@@ -207,20 +216,23 @@ async function populateTutorials() {
         <div id="tutorial-tools-${tutorial.slug}">
 
         </div>
-        <div id="w-node-463d8f97bb89-b8840649">
+        <div id="w-node-463d8f97bb89-b8840649" class="current-user-content">
           <div data-ms-content="profile" class="dashboard-component save-complete current-user-content">
             <button onclick="markTutorialComplete('${tutorial.slug}')" class="cc-mark-as-complete cc-unchecked w-inline-block">
               <span>Mark as complete</span>
             </button>
             <button onclick="markTutorialComplete('${tutorial.slug}', true)" class="cc-mark-as-complete cc-checked w-inline-block">
-              Completed (
-                <span class="cc-completed-counter">${tutorial.completes || 1}</span>
-              )
+              Completed
             </button>
           </div>
         </div>
       </div>`
     )
+
+    if (userCompletedTutorial(tutorial.slug)) {
+      $(`[data-tutorial="${tutorial.slug}"] .cc-mark-as-complete.cc-checked`).show()
+      $(`[data-tutorial="${tutorial.slug}"] .cc-mark-as-complete.cc-unchecked`).hide()
+    }
 
     if (tutorial.tools_used) {
       tutorial.tools_used.forEach(item => {
@@ -246,7 +258,6 @@ async function populateTutorials() {
 }
 
 async function populateProjects() {
-  $('.user-projects').empty()
   let items = await getUserCollection(PROJECTS)
   console.log(items)
   if (!items) return

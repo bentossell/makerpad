@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Fastselect</title>
+    <meta name="description"
+      content="Fastselect is lightweight browser plugin for enhanced select elements based on jQuery. Enables fast and sensible UI upgrade of select element with features like option searching and remote dataset loading.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="canonical" href="https://github.com/dbrekalo/fastselect/" />
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,900&subset=latin,latin-ext' rel='stylesheet'
+      type='text/css'>
+    <link rel="stylesheet" href="https://rawgit.com/dbrekalo/attire/master/dist/css/build.min.css">
+    <script src="https://rawgit.com/dbrekalo/attire/master/dist/js/build.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fastselect@0.7.3/dist/fastselect.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fastselect@0.7.3/dist/fastselect.standalone.min.js"></script>
+
+    <style>
+      .fstElement {
+        font-size: 1.2em;
+      }
+
+      .fstToggleBtn {
+        min-width: 16.5em;
+      }
+
+      .submitBtn {
+        display: none;
+      }
+
+      .fstMultipleMode {
+        display: block;
+      }
+
+      .fstMultipleMode .fstControls {
+        width: 100%;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <!-- <form class="attireCodeToggleBlock" action=""> -->
+
+    <select class="multipleSelect" multiple name="language">
+      <option value="Afghanistan">Afghanistan</option>
+      <option value="Albania">Albania</option>
+    </select>
+    <button class="submitBtn" type="submit">Submit</button>
+
+    <script>
+      $('.multipleSelect').fastselect()
+    </script>
+
+    <!-- </form> -->
+  </body>
+
+</html>

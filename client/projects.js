@@ -1,8 +1,11 @@
 var project = getProjectFromUrl()
 console.log('Project: ' + project)
 renderProject()
+let activeTags = []
 
 $().ready(async () => {
+  $('#active-tags').empty()
+  populateTags()
   await getCollections()
   console.log('Ready, project: ' + project)
   let isLiked = userLikesProject(project)
@@ -39,6 +42,73 @@ async function renderProject() {
 function getProjectFromUrl() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
+}
+
+function populateTags() {
+  $('#tags').append(`
+    <optgroup label="Types" id="tags-types"></optgroup>
+    <optgroup label="Challenges" id="tags-challenges"></optgroup>
+    <optgroup label="Tools" id="tags-tools"></optgroup>
+  `)
+
+  db.collection('company').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        // $('#tags-tools').append(`<option value="${doc.id}">${data.name}</option>`)
+        $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+      })
+    })
+
+  db.collection('type').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+      })
+    })
+
+  db.collection('challenges').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
+      })
+    })
+}
+
+function generateCheckboxHTML(id, name) {
+  return `
+  <div role="listitem" class="dropdown-checkbox-2 w-dyn-item">
+    <label class="w-checkbox checkbox-filter dropdown">
+      <input
+        type="checkbox"
+        onChange="handleTagUpdate('${id}', '${name}')"
+        id="checkbox-${id}"
+        name="${id}"
+        data-name="${id}"
+        class="w-checkbox-input jetboost-filter-trigger" />
+      <span class="dropdown-checkbox-label w-form-label">${name}</span>
+    </label>
+    <div class="w-embed">
+      <input type="hidden" class="jetboost-list-item" value="${id}" />
+    </div>
+  </div>`
+}
+
+$('#tags').change(() => console.log($(this.options)))
+
+function handleTagUpdate(id, name) {
+  console.log(id, name)
+  if (!activeTags.find(item => item.id == id)) {
+    activeTags.push({ id, name })
+  } else {
+    activeTags = activeTags.filter(item => item.id !== id)
+  }
+  $('#active-tags').empty()
+  for (let tag of activeTags) {
+    $('#active-tags').append(`<div class="link-34" style="margin-right: 5px;">${tag.name}</div>`)
+  }
 }
 
 // function userLikesProject(id) {

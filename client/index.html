@@ -16,6 +16,8 @@
     <!-- Memberstack -->
     <script src="https://api.memberstack.io/static/memberstack.js?webflow"
       data-memberstack-id="2a3426d0e4e6d15973f59f121515b10a"> </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/fastselect@0.7.3/src/fastselect.min.js"></script>
   </head>
 
   <body>
@@ -29,34 +31,38 @@
       <div id="firebase-notification" class="p-6 text-red-800 bg-red-300"></div>
     </div>
 
-    <a href="#/ms/login">MEMBERSTACK</a>
-
-    <form action="#/ms/login">
-      <input type="text" name="data-ms-member" value="email">
-      <input type="text" name="data-ms-member" value="password">
-      <button type="submit">Submit</button>
-    </form>
-
-
-    <div class="flex items-center w-full mx-auto mb-4 sm:w-1/2">
-      <img class="hidden inline w-12 h-12 mr-4 rounded user-image" src="" />
-      <span id="username" class="text-xl font-bold"></span>
+    <div class="fstControls">
+      <div data-text="Barbados" data-value="Barbados" class="fstChoiceItem">Barbados<button class="fstChoiceRemove"
+          type="button">×</button></div>
+      <div data-text="Belarus" data-value="Belarus" class="fstChoiceItem">Belarus<button class="fstChoiceRemove"
+          type="button">×</button></div><input class="fstQueryInput" style="width: 20px;">
     </div>
-    <div class="w-full mx-4 border rounded sm:w-1/2 sm:mx-auto">
-      <div class="p-4 font-bold bg-gray-100 border-b">Tools Used</div>
-      <div id="companies" class="grid md:grid-cols-2 xl:grid-cols-4"></div>
-    </div>
+    <select class="multipleSelect" multiple name="language">
+      <option value="Bangladesh">Bangladesh</option>
+      <option selected value="Barbados">Barbados</option>
+      <option selected value="Belarus">Belarus</option>
+      <option value="Belgium">Belgium</option>
+      ...
+    </select>
 
-    <div id="firebaseui-auth-container"></div>
-    <button class="p-2 bg-green-200 rounded" onclick="sampleData()">ADD data</button>
-    <div id="member" class="hidden p-8 bg-green-200">Content for logged in</div>
+    <script>
+      var $select = $('select');
 
+      // Run, fire and forget
+      $select.fastselect()
 
-    <form id="wf-form-Submit-Project" class="p-6 bg-gray-400">
-      <input type="text" name="name">
-      <input type="text" name="subtitle">
-      <input type="submit" />
-    </form>
+      // Run via plugin facade and get instance
+      var fastSelectInstance = $select.fastselect(options).data('fastselect');
+
+      // run directly
+      var fastSelectInstance = new $.Fastselect($select.get(0), options);
+    </script>
+
+    <!-- <select id="tags" multiple=true class="h-full bg-gray-200 border"> -->
+
+    <!-- </select>
+    <div id="active-tags">
+    </div> -->
 
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
@@ -72,11 +78,6 @@
     <script src="tutorials.js"></script>
     <script src="dashboard.js"></script>
     <script src="_migration.js"></script>
-
-    <!-- Firebase tutorial code -->
-    <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@1.5/client/tutorials.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@1.5/save-complete.js"></script>
 
   </body>
 

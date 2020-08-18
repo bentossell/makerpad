@@ -10,7 +10,8 @@ $('#wf-form-Editing-Profile').submit(function (event) {
 })
 
 async function updateUser(data) {
-  if (firebaseUser.username === data.username || await searchUserBySlug(data.username) == false) {
+  console.log(firebaseUser)
+  if (!firebaseUser || firebaseUser.username === data.username || await searchUserBySlug(data.username) == false) {
     return USERS.doc(currentUser.id).set({
       user: currentUser.id,
       ...data

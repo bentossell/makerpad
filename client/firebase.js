@@ -1,4 +1,4 @@
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "AIzaSyAyeQF-e3zLH63-EQPb8TmNT6kPbPDQ-9Q",
   authDomain: "makerpad-94656.firebaseapp.com",
   databaseURL: "https://makerpad-94656.firebaseio.com",
@@ -12,8 +12,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 firebase.analytics()
 
-const db = firebase.firestore()
-const storage = firebase.storage()
+var db = firebase.firestore()
+var storage = firebase.storage()
 
 var currentUser = {}
 var firebaseUser = {}
@@ -24,15 +24,15 @@ var userCompany = []
 var companyCollection = []
 var projectCollection = []
 
-const COMPANY = db.collection('company')
-const TUTORIAL = db.collection('tutorial')
-const PROJECTS = db.collection('projects')
-const USERS = db.collection('memberstack_users')
-const U = db.collection('u')
-const USER_TUTORIAL = db.collection('user_tutorial')
-const USER_PROJECT = db.collection('user_project')
-const USER_USER = db.collection('user_user')
-const USER_COMPANY = db.collection('user_company')
+var COMPANY = db.collection('company')
+var TUTORIAL = db.collection('tutorial')
+var PROJECTS = db.collection('projects')
+var USERS = db.collection('memberstack_users')
+var U = db.collection('u')
+var USER_TUTORIAL = db.collection('user_tutorial')
+var USER_PROJECT = db.collection('user_project')
+var USER_USER = db.collection('user_user')
+var USER_COMPANY = db.collection('user_company')
 
 var increment = firebase.firestore.FieldValue.increment(1)
 var decrement = firebase.firestore.FieldValue.increment(-1)
@@ -154,6 +154,10 @@ function userSavedTutorial(id) {
   return userTutorial.some(item => item.tutorialId === id && item.watchLater == true)
 }
 
+function userCompletedTutorial(id) {
+  return userTutorial.some(item => item.tutorialId === id && item.completed == true)
+}
+
 function userFollowsCompany(id) {
   return userCompany.some(item => item.companyId === id && item.followed == true)
 }
@@ -243,10 +247,47 @@ async function getCollections() {
     })
 }
 
+function populateTags() {
+  $('#tags').append(`
+    <optgroup label="Tools" id="tags-tools"></optgroup>
+    <optgroup label="Types" id="tags-types"></optgroup>
+    <optgroup label="Challenges" id="tags-challenges"></optgroup>
+  `)
+
+  db.collection('company').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        $('#tags-tools').append(`<option value="${doc.id}">${data.name}</option>`)
+      })
+    })
+
+  db.collection('categories').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        $('#tags-tools').append(`<option value="${doc.id}">${data.name}</option>`)
+      })
+    })
+
+  db.collection('challenges').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        $('#tags-challenges').append(`<option value="${doc.id}">${data.name}</option>`)
+      })
+    })
+}
+
 async function updateProject(id, object) {
   await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(error => handleError(error))
+}
+
+function getElementFromURL() {
+  var url = window.location.pathname
+  return url.substring(url.lastIndexOf('/') + 1)
 }
 
 function markTutorialComplete(tutorialId, reverse) {
