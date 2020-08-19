@@ -274,17 +274,23 @@ async function populateProjects() {
           class="image-175 project-image" />
       </a>
       <div class="div-block-924 project-div-footer">
-        <a href="/p/${project.slug} class="user-project"
+        <a href="/p/${project.slug}" class="user-project"
           <h5 class="project-heading">${project.name}</h5>
         </a>
         <div>
-          ${!userLikesProject(project.slug) ?
-        `<a href="#" onclick="followProject('${project.slug}')" class="like-button like-project-button w-button">Like</a>` :
-        `<a href="#" onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button">Liked</a>`
-      }
+        <a href="#" onclick="followProject('${project.slug}')" class="like-button like-project-button w-button">Like</a>
+        <a href="#" onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button">Liked</a>
         </div>
       </div>
     </div>`)
+
+    if (userLikesProject(project.slug)) {
+      $(`[data-project="${project.slug}"] .unlike-project-button`).show()
+      $(`[data-project="${project.slug}"] .like-project-button`).hide()
+    } else {
+      $(`[data-project="${project.slug}"] .unlike-project-button`).hide()
+      $(`[data-project="${project.slug}"] .like-project-button`).show()
+    }
 
     // $('.project-heading').text(project.name)
     // $('.project-image').attr('src', project.imageUrl)

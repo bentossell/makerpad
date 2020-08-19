@@ -14,6 +14,7 @@ firebase.analytics()
 
 var db = firebase.firestore()
 var storage = firebase.storage()
+firebaseAuth()
 
 var currentUser = {}
 var firebaseUser = {}
@@ -110,9 +111,8 @@ function firebaseAuth() {
 
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      firebaseUser = user
-      // console.log(firebaseUser)
-      document.getElementById('member').style.display = 'block'
+      // firebaseUser = user
+      console.log(firebaseuserUser)
     } else {
 
     }
@@ -184,6 +184,13 @@ function followProject(projectId, reverse) {
     projectId,
     followed: reverse ? false : true
   })
+  if (reverse) {
+    $(`[data-project="${projectId}"] .unlike-project-button`).hide()
+    $(`[data-project="${projectId}"] .like-project-button`).show()
+  } else {
+    $(`[data-project="${projectId}"] .unlike-project-button`).show()
+    $(`[data-project="${projectId}"] .like-project-button`).hide()
+  }
   PROJECTS.doc(projectId).update({
     likes: reverse ? decrement : increment
   })

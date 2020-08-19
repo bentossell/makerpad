@@ -46,9 +46,9 @@ function getProjectFromUrl() {
 }
 
 function populateTags() {
-  if (!$('.multipleSelect')[0]) return console.log('no multiSelect found')
+  if (!$('.multiple-select')[0]) return console.log('no multiSelect found')
   try {
-    $('.multipleSelect').append(`
+    $('.multiple-select').append(`
     <optgroup label="Types" id="tags-types"></optgroup>
     <optgroup label="Challenges" id="tags-challenges"></optgroup>
     <optgroup label="Tools" id="tags-tools"></optgroup>
@@ -80,6 +80,7 @@ function populateTags() {
           // $('#tag-checkboxes').append(generateCheckboxHTML(doc.id, data.name))
         })
       })
+    // $('.multiple-select').fastselect()
   } catch (e) { }
 }
 
@@ -169,7 +170,7 @@ async function createProject(data) {
 $('#wf-form-Submit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
-  let selectedTags = $('.multipleSelect').serializeArray().map(item => item.value)
+  let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   data.tags = selectedTags
   console.log(data)
   createProject(data)
