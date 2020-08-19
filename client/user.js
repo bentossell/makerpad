@@ -274,12 +274,12 @@ async function populateProjects() {
           class="image-175 project-image" />
       </a>
       <div class="div-block-924 project-div-footer">
-        <a href="/p/${project.slug}" class="user-project"
+        <a href="/p/${project.slug}" class="user-project project-text"
           <h5 class="project-heading">${project.name}</h5>
         </a>
         <div>
         <a href="#" onclick="followProject('${project.slug}')" class="like-button like-project-button w-button">Like</a>
-        <a href="#" onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button">Liked</a>
+        <a href="#" onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden">Liked</a>
         </div>
       </div>
     </div>`)

@@ -112,7 +112,7 @@ function firebaseAuth() {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       // firebaseUser = user
-      console.log(firebaseuserUser)
+      console.log(user)
     } else {
 
     }

@@ -32,10 +32,16 @@ async function renderProject() {
       $('.p-tagline').text(data.tagline)
       $('.p-link').attr('href', data.url)
       $('.p-img').attr('src', data.imageUrl)
-      $('.p-description').text(data.details)
+      $('.p-description').html(data.details)
       $('.project-user-link').attr('href', `/u/${data.username}`)
       $('.project-user-avatar').attr('src', data.user['profile-pic'])
       $('.project-user-full-name').text(data.user['full-name'])
+
+      if (data.tags) data.tags.forEach(tag => {
+        $('#project-tags').append(`
+          <span class="link-34">${tag}</span>
+        `)
+      })
     })
     .catch(error => handleError(error))
 }

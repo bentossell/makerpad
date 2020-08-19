@@ -3,14 +3,21 @@ let tutorial = getTutorialFromUrl()
 $().ready(async () => {
   tutorial = getTutorialFromUrl()
   if (tutorial && currentUser) {
-    let isSaved = userSavedTutorial(tutorial)
-    if (isSaved) {
+    await getCollections()
+
+    if (userSavedTutorial(tutorial)) {
       $('.cc-save-item.cc-checked').show()
       $('.cc-save-item.cc-unchecked').hide()
+    } else {
+      $('.cc-save-item.cc-checked').hide()
+      $('.cc-save-item.cc-unchecked').show()
     }
-    if (isSaved.completed == true) {
+    if (userCompletedTutorial(tutorial)) {
       $('.cc-mark-as-complete.cc-checked').show()
       $('.cc-mark-as-complete.cc-unchecked').hide()
+    } else {
+      $('.cc-mark-as-complete.cc-checked').hide()
+      $('.cc-mark-as-complete.cc-unchecked').show()
     }
   }
   tutorialFollowers()
@@ -88,13 +95,13 @@ $('.cc-save-item.cc-checked').click(() => {
 // mark complete
 $('.cc-mark-as-complete.cc-unchecked').click(() => {
   markTutorialComplete(tutorial)
-  $('.cc-mark-as-complete.cc-checked').hide()
-  $('.cc-mark-as-complete.cc-unchecked').show()
+  $('.cc-mark-as-complete.cc-checked').show()
+  $('.cc-mark-as-complete.cc-unchecked').hide()
 })
 
 // unmark complete
 $('.cc-mark-as-complete.cc-checked').click(() => {
   markTutorialComplete(tutorial, true)
-  $('.cc-mark-as-complete.cc-checked').show()
-  $('.cc-mark-as-complete.cc-unchecked').hide()
+  $('.cc-mark-as-complete.cc-checked').hide()
+  $('.cc-mark-as-complete.cc-unchecked').show()
 })
