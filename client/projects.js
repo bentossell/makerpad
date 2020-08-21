@@ -5,6 +5,7 @@ let activeTags = []
 
 $().ready(async () => {
   $('#active-tags').empty()
+  $('#project-tags').empty()
   populateTags()
   await getCollections()
   console.log('Ready, project: ' + project)
@@ -39,7 +40,7 @@ async function renderProject() {
 
       if (data.tags) data.tags.forEach(tag => {
         $('#project-tags').append(`
-          <span class="link-34">${tag}</span>
+          <a href="#" class="project-tag">${tag}</a>
         `)
       })
     })

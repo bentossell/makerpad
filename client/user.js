@@ -39,6 +39,7 @@ function getUserUsers() {
 }
 
 function recommendUser(user) {
+  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
   if (thisIsMyUser() || !currentUser.id) return
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
@@ -50,7 +51,8 @@ function recommendUser(user) {
 }
 
 function followUser(user, reverse) {
-  if (thisIsMyUser() || !currentUser.id) return console.log("C'mon, can't follow yourself")
+  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
+  if (thisIsMyUser()) return console.log("C'mon, can't follow yourself")
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
     targetUser: user,
@@ -68,21 +70,6 @@ function followUser(user, reverse) {
     })
     .catch(error => console.log(error))
 }
-
-// function userFollowsUser(id) {
-//   if (!currentUser || !currentUser.id) return
-//   return USER_USER
-//     .where("userId", "==", currentUser.id)
-//     .where("targetUser", "==", id)
-//     .where("followed", "==", true)
-//     .limit(1).get()
-//     .then(snapshot => {
-//       if (snapshot.empty) return false
-//       console.log(snapshot.docs[0].data())
-//       return snapshot.docs[0].data()
-//     })
-//     .catch(error => console.log(error))
-// }
 
 function thisIsMyUser() {
   return firebaseUser.username === userSlug
@@ -197,6 +184,7 @@ async function populateCompanies() {
 }
 
 async function populateTutorials() {
+  $('.tutorial-watchlist').empty()
   let items = await getUserCollection(USER_TUTORIAL)
   console.log(items)
   if (!items) return
@@ -204,8 +192,8 @@ async function populateTutorials() {
   for (item of items) {
     let tutorial = item.tutorial
     console.log(item)
-    if (item.completed == true) return
-    $('.tutorial-watchlist').append(`
+    let target = item.completed ? '#tutorials-completed' : '#tutorials-saved'
+    $(target).append(`
       <div id="w-node-7fb832c002a6-b8840649" data-tutorial="${item.tutorialId}" class="div-block-917 user-tutorial-list">
         <div class="div-block-167">
           <div class="div-block-169">
@@ -214,7 +202,7 @@ async function populateTutorials() {
             </a>
           </div>
         </div>
-        <div id="tutorial-tools-${tutorial.slug}">
+        <div class="tutorial-tools-${tutorial.slug}">
 
         </div>
         <div id="w-node-463d8f97bb89-b8840649" class="current-user-content">
@@ -233,14 +221,17 @@ async function populateTutorials() {
     if (userCompletedTutorial(tutorial.slug)) {
       $(`[data-tutorial="${tutorial.slug}"] .cc-mark-as-complete.cc-checked`).show()
       $(`[data-tutorial="${tutorial.slug}"] .cc-mark-as-complete.cc-unchecked`).hide()
+    } else {
+      $(`[data-tutorial="${tutorial.slug}"] .cc-mark-as-complete.cc-checked`).hide()
+      $(`[data-tutorial="${tutorial.slug}"] .cc-mark-as-complete.cc-unchecked`).show()
     }
 
     if (tutorial.tools_used) {
       tutorial.tools_used.forEach(item => {
         let company = companyCollection.find(com => com.slug === item)
-        $(`#tutorial-tools-${tutorial.slug}`).append(`
+        $(`.tutorial-tools-${tutorial.slug}`).append(`
           <a href="/company/${item}" class="user-tool tool-img w-inline-block">
-            <img src="${company.logo.url}" width="40/">
+            <img src="${company.logo ? company.logo.url : ''}" width="40/">
           </a>
           `)
       })
@@ -278,8 +269,8 @@ async function populateProjects() {
           <h5 class="project-heading">${project.name}</h5>
         </a>
         <div>
-        <a href="#" onclick="followProject('${project.slug}')" class="like-button like-project-button w-button">Like</a>
-        <a href="#" onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden">Liked</a>
+        <button onclick="followProject('${project.slug}')" class="like-button like-project-button w-button"></button>
+        <button onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden"></button>
         </div>
       </div>
     </div>`)

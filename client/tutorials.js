@@ -37,7 +37,7 @@ function getTutorialFromUrl() {
 }
 
 function markTutorialWatchLater(tutorialId, reverse) {
-  if (!currentUser.id) return
+  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
   updateTutorial(tutorialId, {
     userId: currentUser.id,
     tutorialId,

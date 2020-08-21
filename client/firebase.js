@@ -178,7 +178,7 @@ function userFollowsUser(id) {
 }
 
 function followProject(projectId, reverse) {
-  if (!currentUser) return console.log('no currentUser')
+  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
   updateProject(projectId, {
     userId: currentUser.id,
     projectId,
@@ -197,48 +197,6 @@ function followProject(projectId, reverse) {
 }
 
 async function getCollections() {
-  await USER_PROJECT
-    .where("userId", "==", currentUser.id)
-    .where("followed", "==", true)
-    .get()
-    .then(snapshot => {
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log('got USER_PROJECT')
-      userProject = records
-      return records
-    })
-
-  await USER_USER
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log('got USER_USER')
-      userUser = records
-      return records
-    })
-
-  await USER_TUTORIAL
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log('got USER_TUTORIAL')
-      userTutorial = records
-      return records
-    })
-
-  await USER_COMPANY
-    .where("userId", "==", currentUser.id)
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) return false
-      let records = snapshot.docs.map(doc => doc.data())
-      console.log('got USER_COMPANY')
-      userCompany = records
-      return records
-    })
 
   await COMPANY
     .get()
@@ -259,6 +217,50 @@ async function getCollections() {
       projectCollection = records
       return records
     })
+
+  if (currentUser.id) {
+    await USER_PROJECT
+      .where("userId", "==", currentUser.id)
+      .where("followed", "==", true)
+      .get()
+      .then(snapshot => {
+        let records = snapshot.docs.map(doc => doc.data())
+        console.log('got USER_PROJECT')
+        userProject = records
+        return records
+      })
+    await USER_USER
+      .where("userId", "==", currentUser.id)
+      .get()
+      .then(snapshot => {
+        let records = snapshot.docs.map(doc => doc.data())
+        console.log('got USER_USER')
+        userUser = records
+        return records
+      })
+    await USER_TUTORIAL
+      .where("userId", "==", currentUser.id)
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) return false
+        let records = snapshot.docs.map(doc => doc.data())
+        console.log('got USER_TUTORIAL')
+        userTutorial = records
+        return records
+      })
+
+    await USER_COMPANY
+      .where("userId", "==", currentUser.id)
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) return false
+        let records = snapshot.docs.map(doc => doc.data())
+        console.log('got USER_COMPANY')
+        userCompany = records
+        return records
+      })
+
+  }
 }
 
 function populateTags() {
@@ -305,6 +307,7 @@ function getElementFromURL() {
 }
 
 function markTutorialComplete(tutorialId, reverse) {
+  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
   updateTutorial(tutorialId, {
     userId: currentUser.id,
     tutorialId,
