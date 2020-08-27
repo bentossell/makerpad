@@ -10,7 +10,9 @@ var firebaseConfig = {
 }
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
-firebase.analytics()
+try {
+  firebase.analytics()
+} catch (e) { }
 
 var db = firebase.firestore()
 var storage = firebase.storage()
@@ -294,6 +296,19 @@ function populateTags() {
     })
 }
 
+async function getTaggedProjects(tags) {
+  if (!tags) return []
+  return PROJECTS
+    .where('tags', 'array-contains-any', tags)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return []
+      let data = snapshot.docs.map(doc => doc.data())
+      return data
+    })
+    .catch(error => console.log(error))
+}
+
 async function updateProject(id, object) {
   await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(() => console.log(object))
@@ -303,6 +318,11 @@ async function updateProject(id, object) {
 function getElementFromURL() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
+}
+
+function getParamFromURL(param) {
+  const urlParams = new URLSearchParams(window.location.search)
+  return urlParams.get(param)
 }
 
 function markTutorialComplete(tutorialId, reverse) {
@@ -329,4 +349,43 @@ function updateTutorial(id, object) {
   USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(doc => console.log(object))
     .catch(error => handleError(error))
+}
+
+async function renderProjects(target, items) {
+  console.log(items)
+  if (!items) return
+
+  for (item of items) {
+    let project = item
+    $(target).append(`
+    <div class="project-div" data-project="${project.slug}">
+      <a href="/p/${project.slug}" class="user-project w-inline-block">
+        <img
+          src="${project.imageUrl}"
+          alt="${project.name}"
+          class="image-175 project-image" />
+      </a>
+      <div class="div-block-924 project-div-footer">
+        <a href="/p/${project.slug}" class="user-project project-text"
+          <h5 class="project-heading">${project.name}</h5>
+        </a>
+        <div>
+        <button onclick="followProject('${project.slug}')" class="like-button like-project-button w-button"></button>
+        <button onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden"></button>
+        </div>
+      </div>
+    </div>`)
+
+    if (userLikesProject(project.slug)) {
+      $(`[data-project="${project.slug}"] .unlike-project-button`).show()
+      $(`[data-project="${project.slug}"] .like-project-button`).hide()
+    } else {
+      $(`[data-project="${project.slug}"] .unlike-project-button`).hide()
+      $(`[data-project="${project.slug}"] .like-project-button`).show()
+    }
+
+    // $('.project-heading').text(project.name)
+    // $('.project-image').attr('src', project.imageUrl)
+    // $('.user-project').attr('href', `/p/${project.slug}`)
+  }
 }
