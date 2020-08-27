@@ -108,7 +108,7 @@ async function populateUser() {
     getSampleHTML()
     getUserUsers()
 
-    if (currentUser.id) await getCollections()
+    await getCollections()
     populateTutorials()
     populateCompanies()
     populateProjects()

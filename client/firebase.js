@@ -259,7 +259,6 @@ async function getCollections() {
         userCompany = records
         return records
       })
-
   }
 }
 

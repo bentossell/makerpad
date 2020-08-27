@@ -1,6 +1,7 @@
 var company = getCompanyFromUrl()
 
 $().ready(async () => {
+  $('.cc-follow-product.cc-checked').hide()
   company = getCompanyFromUrl()
   console.log('company: ' + company)
   console.log('currentUser: ' + currentUser)
@@ -9,6 +10,9 @@ $().ready(async () => {
     if (isSaved) {
       $('.cc-follow-product.cc-checked').show()
       $('.cc-follow-product.cc-unchecked').hide()
+    } else {
+      $('.cc-follow-product.cc-checked').hide()
+      $('.cc-follow-product.cc-unchecked').show()
     }
     companyFollowers()
   }
