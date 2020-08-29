@@ -26,6 +26,7 @@ var userUser = []
 var userCompany = []
 var companyCollection = []
 var projectCollection = []
+var tagsArray = []
 
 var COMPANY = db.collection('company')
 var TUTORIAL = db.collection('tutorial')
@@ -200,7 +201,7 @@ function followProject(projectId, reverse) {
 
 async function getCollections() {
 
-  await COMPANY
+  let companyPromise = COMPANY
     .get()
     .then(snapshot => {
       if (snapshot.empty) return false
@@ -210,7 +211,7 @@ async function getCollections() {
       return records
     })
 
-  await PROJECTS
+  let projectPromise = PROJECTS
     .get()
     .then(snapshot => {
       if (snapshot.empty) return false
@@ -221,7 +222,7 @@ async function getCollections() {
     })
 
   if (currentUser.id) {
-    await USER_PROJECT
+    let userProjectPromise = USER_PROJECT
       .where("userId", "==", currentUser.id)
       .where("followed", "==", true)
       .get()
@@ -231,7 +232,7 @@ async function getCollections() {
         userProject = records
         return records
       })
-    await USER_USER
+    let userUserPromise = USER_USER
       .where("userId", "==", currentUser.id)
       .get()
       .then(snapshot => {
@@ -240,7 +241,7 @@ async function getCollections() {
         userUser = records
         return records
       })
-    await USER_TUTORIAL
+    let userTutorialPromise = USER_TUTORIAL
       .where("userId", "==", currentUser.id)
       .get()
       .then(snapshot => {
@@ -251,7 +252,7 @@ async function getCollections() {
         return records
       })
 
-    await USER_COMPANY
+    let userCompanyPromise = USER_COMPANY
       .where("userId", "==", currentUser.id)
       .get()
       .then(snapshot => {
@@ -261,45 +262,53 @@ async function getCollections() {
         userCompany = records
         return records
       })
+
+    await Promise.all([userCompanyPromise, userTutorialPromise, userUserPromise, userProjectPromise])
   }
+  await Promise.all([companyPromise, projectPromise])
 }
 
-function populateTags() {
-  $('#tags').append(`
-    <optgroup label="Tools" id="tags-tools"></optgroup>
+async function populateTags() {
+  if (!$('.multiple-select')[0]) return console.log('no multiSelect found')
+  try {
+    $('.multiple-select').append(`
     <optgroup label="Types" id="tags-types"></optgroup>
     <optgroup label="Challenges" id="tags-challenges"></optgroup>
+    <optgroup label="Tools" id="tags-tools"></optgroup>
   `)
 
-  db.collection('company').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        $('#tags-tools').append(`<option value="${doc.id}">${data.name}</option>`)
+    await db.collection('company').get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let data = doc.data()
+          $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
+        })
       })
-    })
 
-  db.collection('categories').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        $('#tags-tools').append(`<option value="${doc.id}">${data.name}</option>`)
+    await db.collection('type').get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let data = doc.data()
+          $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
+        })
       })
-    })
 
-  db.collection('challenges').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        $('#tags-challenges').append(`<option value="${doc.id}">${data.name}</option>`)
+    await db.collection('challenges').get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let data = doc.data()
+          $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
+        })
       })
-    })
+  } catch (e) { }
+  return
 }
 
 async function getTaggedProjects(tags) {
   if (!tags) return []
   return PROJECTS
     .where('tags', 'array-contains-any', tags)
+    .orderBy("created_at", "desc")
     .get()
     .then(snapshot => {
       if (snapshot.empty) return []
@@ -307,6 +316,35 @@ async function getTaggedProjects(tags) {
       return data
     })
     .catch(error => console.log(error))
+}
+
+async function getTags() {
+  await db.collection('company').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        tagsArray.push({ type: 'company', value: data.slug })
+        $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
+      })
+    })
+
+  await db.collection('type').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        tagsArray.push({ type: 'type', value: data.slug })
+        $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
+      })
+    })
+
+  await db.collection('challenges').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        tagsArray.push({ type: 'challenges', value: data.slug })
+        $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
+      })
+    })
 }
 
 async function updateProject(id, object) {
