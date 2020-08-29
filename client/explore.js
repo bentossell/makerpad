@@ -21,7 +21,6 @@ async function getRecentProjects() {
 async function getRandomUsers() {
   let items = await USERS
     .where('profile-pic', '>', '')
-    .limit(50)
     .get()
     .then(snapshot => {
       if (snapshot.empty) return []
@@ -29,7 +28,10 @@ async function getRandomUsers() {
       return data
     })
     .catch(error => console.log(error))
+  let randomNumber = (Math.floor(Math.random() * items.length))
+  items = items.slice(randomNumber, randomNumber + 50)
   console.log(items)
+
   items.forEach(item => {
     if (!item.username || !item['profile-pic'] || !item['full-name']) return
     $('.random-users').append(`
