@@ -26,9 +26,19 @@ async function updateUser(data) {
             .put(image)
             .then()
             .then((snapshot) => {
-              snapshot.ref.getDownloadURL().then((imageUrl) => {
-                U.doc(data.slug).update({ imageUrl })
-                USERS.doc(currentUser.id).update({ imageUrl })
+              return snapshot.ref.getDownloadURL().then(async (imageUrl) => {
+                console.log(imageUrl)
+                let body = {
+                  imageUrl,
+                  'profile-picture': {
+                    url: imageUrl
+                  }
+                }
+                U.doc(data.username).set(body, { merge: true })
+                USERS.doc(currentUser.id).set(body, { merge: true })
+                currentUser.updateProfile({
+                  'profile-pic': imageUrl
+                }, false)
               })
             })
 
@@ -41,8 +51,8 @@ async function updateUser(data) {
         MemberStack.onReady.then(function (member) {
           member.updateProfile({
             'full-name': data['full-name'],
-            'profile-link': `https://makerpad.co/u/${data.username}`
-          }, true)
+            'profile-link': `https://makerpad.co/u/${data.username}`,
+          }, false)
         })
         // METADATA
         handleSuccess('User updated')

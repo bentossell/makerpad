@@ -103,6 +103,10 @@ async function populateUser() {
       $('.user-website').attr('href', userProfile['website-url'])
       $('.user-newsletter').attr('href', userProfile.newsletter)
       $('.user-youtube').attr('href', userProfile['youtube-channel'])
+      if (userProfile.imageUrl) {
+        $('.user-image').attr("src", `${userProfile.imageUrl}`)
+        $('.user-image').removeClass('w-dyn-bind-empty')
+      }
     })
 
     getSampleHTML()

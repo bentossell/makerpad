@@ -98,8 +98,8 @@ async function setProject(data) {
           })
       }
       handleSuccess('Project updated')
-      $('#wf-form-Submit-Project')[0].reset()
-      $('#wf-form-Edit-Project')[0].reset()
+      if ($('#wf-form-Submit-Project').length > 0) $('#wf-form-Submit-Project')[0].reset()
+      if ($('#wf-form-Edit-Project').length > 0) $('#wf-form-Edit-Project')[0].reset()
     })
     .catch(error => handleError(error))
 }
