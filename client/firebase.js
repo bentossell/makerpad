@@ -408,7 +408,7 @@ async function renderProjects(target, items) {
           <h5 class="project-heading">${project.name}</h5>
         </a>
         <div>
-        <button onclick="window.location.href='/edit-project?projectId=${project.slug}'" class="like-button w-button hidden edit-project-button">Edit</button>
+        <button onclick="window.location.href='/edit-project?projectId=${project.slug}'" class="edit-project w-button hidden">Edit</button>
         <button onclick="followProject('${project.slug}')" class="like-button like-project-button w-button"></button>
         <button onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden"></button>
         </div>
@@ -422,7 +422,7 @@ async function renderProjects(target, items) {
       $(`[data-project="${project.slug}"] .unlike-project-button`).hide()
       $(`[data-project="${project.slug}"] .like-project-button`).show()
     }
-    if (project.userId === currentUser.id) $(`[data-project="${project.slug}"] .edit-project-button`).show()
+    if (project.userId === currentUser.id) $(`[data-project="${project.slug}"] .edit-project`).show()
 
     // $('.project-heading').text(project.name)
     // $('.project-image').attr('src', project.imageUrl)

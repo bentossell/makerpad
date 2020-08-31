@@ -16,9 +16,11 @@ $().ready(async () => {
     $('.unlike-project-button').hide()
     $('.like-project-button').show()
   }
-  // if (isCurrentUserContent(project)) {
-  //   $('.my-user-content').show()
-  // }
+  let userOwnsProject = projectCollection.find(item => (item.slug === project && item.userId === currentUser.id))
+  console.log(userOwnsProject)
+  if (userOwnsProject) {
+    $('.edit-project').attr('href', `/edit-project?projectId=${project}`).show()
+  }
 })
 
 async function renderProject() {
