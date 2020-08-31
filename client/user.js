@@ -1,14 +1,25 @@
-var userSlug = getUserFromUrl()
+var userSlug = getElementFromURL()
 var userUsers = []
 
 $().ready(async () => {
   populateUser()
+  $('.sponsor').click(() => {
+    return db.collection('click_log').add({
+      userId: currentUser.id || null,
+      targetUser: userSlug,
+      type: 'sponsor',
+      created_at: new Date()
+    })
+  })
+  $('.hire').click(() => {
+    return db.collection('click_log').add({
+      userId: currentUser.id || null,
+      targetUser: userSlug,
+      type: 'hire',
+      created_at: new Date()
+    })
+  })
 })
-
-function getUserFromUrl() {
-  var url = window.location.pathname
-  return url.substring(url.lastIndexOf('/') + 1)
-}
 
 $('#wf-form-Recommendation').submit(function (event) {
   event.preventDefault()
@@ -88,7 +99,7 @@ function getUserCollection(collection) {
 }
 
 async function populateUser() {
-  if (!userSlug) userSlug = getUserFromUrl()
+  if (!userSlug) userSlug = getElementFromURL()
   if (userSlug) {
     U.doc(userSlug).get().then(doc => {
       if (!doc.exists) return
@@ -107,6 +118,12 @@ async function populateUser() {
         $('.user-image').attr("src", `${userProfile.imageUrl}`)
         $('.user-image').removeClass('w-dyn-bind-empty')
       }
+      if (userProfile.sponsor) {
+        $('.sponsor').attr('href', userProfile.sponsor).show()
+      }
+      if (userProfile.hire) {
+        $('.hire').attr('href', userProfile.hire).show()
+      }
     })
 
     getSampleHTML()
@@ -123,7 +140,7 @@ async function populateUser() {
       $('.current-user-content').hide()
     }
 
-    let isFollowed = await userFollowsUser(getUserFromUrl())
+    let isFollowed = await userFollowsUser(getElementFromURL())
     if (isFollowed) {
       $('.follow-user-button').hide()
       $('.unfollow-user-button').show()

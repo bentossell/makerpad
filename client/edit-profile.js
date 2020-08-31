@@ -1,5 +1,7 @@
 $().ready(() => {
   $('#username-2').val(firebaseUser.username)
+  $('#sponsor').val(firebaseUser.sponsor)
+  $('#hire').val(firebaseUser.hire)
 })
 
 $('#wf-form-Editing-Profile').submit(function (event) {

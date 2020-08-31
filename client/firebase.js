@@ -408,7 +408,7 @@ async function renderProjects(target, items) {
           <h5 class="project-heading">${project.name}</h5>
         </a>
         <div>
-        <button onclick="window.location.href='/edit-project'" class="like-button w-button hidden edit-project-button">Edit</button>
+        <button onclick="window.location.href='/edit-project?projectId=${project.slug}'" class="like-button w-button hidden edit-project-button">Edit</button>
         <button onclick="followProject('${project.slug}')" class="like-button like-project-button w-button"></button>
         <button onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden"></button>
         </div>

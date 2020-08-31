@@ -30,11 +30,13 @@ async function getRandomUsers() {
     })
     .catch(error => console.log(error))
   let randomNumber = (Math.floor(Math.random() * items.length))
+  items = items.filter(item => item.username && item['profile-pic'])
   items = items.slice(randomNumber, randomNumber + 70)
   console.log(items)
+  let pick10 = items.slice(0, 10)
 
+  $('.div-block-932').empty()
   items.forEach(item => {
-    if (!item.username || !item['profile-pic'] || !item['full-name'] || !item.bio) return
     $('.random-users').append(`
       <a href="/u/${item.username}" class="div-block-167 w-inline-block"><img width="40"
         src="${item['profile-pic']}"
@@ -46,6 +48,15 @@ async function getRandomUsers() {
         <div class="text-block-438 tool-tagline">${item.bio}</div>
       </div>
     </a>
+    `)
+  })
+
+  pick10.forEach(item => {
+    $('.div-block-932').append(`
+      <a href="/u/${item.username}" class="link-block-74 w-inline-block">
+        <img src="${item['profile-pic']}" alt=""
+          class="directory-user-image">
+      </a>
     `)
   })
 }
