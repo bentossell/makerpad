@@ -114,10 +114,12 @@ async function populateUser() {
       $('.user-website').attr('href', userProfile['website-url'])
       $('.user-newsletter').attr('href', userProfile.newsletter)
       $('.user-youtube').attr('href', userProfile['youtube-channel'])
-      if (userProfile.imageUrl) {
-        $('.user-image').attr("src", `${userProfile.imageUrl}`)
-        $('.user-image').removeClass('w-dyn-bind-empty')
-      }
+
+      let userImage = getUserImage(userProfile)
+
+      $('.user-image').attr("src", userImage)
+      $('.user-image').removeClass('w-dyn-bind-empty')
+
       if (userProfile.sponsor) {
         $('.sponsor').attr('href', userProfile.sponsor).show()
       }
@@ -136,8 +138,10 @@ async function populateUser() {
 
     if (thisIsMyUser()) {
       $('.current-user-content').show()
+      $('.follow-user-button').hide()
     } else {
       $('.current-user-content').hide()
+      $('.alert-watchlist, .alert-tools, .alert-projects').hide()
     }
 
     let isFollowed = await userFollowsUser(getElementFromURL())
@@ -166,6 +170,7 @@ async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
   console.log(items)
   if (!items) return console.log('no items found')
+  $('.alert-tools').hide()
 
   for (item of items) {
     let company = item.company
@@ -188,8 +193,8 @@ async function populateCompanies() {
             <div class="text-block-438 tool-tagline">${company.tagline}</div>
           </div>
         </div>
-        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${company.likes ? company.likes + ' followers' : ''}</div>
-        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${company.reviews ? company.reviews + ' reviews' : ''}</div>
+        <div id="w-node-e994fcca9107-b8840649" class="info-text tool-followers">${company.likes ? company.likes : ''}</div>
+        <div id="w-node-de18e761f3d1-b8840649" class="info-text tool-review-count">${company.reviews ? company.reviews : ''}</div>
         <a id="w-node-99eeb6584ca7-b8840649" href="/company/${company.slug}" class="profile-button tool-profile-link w-button">
           Company Profile
         </a>
@@ -209,7 +214,7 @@ async function populateTutorials() {
   let items = await getUserCollection(USER_TUTORIAL)
   console.log(items)
   if (!items) return
-
+  $('.alert-watchlist').hide()
   for (item of items) {
     let tutorial = item.tutorial
     console.log(item)
@@ -258,10 +263,6 @@ async function populateTutorials() {
       })
     }
 
-    if (userSavedTutorial(tutorial.slug)) {
-
-    }
-
     if (thisIsMyUser()) {
       $('.current-user-content').show()
     } else {
@@ -273,5 +274,7 @@ async function populateTutorials() {
 async function populateProjects() {
   let items = await getUserCollection(PROJECTS)
   console.log(items)
+  if (!items) return
+  $('.alert-projects').hide()
   renderProjects('.user-projects', items)
 }

@@ -39,6 +39,11 @@ async function renderProject() {
       $('.project-user-avatar').attr('src', data.user['profile-pic'])
       $('.project-user-full-name').text(data.user['full-name'])
 
+      let userPic = getUserImage(data.user)
+
+      $('.project-user-avatar').attr("src", userPic)
+      // $('.user-image').removeClass('w-dyn-bind-empty')
+
       await getTags()
 
       if (data.tags) data.tags.forEach(tag => {

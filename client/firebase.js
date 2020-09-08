@@ -50,7 +50,10 @@ MemberStack.onReady.then(async function (member) {
         if (doc.exists) {
           firebaseUser = doc.data()
           $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
+          $('.image-111').attr('src', firebaseUser.imageUrl)
           $('#username-2').val(firebaseUser.username)
+          $('#sponsor').val(firebaseUser.sponsor)
+          $('#hire').val(firebaseUser.hire)
         } else {
           console.log('new user detected, adding to firebase')
           var info = memberstack.information
@@ -313,6 +316,8 @@ async function getTaggedProjects(tags) {
     .then(snapshot => {
       if (snapshot.empty) return []
       let data = snapshot.docs.map(doc => doc.data())
+      // data = data.sort((a, b) => a.created_at > b.created_at)
+      console.log(data)
       return data
     })
     .catch(error => console.log(error))
@@ -389,8 +394,20 @@ function updateTutorial(id, object) {
     .catch(error => handleError(error))
 }
 
+function getUserImage(userObject) {
+  // return `https://firebasestorage.googleapis.com/v0/b/makerpad-94656.appspot.com/o/profile_pictures%2F${username}?alt=media&token=acf25318-5b18-454e-85d5-b3d2e694b04a`
+  if (userObject.imageUrl) {
+    return userObject.imageUrl
+  } else if (userObject['profile-pic']) {
+    return userObject['profile-pic']
+  } else if (userObject.profile && userObject.profile['profile-pic']) {
+    return userObject.profile['profile-pic']
+  }
+}
+
 async function renderProjects(target, items) {
   console.log(items)
+  if (projectCollection.length == 0) await getCollections()
   if (!items) return
 
   for (item of items) {
@@ -407,10 +424,10 @@ async function renderProjects(target, items) {
         <a href="/p/${project.slug}" class="user-project project-text"
           <h5 class="project-heading">${project.name}</h5>
         </a>
-        <div>
-        <button onclick="window.location.href='/edit-project?projectId=${project.slug}'" class="edit-project w-button hidden">Edit</button>
-        <button onclick="followProject('${project.slug}')" class="like-button like-project-button w-button"></button>
-        <button onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden"></button>
+        <div class="flex items-center">
+          <button onclick="window.location.href='/edit-project?projectId=${project.slug}'" class="edit-project w-button hidden">Edit</button>
+          <button onclick="followProject('${project.slug}')" class="like-button like-project-button w-button"></button>
+          <button onclick="followProject('${project.slug}', true)" class="like-button unlike-project-button w-button hidden"></button>
         </div>
       </div>
     </div>`)

@@ -1,7 +1,10 @@
 $().ready(() => {
-  $('#username-2').val(firebaseUser.username)
-  $('#sponsor').val(firebaseUser.sponsor)
-  $('#hire').val(firebaseUser.hire)
+  console.log(firebaseUser)
+  setTimeout(() => {
+    $('#username-2').val(firebaseUser.username)
+    $('#sponsor').val(firebaseUser.sponsor)
+    $('#hire').val(firebaseUser.hire)
+  }, 1000)
 })
 
 $('#wf-form-Editing-Profile').submit(function (event) {
@@ -13,7 +16,8 @@ $('#wf-form-Editing-Profile').submit(function (event) {
 
 async function updateUser(data) {
   console.log(firebaseUser)
-  if (!firebaseUser || firebaseUser.username === data.username || await searchUserBySlug(data.username) == false) {
+  if (!firebaseUser || firebaseUser.username === data.username || await searchUserBySlug(slugify(data.username)) == false) {
+    data.username = slugify(data.username)
     return USERS.doc(currentUser.id).set({
       user: currentUser.id,
       ...data
@@ -26,18 +30,17 @@ async function updateUser(data) {
             .ref()
             .child(`profile_pictures/${data.username}`)
             .put(image)
-            .then()
             .then((snapshot) => {
               return snapshot.ref.getDownloadURL().then(async (imageUrl) => {
                 console.log(imageUrl)
                 let body = {
                   imageUrl,
-                  'profile-picture': {
+                  'profile-pic': {
                     url: imageUrl
                   }
                 }
-                U.doc(data.username).set(body, { merge: true })
-                USERS.doc(currentUser.id).set(body, { merge: true })
+                await USERS.doc(currentUser.id).set(body, { merge: true })
+                await U.doc(data.username).set(body, { merge: true })
                 currentUser.updateProfile({
                   'profile-pic': imageUrl
                 }, false)

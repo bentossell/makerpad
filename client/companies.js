@@ -1,13 +1,13 @@
-var company = getCompanyFromUrl()
+var company = getElementFromURL()
 
 $().ready(async () => {
   $('.cc-follow-product.cc-checked').hide()
-  company = getCompanyFromUrl()
+  company = getElementFromURL()
   console.log('company: ' + company)
   console.log('currentUser: ' + currentUser)
+  await getCollections()
   if (company && currentUser) {
-    let isSaved = userFollowsCompany(company)
-    if (isSaved) {
+    if (userFollowsCompany(company)) {
       $('.cc-follow-product.cc-checked').show()
       $('.cc-follow-product.cc-unchecked').hide()
     } else {
@@ -17,11 +17,6 @@ $().ready(async () => {
     companyFollowers()
   }
 })
-
-function getCompanyFromUrl() {
-  var url = window.location.pathname
-  return url.substring(url.lastIndexOf('/') + 1)
-}
 
 function followCompany(companyId, reverse) {
   if (!currentUser.id) return
