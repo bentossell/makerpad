@@ -195,6 +195,12 @@ function followCompany(companyId, reverse) {
   })
 }
 
+async function updateCompany(id, object) {
+  await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
+    .then(() => console.log(object))
+    .catch(error => handleError(error))
+}
+
 function followProject(projectId, reverse) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
   updateProject(projectId, {

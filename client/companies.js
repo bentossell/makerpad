@@ -18,12 +18,6 @@ $().ready(async () => {
   }
 })
 
-async function updateCompany(id, object) {
-  await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(() => console.log(object))
-    .catch(error => handleError(error))
-}
-
 // function userFollowsCompany(id) {
 //   console.log(currentUser)
 //   if (currentUser && currentUser.id) {
