@@ -183,6 +183,18 @@ function userFollowsUser(id) {
   return userUser.some(item => item.targetUser === id && item.followed == true)
 }
 
+function followCompany(companyId, reverse) {
+  if (!currentUser.id) return
+  updateCompany(companyId, {
+    userId: currentUser.id,
+    companyId,
+    followed: reverse ? false : true
+  })
+  COMPANY.doc(companyId).update({
+    likes: reverse ? decrement : increment
+  })
+}
+
 function followProject(projectId, reverse) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
   updateProject(projectId, {

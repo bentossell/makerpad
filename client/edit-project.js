@@ -1,4 +1,5 @@
 let activeTags = []
+var projectSlug = 'null'
 
 $().ready(async () => {
   $('#active-tags').empty()
@@ -7,11 +8,13 @@ $().ready(async () => {
   await populateTags()
   $('.fstQueryInput').click()
   await getCollections()
+  await getTags()
 })
 
 $('#user-project-dropdown').change(function () {
   console.log($(this).val())
   populateProjectForm($(this).val())
+  $('.delete-project-button').show()
 })
 
 function getUsersProjects() {
@@ -40,6 +43,10 @@ function populateProjectForm(project) {
       $('#details').val(data.details)
       $('.image-180').attr('src', data.imageUrl)
       $('#multipleSelect').val(data.tags)
+      $('#clone').val(data.clone)
+      $('#sale-url').val(data['sale-url'])
+      $('#price').val(data.price)
+      $('.project-sale').click()
       console.log(data.tags)
       data.tags.forEach(tag => {
         $(".fstResultItem").filter(function () {
@@ -77,6 +84,27 @@ async function updateProject(data) {
     })
 }
 
+async function deleteProject(data) {
+  if (!currentUser || !data || !data.slug) return
+  let confirmed = prompt(`To confirm, please type the slug of this project - '${data.slug}'`)
+  if (confirmed === data.slug) {
+    console.log('deleting ' + data.slug)
+    await getUsersProjects()
+      .then(async records => {
+        console.log(records)
+        let userOwnsProject = records.find(item => (item.slug === data.slug && item.userId === currentUser.id))
+        console.log(userOwnsProject)
+        if (userOwnsProject) {
+          await PROJECTS.doc(data.slug).delete()
+            .catch(e => handleError(e))
+          return handleSuccess('successfully deleted')
+        } else {
+          return handleError(`You can't edit this project`)
+        }
+      })
+  }
+}
+
 async function setProject(data) {
   return PROJECTS.doc(data.slug).set({
     userId: currentUser.id,
@@ -98,6 +126,7 @@ async function setProject(data) {
           })
       }
       handleSuccess('Project updated')
+      addToolsFromTags(data.tags)
       if ($('#wf-form-Submit-Project').length > 0) $('#wf-form-Submit-Project')[0].reset()
       if ($('#wf-form-Edit-Project').length > 0) $('#wf-form-Edit-Project')[0].reset()
     })
@@ -121,3 +150,24 @@ $('#wf-form-Edit-Project').submit(function (event) {
   console.log(data)
   updateProject(data)
 })
+
+$('.delete-project-button').click(function (event) {
+  let data = objectifyForm($('#wf-form-Edit-Project').serializeArray())
+  if (!data || !data.slug) return
+
+  let confirmed = confirm('Please confirm the deletion. This cannot be undone')
+  if (confirmed) {
+    deleteProject(data)
+  }
+})
+
+function addToolsFromTags(tags) {
+  let toolTags = tagsArray.filter(item => item.type === 'company').map(item => item.value)
+  let userTags = userCompany.map(item => item.companyId)
+  console.log({ toolTags, userTags })
+  let newTools = tags.filter(item => toolTags.includes(item) && !userTags.includes(item))
+  console.log(newTools)
+  return newTools.forEach(item => {
+    followCompany(item)
+  })
+}

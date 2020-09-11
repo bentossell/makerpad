@@ -117,8 +117,10 @@ async function populateUser() {
 
       let userImage = getUserImage(userProfile)
 
-      $('.user-image').attr("src", userImage)
-      $('.user-image').removeClass('w-dyn-bind-empty')
+      if (userImage) {
+        $('.user-image').attr("src", userImage)
+        $('.user-image').removeClass('w-dyn-bind-empty')
+      }
 
       if (userProfile.sponsor) {
         $('.sponsor').attr('href', userProfile.sponsor).show()
@@ -169,7 +171,7 @@ async function getCompaniesData() {
 async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
   console.log(items)
-  if (!items) return console.log('no items found')
+  if (!items.length) return console.log('no tools found')
   $('.alert-tools').hide()
 
   for (item of items) {
@@ -213,7 +215,7 @@ async function populateTutorials() {
   $('.tutorial-watchlist').empty()
   let items = await getUserCollection(USER_TUTORIAL)
   console.log(items)
-  if (!items) return
+  if (!items.length) return console.log('no tutorials found')
   $('.alert-watchlist').hide()
   for (item of items) {
     let tutorial = item.tutorial
@@ -274,7 +276,7 @@ async function populateTutorials() {
 async function populateProjects() {
   let items = await getUserCollection(PROJECTS)
   console.log(items)
-  if (!items) return
+  if (!items.length) return console.log('no projects')
   $('.alert-projects').hide()
   renderProjects('.user-projects', items)
 }

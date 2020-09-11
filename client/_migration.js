@@ -1,7 +1,7 @@
 // migrateCompanies()
 // migrateTutorials()
 // migrateRecommends()
-// fillUserNames()
+fillUserNames()
 // changeTargetUsers()
 // addCompanyLikes()
 // tutorialCompanies()
@@ -74,11 +74,14 @@ async function fillUserNames() {
   for (let user of users) {
     let memberstackId = await searchMemberstackUserByEmail(user.email)
     if (!memberstackId.id) continue
+    console.log(memberstackId.username + ' exists')
     if (memberstackId.username) continue
     // let slug = await getItemSlug(company)
     console.log(`${memberstackId.id} - ${user.slug}`)
+    console.log({ _cmsItem: user })
     await db.collection('memberstack_users').doc(memberstackId.id).update({
-      username: user.slug
+      username: user.slug,
+      _cmsItem: user
     })
   }
   // let memberstackId = await searchMemberstackUserByEmail(email)

@@ -20,6 +20,7 @@ $().ready(async () => {
   console.log(userOwnsProject)
   if (userOwnsProject) {
     $('.edit-project').attr('href', `/edit-project?projectId=${project}`).show()
+    $('.delete-project').show()
   }
 })
 
@@ -42,6 +43,12 @@ async function renderProject() {
       let userPic = getUserImage(data.user)
 
       $('.project-user-avatar').attr("src", userPic)
+
+      if (data.clone) $('.clone').attr('href', data.clone).show()
+      if (data['sale-url']) $('.purchase').attr('href', data['sale-url'])
+      if (data.price) $('.project-price-text').text(data.price)
+      if (data['sale-url'] || data.price) $('#project-purchase-block').show()
+
       // $('.user-image').removeClass('w-dyn-bind-empty')
 
       await getTags()

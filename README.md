@@ -4,6 +4,7 @@
 ```
 firebase functions:config:set webflow.key="REPLACE_WITH_YOUR_KEY"
 firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
+firebase functions:config:set memberstack.key="REPLACE_WITH_KEY"
 ```
 
 ### Links to CDN
@@ -19,7 +20,6 @@ firebase functions:config:set webflow.site_id="REPLACE_WITH_YOUR_SITE_ID"
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-storage.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@latest/client/firebase.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/bentossell/makerpad@2.0.1/client/user.js"></script>
 ```
 
 ### Individual pages

@@ -18,18 +18,6 @@ $().ready(async () => {
   }
 })
 
-function followCompany(companyId, reverse) {
-  if (!currentUser.id) return
-  updateCompany(companyId, {
-    userId: currentUser.id,
-    companyId,
-    followed: reverse ? false : true
-  })
-  COMPANY.doc(companyId).update({
-    likes: reverse ? decrement : increment
-  })
-}
-
 async function updateCompany(id, object) {
   await USER_COMPANY.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(() => console.log(object))
