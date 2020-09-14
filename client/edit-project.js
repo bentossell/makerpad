@@ -4,6 +4,7 @@ var projectSlug = 'null'
 $().ready(async () => {
   $('#active-tags').empty()
   $('#project-tags').empty()
+  $('.div-block-955').hide()
   getUsersProjects()
   await populateTags()
   $('.fstQueryInput').click()
@@ -14,7 +15,7 @@ $().ready(async () => {
 $('#user-project-dropdown').change(function () {
   console.log($(this).val())
   populateProjectForm($(this).val())
-  $('.delete-project-button').show()
+  $('.div-block-955').show()
 })
 
 function getUsersProjects() {
@@ -85,7 +86,7 @@ async function updateProject(data) {
 }
 
 async function deleteProject(data) {
-  if (!currentUser || !data || !data.slug) return
+  if (!currentUser || !data || !data.slug || data.slug === 'Select Option') return
   let confirmed = prompt(`To confirm, please type the slug of this project - '${data.slug}'`)
   if (confirmed === data.slug) {
     console.log('deleting ' + data.slug)
@@ -103,6 +104,7 @@ async function deleteProject(data) {
         }
       })
   }
+  $('.div-block-955').hide()
 }
 
 async function setProject(data) {
@@ -154,11 +156,7 @@ $('#wf-form-Edit-Project').submit(function (event) {
 $('.delete-project-button').click(function (event) {
   let data = objectifyForm($('#wf-form-Edit-Project').serializeArray())
   if (!data || !data.slug) return
-
-  let confirmed = confirm('Please confirm the deletion. This cannot be undone')
-  if (confirmed) {
-    deleteProject(data)
-  }
+  deleteProject(data)
 })
 
 function addToolsFromTags(tags) {

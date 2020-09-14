@@ -18,28 +18,15 @@ $().ready(async () => {
   }
 })
 
-// function userFollowsCompany(id) {
-//   console.log(currentUser)
-//   if (currentUser && currentUser.id) {
-//     return USER_COMPANY
-//       .where("userId", "==", currentUser.id)
-//       .where("companyId", "==", id)
-//       .limit(1).get()
-//       .then(snapshot => {
-//         if (snapshot.empty) return false
-//         console.log(snapshot.docs[0].data())
-//         return snapshot.docs[0].data()
-//       })
-//       .catch(error => console.log(error))
-//   } else return false
-// }
-
 function companyFollowers() {
   return USER_COMPANY
     .where("companyId", "==", company)
     .get()
     .then(snapshot => {
       $('.cc-follow-count').text(snapshot.size)
+      let users = snapshot.docs.map(doc => doc.data().user)
+      console.log(users)
+      renderUsers('.users', users)
     })
 }
 

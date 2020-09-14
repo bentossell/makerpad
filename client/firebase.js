@@ -203,11 +203,15 @@ async function updateCompany(id, object) {
 
 function followProject(projectId, reverse) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
-  updateProject(projectId, {
+
+  await USER_PROJECT.doc(`${currentUser.id}-${id}`).set({
     userId: currentUser.id,
     projectId,
     followed: reverse ? false : true
-  })
+  }, { merge: true })
+    .then(() => console.log(object))
+    .catch(error => handleError(error))
+
   if (reverse) {
     $(`[data-project="${projectId}"] .unlike-project-button`).hide()
     $(`[data-project="${projectId}"] .like-project-button`).show()
@@ -370,12 +374,6 @@ async function getTags() {
     })
 }
 
-async function updateProject(id, object) {
-  await USER_PROJECT.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
-    .then(() => console.log(object))
-    .catch(error => handleError(error))
-}
-
 function getElementFromURL() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
@@ -420,7 +418,29 @@ function getUserImage(userObject) {
     return userObject['profile-pic']
   } else if (userObject.profile && userObject.profile['profile-pic']) {
     return userObject.profile['profile-pic']
+  } else {
+    return 'https://w5insight.com/wp-content/uploads/2014/07/placeholder-user-400x400.png'
   }
+}
+
+async function renderUsers(target, items) {
+  console.log(items)
+  $(target).empty()
+  items.forEach(item => {
+    let profileImage = getUserImage(item)
+    $(target).append(`
+      <a href="/u/${item.username}" class="div-block-167 w-inline-block"><img width="40"
+        src="${profileImage}"
+        alt="" class="image-37 tool-img">
+      <div class="div-block-168 vertical">
+        <div class="div-block-169">
+          <h4 class="heading-259 tool-name">${item['full-name']}</h4>
+        </div>
+        <div class="text-block-438 tool-tagline">${item.bio}</div>
+      </div>
+    </a>
+    `)
+  })
 }
 
 async function renderProjects(target, items) {

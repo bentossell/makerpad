@@ -21,7 +21,6 @@ async function getRecentProjects() {
 
 async function getRandomUsers() {
   let items = await USERS
-    .where('profile-pic', '>', '')
     .get()
     .then(snapshot => {
       if (snapshot.empty) return []
@@ -30,31 +29,18 @@ async function getRandomUsers() {
     })
     .catch(error => console.log(error))
   let randomNumber = (Math.floor(Math.random() * items.length))
-  items = items.filter(item => item.username && item['profile-pic'])
+  items = items.filter(item => item.username)
   items = items.slice(randomNumber, randomNumber + 70)
   console.log(items)
   let pick10 = items.slice(0, 10)
 
   $('.div-block-932').empty()
-  items.forEach(item => {
-    $('.random-users').append(`
-      <a href="/u/${item.username}" class="div-block-167 w-inline-block"><img width="40"
-        src="${item['profile-pic']}"
-        alt="" class="image-37 tool-img">
-      <div class="div-block-168 vertical">
-        <div class="div-block-169">
-          <h4 class="heading-259 tool-name">${item['full-name']}</h4>
-        </div>
-        <div class="text-block-438 tool-tagline">${item.bio}</div>
-      </div>
-    </a>
-    `)
-  })
-
+  renderUsers('.random-users', items)
+  let profileImage = getUserImage(item)
   pick10.forEach(item => {
     $('.div-block-932').append(`
       <a href="/u/${item.username}" class="link-block-74 w-inline-block">
-        <img src="${item['profile-pic']}" alt=""
+        <img src="${profileImage}" alt=""
           class="directory-user-image">
       </a>
     `)

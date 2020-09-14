@@ -1,7 +1,7 @@
 // migrateCompanies()
 // migrateTutorials()
 // migrateRecommends()
-fillUserNames()
+// fillUserNames()
 // changeTargetUsers()
 // addCompanyLikes()
 // tutorialCompanies()
