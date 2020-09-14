@@ -204,7 +204,7 @@ async function updateCompany(id, object) {
 function followProject(projectId, reverse) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
 
-  await USER_PROJECT.doc(`${currentUser.id}-${id}`).set({
+  USER_PROJECT.doc(`${currentUser.id}-${id}`).set({
     userId: currentUser.id,
     projectId,
     followed: reverse ? false : true
@@ -306,6 +306,7 @@ async function populateTags() {
       .then(snapshot => {
         snapshot.forEach(doc => {
           let data = doc.data()
+          tagsArray.push({ type: 'company', value: data.slug })
           $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
         })
       })
@@ -314,6 +315,7 @@ async function populateTags() {
       .then(snapshot => {
         snapshot.forEach(doc => {
           let data = doc.data()
+          tagsArray.push({ type: 'type', value: data.slug })
           $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
         })
       })
@@ -322,6 +324,7 @@ async function populateTags() {
       .then(snapshot => {
         snapshot.forEach(doc => {
           let data = doc.data()
+          tagsArray.push({ type: 'challenges', value: data.slug })
           $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
         })
       })
@@ -343,35 +346,6 @@ async function getTaggedProjects(tags) {
       return data
     })
     .catch(error => console.log(error))
-}
-
-async function getTags() {
-  await db.collection('company').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        tagsArray.push({ type: 'company', value: data.slug })
-        $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
-      })
-    })
-
-  await db.collection('type').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        tagsArray.push({ type: 'type', value: data.slug })
-        $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
-      })
-    })
-
-  await db.collection('challenges').get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        tagsArray.push({ type: 'challenges', value: data.slug })
-        $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
-      })
-    })
 }
 
 function getElementFromURL() {

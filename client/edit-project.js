@@ -1,7 +1,7 @@
 let activeTags = []
 var projectSlug = 'null'
 
-$().ready(async () => {
+$(document).ready(async () => {
   $('#active-tags').empty()
   $('#project-tags').empty()
   $('.div-block-955').hide()
@@ -9,7 +9,6 @@ $().ready(async () => {
   await populateTags()
   $('.fstQueryInput').click()
   await getCollections()
-  await getTags()
 })
 
 $('#user-project-dropdown').change(function () {
@@ -139,6 +138,7 @@ $('#wf-form-Submit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
+  selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags
   console.log(data)
   createProject(data)
@@ -148,6 +148,7 @@ $('#wf-form-Edit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
+  selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags
   console.log(data)
   updateProject(data)
