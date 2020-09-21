@@ -20,13 +20,11 @@ firebaseAuth()
 
 var currentUser = {}
 var firebaseUser = {}
-var userTutorial = []
-var userProject = []
-var userUser = []
-var userCompany = []
-var companyCollection = []
-var projectCollection = []
 var tagsArray = []
+
+var firebaseCollections = {
+  'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_company': [], 'workflows': []
+}
 
 var COMPANY = db.collection('company')
 var TUTORIAL = db.collection('tutorial')
@@ -37,6 +35,8 @@ var USER_TUTORIAL = db.collection('user_tutorial')
 var USER_PROJECT = db.collection('user_project')
 var USER_USER = db.collection('user_user')
 var USER_COMPANY = db.collection('user_company')
+var USER_WORKFLOW = db.collection('user_workflow')
+var WORKFLOWS = db.collection('workflows')
 
 var increment = firebase.firestore.FieldValue.increment(1)
 var decrement = firebase.firestore.FieldValue.increment(-1)
@@ -108,21 +108,11 @@ function handleSuccess(message) {
   setTimeout(() => $('#firebase-notification').hide(), 4000)
 }
 
-// firebaseAuth()
 function firebaseAuth() {
   // Sign in anonymously to restrict firestore access to makerpad.com
   firebase.auth().signInAnonymously()
     .then(user => console.log('Firebase signed in anon'))
     .catch(error => console.log(error))
-
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      // firebaseUser = user
-      console.log(user)
-    } else {
-
-    }
-  })
 }
 
 function objectifyForm(formArray) {
@@ -153,34 +143,32 @@ function slugExists(slug, collection) {
     })
 }
 
-$().ready(async () => {
-  // total company follows
-  // set users tutorials, companies, user
-  // $('.current-user-content').hide()
-})
-
 function isCurrentUserContent(checkValue) {
   return false
 }
 
 function userSavedTutorial(id) {
-  return userTutorial.some(item => item.tutorialId === id && item.watchLater == true)
+  return firebaseCollections['user_tutorial'].some(item => item.tutorialId === id && item.watchLater == true)
 }
 
 function userCompletedTutorial(id) {
-  return userTutorial.some(item => item.tutorialId === id && item.completed == true)
+  return firebaseCollections['user_tutorial'].some(item => item.tutorialId === id && item.completed == true)
 }
 
 function userFollowsCompany(id) {
-  return userCompany.some(item => item.companyId === id && item.followed == true)
+  return firebaseCollections['company'].some(item => item.companyId === id && item.followed == true)
 }
 
 function userLikesProject(id) {
-  return userProject.some(item => item.projectId === id && item.followed == true)
+  return firebaseCollections['user_project'].some(item => item.projectId === id && item.followed == true)
+}
+
+function userSavedWorkflow(id) {
+  return firebaseCollections['user_project'].some(item => item.workflowId === id && item.saved == true)
 }
 
 function userFollowsUser(id) {
-  return userUser.some(item => item.targetUser === id && item.followed == true)
+  return firebaseCollections['user_user'].some(item => item.targetUser === id && item.followed == true)
 }
 
 function followCompany(companyId, reverse) {
@@ -204,11 +192,13 @@ async function updateCompany(id, object) {
 function followProject(projectId, reverse) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
 
-  USER_PROJECT.doc(`${currentUser.id}-${id}`).set({
+  let object = {
     userId: currentUser.id,
     projectId,
     followed: reverse ? false : true
-  }, { merge: true })
+  }
+
+  USER_PROJECT.doc(`${currentUser.id}-${projectId}`).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(error => handleError(error))
 
@@ -232,7 +222,7 @@ async function getCollections() {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
       console.log('got COMPANY')
-      companyCollection = records
+      firebaseCollections['company'] = records
       return records
     })
 
@@ -242,7 +232,7 @@ async function getCollections() {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
       console.log('got PROJECTS')
-      projectCollection = records
+      firebaseCollections['projects'] = records
       return records
     })
 
@@ -254,7 +244,7 @@ async function getCollections() {
       .then(snapshot => {
         let records = snapshot.docs.map(doc => doc.data())
         console.log('got USER_PROJECT')
-        userProject = records
+        firebaseCollections['user_project'] = records
         return records
       })
     let userUserPromise = USER_USER
@@ -263,7 +253,7 @@ async function getCollections() {
       .then(snapshot => {
         let records = snapshot.docs.map(doc => doc.data())
         console.log('got USER_USER')
-        userUser = records
+        firebaseCollections['user_user'] = records
         return records
       })
     let userTutorialPromise = USER_TUTORIAL
@@ -273,7 +263,7 @@ async function getCollections() {
         if (snapshot.empty) return false
         let records = snapshot.docs.map(doc => doc.data())
         console.log('got USER_TUTORIAL')
-        userTutorial = records
+        firebaseCollections['user_tutorial'] = records
         return records
       })
 
@@ -284,7 +274,7 @@ async function getCollections() {
         if (snapshot.empty) return false
         let records = snapshot.docs.map(doc => doc.data())
         console.log('got USER_COMPANY')
-        userCompany = records
+        firebaseCollections['user_company'] = records
         return records
       })
 
@@ -306,7 +296,7 @@ async function populateTags() {
       .then(snapshot => {
         snapshot.forEach(doc => {
           let data = doc.data()
-          tagsArray.push({ type: 'company', value: data.slug })
+          // tagsArray.push({ type: 'company', value: data.slug })
           $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
         })
       })
@@ -315,7 +305,7 @@ async function populateTags() {
       .then(snapshot => {
         snapshot.forEach(doc => {
           let data = doc.data()
-          tagsArray.push({ type: 'type', value: data.slug })
+          // tagsArray.push({ type: 'type', value: data.slug })
           $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
         })
       })
@@ -324,7 +314,7 @@ async function populateTags() {
       .then(snapshot => {
         snapshot.forEach(doc => {
           let data = doc.data()
-          tagsArray.push({ type: 'challenges', value: data.slug })
+          // tagsArray.push({ type: 'challenges', value: data.slug })
           $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
         })
       })
@@ -348,6 +338,32 @@ async function getTaggedProjects(tags) {
     .catch(error => console.log(error))
 }
 
+async function getTags() {
+  await db.collection('company').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        tagsArray.push({ type: 'company', value: data.slug })
+      })
+    })
+
+  await db.collection('type').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        tagsArray.push({ type: 'type', value: data.slug })
+      })
+    })
+
+  await db.collection('challenges').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        tagsArray.push({ type: 'challenges', value: data.slug })
+      })
+    })
+}
+
 function getElementFromURL() {
   var url = window.location.pathname
   return url.substring(url.lastIndexOf('/') + 1)
@@ -356,6 +372,12 @@ function getElementFromURL() {
 function getParamFromURL(param) {
   const urlParams = new URLSearchParams(window.location.search)
   return urlParams.get(param)
+}
+
+function populateFormFromData(data) {
+  for (let [key, value] of Object.entries(data)) {
+    $(`[name=${key}]`).val(value)
+  }
 }
 
 function markTutorialComplete(tutorialId, reverse) {
@@ -419,7 +441,7 @@ async function renderUsers(target, items) {
 
 async function renderProjects(target, items) {
   console.log(items)
-  if (projectCollection.length == 0) await getCollections()
+  if (firebaseCollections['projects'].length == 0) await getCollections()
   if (!items) return
 
   for (item of items) {

@@ -21,7 +21,7 @@ async function updateUser(data) {
     return USERS.doc(currentUser.id).set({
       user: currentUser.id,
       ...data
-    })
+    }, { merge: true })
       .then(() => {
         let image = $('#profile-pic')[0].files[0] || null
         if (image) {
@@ -54,6 +54,7 @@ async function updateUser(data) {
             .put(image)
         }
         MemberStack.onReady.then(function (member) {
+          if (!member) return console.log('no member')
           member.updateProfile({
             'full-name': data['full-name'],
             'profile-link': `https://makerpad.co/u/${data.username}`,

@@ -1,115 +1,125 @@
-let activeTags = []
-var projectSlug = 'null'
-
 $(document).ready(async () => {
   $('#active-tags').empty()
-  $('#project-tags').empty()
+  $('#workflow-tags').empty()
   $('.div-block-955').hide()
-  getUsersProjects()
+  getUsersWorkflows()
   await populateTags()
   $('.fstQueryInput').click()
   await getCollections()
   await getTags()
 })
 
-$('#user-project-dropdown').change(function () {
+$('#user-workflow-dropdown').change(function () {
   console.log($(this).val())
-  populateProjectForm($(this).val())
+  populateWorkflowForm($(this).val())
   $('.div-block-955').show()
 })
 
-function getUsersProjects() {
-  return PROJECTS.where("userId", "==", currentUser.id).get()
+function getUsersWorkflows() {
+  return WORKFLOWS.where("userId", "==", currentUser.id).get()
     .then(snapshot => {
       let records = snapshot.docs.map(doc => doc.data())
       console.log(records)
       records.forEach(record => {
-        $('#user-project-dropdown').append(new Option(record.name, record.slug))
+        $('#user-workflow-dropdown').append(new Option(record.name, record.slug))
       })
       return records
     })
 }
 
-function populateProjectForm(project) {
+function populateWorkflowForm(workflow) {
   $('#multipleSelect').val([])
   $('.fstChoiceRemove').click()
-  PROJECTS.doc(project).get()
+  WORKFLOWS.doc(workflow).get()
     .then(doc => {
       if (!doc.exists) return
       let data = doc.data()
       console.log(data)
-      $('#name').val(data.name)
-      $('#tagline').val(data.tagline)
-      $('#url').val(data.url)
-      $('#details').val(data.details)
+      // loop
+      populateFormFromData(data)
       $('.image-180').attr('src', data.imageUrl)
       $('#multipleSelect').val(data.tags)
-      $('#clone').val(data.clone)
-      $('#sale-url').val(data['sale-url'])
-      $('#price').val(data.price)
-      $('.project-sale').click()
-      tinymce.get()[0].setContent(data.postdetails)
       console.log(data.tags)
       data.tags.forEach(tag => {
         $(".fstResultItem").filter(function () {
           return $(this).text() === tag
         }).click()
       })
+      tinymce.get()[0].setContent(data.postdetails)
     })
 }
 
-async function createProject(data) {
+async function createWorkflow(data) {
   if (!currentUser) return
-  data.slug = slugify(data.name)
-
-  if (await slugExists(data.slug, 'projects') == false) {
-    await setProject(data)
-  } else {
-    return handleError('Project name already exists.')
-  }
+  return WORKFLOWS.add({
+    userId: currentUser.id,
+    ...data
+  })
+    .then(doc => {
+      let image = $('#image')[0].files[0] || null
+      if (image) {
+        console.log(image)
+        storage
+          .ref()
+          .child(`workflow_images/${doc.id}`)
+          .put(image)
+          .then((snapshot) => {
+            console.log(snapshot.ref.getDownloadURL())
+            snapshot.ref.getDownloadURL().then((imageUrl) => {
+              WORKFLOWS.doc(doc.id).update({ imageUrl })
+            })
+          })
+      }
+      handleSuccess('Workflow updated')
+      addToolsFromTags(data.tags)
+      if ($('#wf-form-Submit-Workflow').length > 0) $('#wf-form-Submit-Workflow')[0].reset()
+      if ($('#wf-form-Edit-Workflow').length > 0) $('#wf-form-Edit-Workflow')[0].reset()
+    })
+    .catch(error => handleError(error))
 }
 
-async function updateProject(data) {
+async function updateWorkflow(data) {
   if (!currentUser) return
   console.log('updating ' + data.slug)
-  await getUsersProjects()
+  await getUsersWorkflows()
     .then(records => {
       console.log(records)
-      let userOwnsProject = records.find(item => (item.slug === data.slug && item.userId === currentUser.id))
-      console.log(userOwnsProject)
-      if (userOwnsProject) {
-        setProject(data)
+      let userOwnsWorkflow = records.find(item => (item.slug === data.slug && item.userId === currentUser.id))
+      console.log(userOwnsWorkflow)
+      if (userOwnsWorkflow) {
+        setWorkflow(data)
         return handleSuccess('successfully updated')
       } else {
-        return handleError(`You can't edit this project`)
+        return handleError(`You can't edit this workflow`)
       }
     })
 }
 
-async function deleteProject(data) {
+async function deleteWorkflow(data) {
   if (!currentUser || !data || !data.slug || data.slug === 'Select Option') return
-  let confirmed = prompt(`To confirm, please type the slug of this project - '${data.slug}'`)
+  let confirmed = prompt(`To confirm, please type the slug of this workflow - '${data.slug}'`)
   if (confirmed === data.slug) {
     console.log('deleting ' + data.slug)
-    await getUsersProjects()
+    await getUsersWorkflows()
       .then(async records => {
         console.log(records)
-        let userOwnsProject = records.find(item => (item.slug === data.slug && item.userId === currentUser.id))
-        console.log(userOwnsProject)
-        if (userOwnsProject) {
-          await PROJECTS.doc(data.slug).delete()
+        let userOwnsWorkflow = records.find(item => (item.slug === data.slug && item.userId === currentUser.id))
+        console.log(userOwnsWorkflow)
+        if (userOwnsWorkflow) {
+          await WORKFLOWS.doc(data.slug).delete()
             .catch(e => handleError(e))
           return handleSuccess('successfully deleted')
         } else {
-          return handleError(`You can't edit this project`)
+          return handleError(`You can't edit this workflow`)
         }
       })
   }
   $('.div-block-955').hide()
 }
 
-async function setProject(data) {
-  return PROJECTS.doc(data.slug).set({
+async function setWorkflow(data) {
+  if (!currentUser) return
+  return WORKFLOWS.doc(data.slug).set({
     userId: currentUser.id,
     ...data
   }, { merge: true })
@@ -119,47 +129,47 @@ async function setProject(data) {
         console.log(image)
         storage
           .ref()
-          .child(`project_images/${data.slug}`)
+          .child(`workflow_images/${data.slug}`)
           .put(image)
           .then((snapshot) => {
             console.log(snapshot.ref.getDownloadURL())
             snapshot.ref.getDownloadURL().then((imageUrl) => {
-              PROJECTS.doc(data.slug).update({ imageUrl })
+              WORKFLOWS.doc(data.slug).update({ imageUrl })
             })
           })
       }
-      handleSuccess('Project updated')
+      handleSuccess('Workflow updated')
       addToolsFromTags(data.tags)
-      if ($('#wf-form-Submit-Project').length > 0) $('#wf-form-Submit-Project')[0].reset()
-      if ($('#wf-form-Edit-Project').length > 0) $('#wf-form-Edit-Project')[0].reset()
+      if ($('#wf-form-Submit-Workflow').length > 0) $('#wf-form-Submit-Workflow')[0].reset()
+      if ($('#wf-form-Edit-Workflow').length > 0) $('#wf-form-Edit-Workflow')[0].reset()
     })
     .catch(error => handleError(error))
 }
 
-$('#wf-form-Submit-Project').submit(function (event) {
+$('#wf-form-Submit-Workflow').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags
   console.log(data)
-  createProject(data)
+  createWorkflow(data)
 })
 
-$('#wf-form-Edit-Project').submit(function (event) {
+$('#wf-form-Edit-Workflow').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags
   console.log(data)
-  updateProject(data)
+  updateWorkflow(data)
 })
 
-$('.delete-project-button').click(function (event) {
-  let data = objectifyForm($('#wf-form-Edit-Project').serializeArray())
+$('.delete-workflow-button').click(function (event) {
+  let data = objectifyForm($('#wf-form-Edit-Workflow').serializeArray())
   if (!data || !data.slug) return
-  deleteProject(data)
+  deleteWorkflow(data)
 })
 
 function addToolsFromTags(tags) {

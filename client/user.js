@@ -176,7 +176,7 @@ async function populateCompanies() {
 
   for (item of items) {
     let company = item.company
-    let record = companyCollection.find(item => item.slug === company.slug)
+    let record = firebaseCollections['company'].find(item => item.slug === company.slug)
     if (record && record.likes) company.likes = record.likes
     company.reviews = 0
     let logo = (company.logo && company.logo.url) ? company.logo.url : ""
@@ -256,7 +256,7 @@ async function populateTutorials() {
 
     if (tutorial.tools_used) {
       tutorial.tools_used.forEach(item => {
-        let company = companyCollection.find(com => com.slug === item)
+        let company = firebaseCollections['company'].find(com => com.slug === item)
         $(`.tutorial-tools-${tutorial.slug}`).append(`
           <a href="/company/${item}" class="user-tool tool-img w-inline-block">
             <img src="${company.logo ? company.logo.url : ''}" width="40/">

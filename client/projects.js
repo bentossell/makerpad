@@ -1,7 +1,5 @@
 var project = getElementFromURL()
-console.log('Project: ' + project)
 renderProject()
-let activeTags = []
 
 $().ready(async () => {
   $('#active-tags').empty()
@@ -16,7 +14,7 @@ $().ready(async () => {
     $('.unlike-project-button').hide()
     $('.like-project-button').show()
   }
-  let userOwnsProject = projectCollection.find(item => (item.slug === project && item.userId === currentUser.id))
+  let userOwnsProject = firebaseCollections['projects'].find(item => (item.slug === project && item.userId === currentUser.id))
   console.log(userOwnsProject)
   if (userOwnsProject) {
     $('.edit-project').attr('href', `/edit-project?projectId=${project}`).show()
@@ -37,9 +35,9 @@ async function renderProject() {
       $('.p-img').attr('src', data.imageUrl)
       $('.p-description').html(data.details)
       $('.project-user-link').attr('href', `/u/${data.username}`)
-      $('.project-user-full-name').text(data.user['full-name'])
 
       let userPic = getUserImage(data.user)
+      $('.project-user-full-name').text(data.user['full-name'] || data.user.profile['full-name'])
       $('.project-user-avatar').attr("src", userPic)
 
       if (data.clone) $('.clone').attr('href', data.clone).show()
