@@ -156,7 +156,7 @@ function userCompletedTutorial(id) {
 }
 
 function userFollowsCompany(id) {
-  return firebaseCollections['company'].some(item => item.companyId === id && item.followed == true)
+  return firebaseCollections['user_company'].some(item => item.companyId === id && item.followed == true)
 }
 
 function userLikesProject(id) {
@@ -214,6 +214,31 @@ function followProject(projectId, reverse) {
   })
 }
 
+function saveWorkflow(workflowId, reverse) {
+  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
+
+  let object = {
+    userId: currentUser.id,
+    workflowId,
+    saved: reverse ? false : true
+  }
+
+  USER_WORKFLOW.doc(`${currentUser.id}-${workflowId}`).set(object, { merge: true })
+    .then(() => console.log(object))
+    .catch(error => handleError(error))
+
+  if (reverse) {
+    $(`[data-workflow="${workflowId}"] .unlike-project-button`).hide()
+    $(`[data-workflow="${workflowId}"] .like-project-button`).show()
+  } else {
+    $(`[data-workflow="${workflowId}"] .unlike-project-button`).show()
+    $(`[data-workflow="${workflowId}"] .like-project-button`).hide()
+  }
+  WORKFLOWS.doc(workflowId).update({
+    saves: reverse ? decrement : increment
+  })
+}
+
 async function getCollections() {
 
   let companyPromise = COMPANY
@@ -233,6 +258,16 @@ async function getCollections() {
       let records = snapshot.docs.map(doc => doc.data())
       console.log('got PROJECTS')
       firebaseCollections['projects'] = records
+      return records
+    })
+
+  let workflowPromise = WORKFLOWS
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return false
+      let records = snapshot.docs.map(doc => doc.data())
+      console.log('got WORKFLOWS')
+      firebaseCollections['workflows'] = records
       return records
     })
 
@@ -278,9 +313,20 @@ async function getCollections() {
         return records
       })
 
-    await Promise.all([userCompanyPromise, userTutorialPromise, userUserPromise, userProjectPromise])
+    let userWorkflowPromise = USER_WORKFLOW
+      .where("userId", "==", currentUser.id)
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) return false
+        let records = snapshot.docs.map(doc => doc.data())
+        console.log('got USER_WORKFLOW')
+        firebaseCollections['user_workflow'] = records
+        return records
+      })
+
+    await Promise.all([userCompanyPromise, userTutorialPromise, userUserPromise, userProjectPromise, userWorkflowPromise])
   }
-  await Promise.all([companyPromise, projectPromise])
+  await Promise.all([companyPromise, projectPromise, workflowPromise])
 }
 
 async function populateTags() {
@@ -376,7 +422,9 @@ function getParamFromURL(param) {
 
 function populateFormFromData(data) {
   for (let [key, value] of Object.entries(data)) {
-    $(`[name=${key}]`).val(value)
+    try {
+      $(`[name=${key}]`).val(value)
+    } catch (error) { }
   }
 }
 

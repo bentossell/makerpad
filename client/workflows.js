@@ -3,20 +3,20 @@ renderWorkflow()
 
 $().ready(async () => {
   $('#active-tags').empty()
-  $('#workflow-tags').empty()
+  $('#project-tags').empty()
   await getCollections()
   let isLiked = userSavedWorkflow(workflow)
   if (isLiked) {
-    $('.unlike-workflow-button').show()
-    $('.like-workflow-button').hide()
+    $('.unlike-project-button').show()
+    $('.like-project-button').hide()
   } else {
-    $('.unlike-workflow-button').hide()
-    $('.like-workflow-button').show()
+    $('.unlike-project-button').hide()
+    $('.like-project-button').show()
   }
   let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.userId === currentUser.id))
   if (userOwnsWorkflow) {
-    $('.edit-workflow').attr('href', `/edit-workflow?workflowId=${workflow}`).show()
-    $('.delete-workflow').show()
+    $('.edit-project').attr('href', `/edit-workflow?workflowId=${workflow}`).show()
+    $('.delete-project').show()
   }
 })
 
@@ -31,16 +31,16 @@ async function renderWorkflow() {
       $('.p-link').attr('href', data.url)
       $('.p-img').attr('src', data.imageUrl)
       $('.p-description').html(data.details)
-      $('.workflow-user-link').attr('href', `/u/${data.username}`)
-      $('.workflow-user-full-name').text(data.user['full-name'])
+      $('.project-user-link').attr('href', `/u/${data.username}`)
+      $('.project-user-full-name').text(data.user['full-name'])
 
       let userPic = getUserImage(data.user)
-      $('.workflow-user-avatar').attr("src", userPic)
+      $('.project-user-avatar').attr("src", userPic)
 
       if (data.clone) $('.clone').attr('href', data.clone).show()
       if (data['sale-url']) $('.purchase').attr('href', data['sale-url'])
-      if (data.price) $('.workflow-price-text').text(data.price)
-      if (data['sale-url'] || data.price) $('#workflow-purchase-block').show()
+      if (data.price) $('.project-price-text').text(data.price)
+      if (data['sale-url'] || data.price) $('#project-purchase-block').show()
 
       // $('.user-image').removeClass('w-dyn-bind-empty')
 
@@ -48,8 +48,8 @@ async function renderWorkflow() {
 
       if (data.tags) data.tags.forEach(tag => {
         let tagItem = tagsArray.find(item => item.value === tag)
-        $('#workflow-tags').append(`
-          <a href="/${tagItem.type}/${tagItem.value}" class="workflow-tag">${tag}</a>
+        $('#project-tags').append(`
+          <a href="/${tagItem.type}/${tagItem.value}" class="project-tag">${tag}</a>
         `)
       })
     })
@@ -58,6 +58,7 @@ async function renderWorkflow() {
 
 async function cloneWorkflow(workflowId) {
   if (!currentUser) return
+  if (!confirm(`Please confirm cloning this workflow`)) return
   return WORKFLOWS.doc(workflowId).get().then(doc => {
     if (doc.exists) {
       WORKFLOWS.add({ ...doc.data(), cloned_from: workflowId })
@@ -70,20 +71,18 @@ async function cloneWorkflow(workflowId) {
 
 $('.clone-workflow-button').click(() => {
   cloneWorkflow(workflow)
-  $('.unlike-workflow-button').show()
-  $('.like-workflow-button').hide()
 })
 
 // follow
-$('.like-workflow-button').click(() => {
+$('.like-project-button').click(() => {
   followWorkflow(workflow)
-  $('.unlike-workflow-button').show()
-  $('.like-workflow-button').hide()
+  $('.unlike-project-button').show()
+  $('.like-project-button').hide()
 })
 
 // unfollow
-$('.unlike-workflow-button').click(() => {
+$('.unlike-project-button').click(() => {
   followWorkflow(workflow, true)
-  $('.unlike-workflow-button').hide()
-  $('.like-workflow-button').show()
+  $('.unlike-project-button').hide()
+  $('.like-project-button').show()
 })

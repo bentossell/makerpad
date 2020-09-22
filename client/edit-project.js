@@ -48,13 +48,13 @@ function populateProjectForm(project) {
       $('#sale-url').val(data['sale-url'])
       $('#price').val(data.price)
       $('.project-sale').click()
-      tinymce.get()[0].setContent(data.postdetails)
       console.log(data.tags)
       data.tags.forEach(tag => {
         $(".fstResultItem").filter(function () {
           return $(this).text() === tag
         }).click()
       })
+      tinymce.get()[0].setContent(data.details)
     })
 }
 

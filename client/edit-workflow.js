@@ -1,3 +1,4 @@
+let tinyElement = tinymce.get()
 $(document).ready(async () => {
   $('#active-tags').empty()
   $('#workflow-tags').empty()
@@ -31,7 +32,7 @@ function populateWorkflowForm(workflow) {
   $('#multipleSelect').val([])
   $('.fstChoiceRemove').click()
   WORKFLOWS.doc(workflow).get()
-    .then(doc => {
+    .then(async doc => {
       if (!doc.exists) return
       let data = doc.data()
       console.log(data)
@@ -45,7 +46,7 @@ function populateWorkflowForm(workflow) {
           return $(this).text() === tag
         }).click()
       })
-      tinymce.get()[0].setContent(data.postdetails)
+      tinymce.get()[0].setContent(data.details)
     })
 }
 

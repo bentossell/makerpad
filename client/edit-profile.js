@@ -4,7 +4,9 @@ $().ready(() => {
     $('#username-2').val(firebaseUser.username)
     $('#sponsor').val(firebaseUser.sponsor)
     $('#hire').val(firebaseUser.hire)
+    $('#bio-5').val(firebaseUser.bio)
   }, 1000)
+  // populateFormFromData(firebaseUser)
 })
 
 $('#wf-form-Editing-Profile').submit(function (event) {
