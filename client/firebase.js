@@ -164,7 +164,7 @@ function userLikesProject(id) {
 }
 
 function userSavedWorkflow(id) {
-  return firebaseCollections['user_project'].some(item => item.workflowId === id && item.saved == true)
+  return firebaseCollections['user_workflow'].some(item => item.workflowId === id && item.saved == true)
 }
 
 function userFollowsUser(id) {
@@ -228,11 +228,11 @@ function saveWorkflow(workflowId, reverse) {
     .catch(error => handleError(error))
 
   if (reverse) {
-    $(`[data-workflow="${workflowId}"] .unlike-project-button`).hide()
-    $(`[data-workflow="${workflowId}"] .like-project-button`).show()
+    $(`[data-workflow="${workflowId}"] .unlike-workflow-button`).hide()
+    $(`[data-workflow="${workflowId}"] .like-workflow-button`).show()
   } else {
-    $(`[data-workflow="${workflowId}"] .unlike-project-button`).show()
-    $(`[data-workflow="${workflowId}"] .like-project-button`).hide()
+    $(`[data-workflow="${workflowId}"] .unlike-workflow-button`).show()
+    $(`[data-workflow="${workflowId}"] .like-workflow-button`).hide()
   }
   WORKFLOWS.doc(workflowId).update({
     saves: reverse ? decrement : increment

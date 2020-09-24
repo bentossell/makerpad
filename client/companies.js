@@ -26,7 +26,7 @@ function companyFollowers() {
       $('.cc-follow-count').text(snapshot.size)
       let users = snapshot.docs.map(doc => doc.data().user)
       console.log(users)
-      renderUsers('.users', users)
+      renderUsers('#tool-users', users)
     })
 }
 

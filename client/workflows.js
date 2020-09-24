@@ -3,55 +3,55 @@ renderWorkflow()
 
 $().ready(async () => {
   $('#active-tags').empty()
-  $('#project-tags').empty()
+  $('#workflow-tags').empty()
   await getCollections()
   let isLiked = userSavedWorkflow(workflow)
   if (isLiked) {
-    $('.unlike-project-button').show()
-    $('.like-project-button').hide()
+    $('.unlike-workflow-button').show()
+    $('.like-workflow-button').hide()
   } else {
-    $('.unlike-project-button').hide()
-    $('.like-project-button').show()
+    $('.unlike-workflow-button').hide()
+    $('.like-workflow-button').show()
   }
   let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.userId === currentUser.id))
   if (userOwnsWorkflow) {
-    $('.edit-project').attr('href', `/edit-workflow?workflowId=${workflow}`).show()
-    $('.delete-project').show()
+    $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
+    $('.delete-workflow').show()
   }
 })
 
 async function renderWorkflow() {
-  if (!workflow) workflow = await getWorkflowFromUrl()
+  if (!workflow) workflow = getParamFromURL('id')
   if (workflow === 'add-workflow') return
   WORKFLOWS.doc(workflow).get()
     .then(async doc => {
       let data = doc.data()
       console.log(data)
-      $('.p-name').text(data.name)
-      $('.p-link').attr('href', data.url)
+      $('.w-name').text(data.name)
+      $('.workflow-link').attr('href', data.url)
       $('.p-img').attr('src', data.imageUrl)
       $('.p-description').html(data.details)
-      $('.project-user-link').attr('href', `/u/${data.username}`)
-      $('.project-user-full-name').text(data.user['full-name'])
+      $('.workflow-user-link').attr('href', `/u/${data.username}`)
+      $('.workflow-user-full-name').text(data.user['full-name'])
 
       let userPic = getUserImage(data.user)
-      $('.project-user-avatar').attr("src", userPic)
+      $('.workflow-user-avatar').attr("src", userPic)
 
-      if (data.clone) $('.clone').attr('href', data.clone).show()
-      if (data['sale-url']) $('.purchase').attr('href', data['sale-url'])
-      if (data.price) $('.project-price-text').text(data.price)
-      if (data['sale-url'] || data.price) $('#project-purchase-block').show()
+      if (data.clone) $('.clone-workflow-link').attr('href', data.clone).show()
+      if (data.cloned_from) {
+        $('#cloned-from').show()
+        $('.cloned-from-workflow').attr('href', `/u/${data.cloned_from}`)
+      }
 
-      // $('.user-image').removeClass('w-dyn-bind-empty')
-
-      await getTags()
-
-      if (data.tags) data.tags.forEach(tag => {
-        let tagItem = tagsArray.find(item => item.value === tag)
-        $('#project-tags').append(`
-          <a href="/${tagItem.type}/${tagItem.value}" class="project-tag">${tag}</a>
-        `)
-      })
+      getTags()
+        .then(() => {
+          if (data.tags) data.tags.forEach(tag => {
+            let tagItem = tagsArray.find(item => item.value === tag)
+            $('#workflow-tags').append(`
+              <a href="/${tagItem.type}/${tagItem.value}" class="workflow-tag">${tag}</a>
+            `)
+          })
+        })
     })
     .catch(error => handleError(error))
 }
@@ -63,26 +63,26 @@ async function cloneWorkflow(workflowId) {
     if (doc.exists) {
       WORKFLOWS.add({ ...doc.data(), cloned_from: workflowId })
         .then(doc => {
-          window.location.replace(`/workflow?id=${doc.id}`)
+          window.location.replace(`/workflows?id=${doc.id}`)
         })
     }
   })
 }
 
-$('.clone-workflow-button').click(() => {
+$('.clone-workflow').click(() => {
   cloneWorkflow(workflow)
 })
 
 // follow
-$('.like-project-button').click(() => {
-  followWorkflow(workflow)
-  $('.unlike-project-button').show()
-  $('.like-project-button').hide()
+$('.like-workflow-button').click(() => {
+  saveWorkflow(workflow)
+  $('.unlike-workflow-button').show()
+  $('.like-workflow-button').hide()
 })
 
 // unfollow
-$('.unlike-project-button').click(() => {
-  followWorkflow(workflow, true)
-  $('.unlike-project-button').hide()
-  $('.like-project-button').show()
+$('.unlike-workflow-button').click(() => {
+  saveWorkflow(workflow, true)
+  $('.unlike-workflow-button').hide()
+  $('.like-workflow-button').show()
 })

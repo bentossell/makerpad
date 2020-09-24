@@ -1,6 +1,5 @@
-let activeTags = []
 var projectSlug = 'null'
-
+var projectId = getParamFromURL('projectId')
 $(document).ready(async () => {
   $('#active-tags').empty()
   $('#project-tags').empty()
@@ -26,6 +25,10 @@ function getUsersProjects() {
       records.forEach(record => {
         $('#user-project-dropdown').append(new Option(record.name, record.slug))
       })
+      if (projectId) {
+        $(`#user-project-dropdown option[value="${projectId}"]`).attr('selected', true)
+        $('#user-project-dropdown').change()
+      }
       return records
     })
 }
@@ -139,6 +142,7 @@ async function setProject(data) {
 $('#wf-form-Submit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
+  data.details = tinymce.get()[0].getContent()
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags
@@ -149,6 +153,7 @@ $('#wf-form-Submit-Project').submit(function (event) {
 $('#wf-form-Edit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
+  data.details = tinymce.get()[0].getContent()
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags

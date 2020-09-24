@@ -1,4 +1,5 @@
-let tinyElement = tinymce.get()
+var tinyElement = tinymce.get()
+var workflowId = getParamFromURL('id')
 $(document).ready(async () => {
   $('#active-tags').empty()
   $('#workflow-tags').empty()
@@ -19,11 +20,17 @@ $('#user-workflow-dropdown').change(function () {
 function getUsersWorkflows() {
   return WORKFLOWS.where("userId", "==", currentUser.id).get()
     .then(snapshot => {
-      let records = snapshot.docs.map(doc => doc.data())
+      let records = snapshot.docs.map(doc => {
+        return { ...doc.data(), id: doc.id }
+      })
       console.log(records)
       records.forEach(record => {
-        $('#user-workflow-dropdown').append(new Option(record.name, record.slug))
+        $('#user-workflow-dropdown').append(new Option(record.name, record.id))
       })
+      if (workflowId) {
+        $(`#user-workflow-dropdown option[value="${workflowId}"]`).attr('selected', true)
+        $('#user-workflow-dropdown').change()
+      }
       return records
     })
 }
@@ -40,6 +47,7 @@ function populateWorkflowForm(workflow) {
       populateFormFromData(data)
       $('.image-180').attr('src', data.imageUrl)
       $('#multipleSelect').val(data.tags)
+      $('.project-sale').click()
       console.log(data.tags)
       data.tags.forEach(tag => {
         $(".fstResultItem").filter(function () {
@@ -150,6 +158,7 @@ async function setWorkflow(data) {
 $('#wf-form-Submit-Workflow').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
+  data.details = tinymce.get()[0].getContent()
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags
@@ -160,6 +169,7 @@ $('#wf-form-Submit-Workflow').submit(function (event) {
 $('#wf-form-Edit-Workflow').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
+  data.details = tinymce.get()[0].getContent()
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   selectedTags = [...new Set(selectedTags)]
   data.tags = selectedTags
