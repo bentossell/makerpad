@@ -3,20 +3,21 @@ var userUsers = []
 
 $().ready(async () => {
   populateUser()
+  let body = {
+    userId: currentUser.id || null,
+    targetUser: userSlug,
+    created_at: new Date()
+  }
   $('.sponsor').click(() => {
     return db.collection('click_log').add({
-      userId: currentUser.id || null,
-      targetUser: userSlug,
+      ...body,
       type: 'sponsor',
-      created_at: new Date()
     })
   })
   $('.hire').click(() => {
     return db.collection('click_log').add({
-      userId: currentUser.id || null,
-      targetUser: userSlug,
+      ...body,
       type: 'hire',
-      created_at: new Date()
     })
   })
 })
@@ -57,7 +58,6 @@ function recommendUser(user) {
     targetUser: user,
     recommended: true
   }, { merge: true })
-    .then(() => console.log('user recommended'))
     .catch(error => console.log(error))
 }
 
@@ -139,6 +139,7 @@ async function populateUser() {
     populateTutorials()
     populateCompanies()
     populateProjects()
+    populateWorkflows()
 
     if (thisIsMyUser()) {
       $('.current-user-content').show()
@@ -149,7 +150,7 @@ async function populateUser() {
     }
 
     let isFollowed = await userFollowsUser(getElementFromURL())
-    if (isFollowed) {
+    if (await userFollowsUser(getElementFromURL())) {
       $('.follow-user-button').hide()
       $('.unfollow-user-button').show()
     }
@@ -292,9 +293,6 @@ async function populateWorkflows() {
       <div id="w-node-7fb832c002a6-b8840649" class="div-block-917 user-tutorial-list">
         <div>
           <a href="/workflows?id=${item.id}" class="workflow-name">${item.name}</a>
-        </div>
-        <div>
-
         </div>
       </div>`
     )
