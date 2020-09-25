@@ -57,28 +57,29 @@ function populateWorkflowForm(workflow) {
     })
 }
 
-async function createWorkflow(data) {
+function createWorkflow(data) {
   if (!currentUser) return
   return WORKFLOWS.add({
     userId: currentUser.id,
     ...data
   })
-    .then(doc => {
-      handleSuccess('Workflow updated')
-      addToolsFromTags(data.tags)
+    .then(async doc => {
+      handleSuccess('Workflow created')
+      await addToolsFromTags(data.tags)
       if ($('#wf-form-Submit-Workflow').length > 0) $('#wf-form-Submit-Workflow')[0].reset()
       if ($('#wf-form-Edit-Workflow').length > 0) $('#wf-form-Edit-Workflow')[0].reset()
+      window.location.replace(`/workflows?id=${doc.id}`)
     })
     .catch(error => handleError(error))
 }
 
 async function updateWorkflow(data) {
   if (!currentUser) return
-  console.log('updating ' + data.slug)
+  console.log('updating ' + data.id)
   await getUsersWorkflows()
     .then(records => {
       console.log(records)
-      let userOwnsWorkflow = records.find(item => (item.slug === data.slug && item.userId === currentUser.id))
+      let userOwnsWorkflow = records.find(item => (item.id === data.id && item.userId === currentUser.id))
       console.log(userOwnsWorkflow)
       if (userOwnsWorkflow) {
         setWorkflow(data)
@@ -90,19 +91,19 @@ async function updateWorkflow(data) {
 }
 
 async function deleteWorkflow(data) {
-  if (!currentUser || !data || !data.slug || data.slug === 'Select Option') return
-  let confirmed = prompt(`To confirm, please type the slug of this workflow - '${data.slug}'`)
-  if (confirmed === data.slug) {
-    console.log('deleting ' + data.slug)
+  if (!currentUser || !data || !data.id || data.id === 'Select Option') return
+  let confirmed = prompt(`To confirm, please type the id of this workflow - '${data.id}'`)
+  if (confirmed === data.id) {
+    console.log('deleting ' + data.id)
     await getUsersWorkflows()
       .then(async records => {
         console.log(records)
-        let userOwnsWorkflow = records.find(item => (item.slug === data.slug && item.userId === currentUser.id))
+        let userOwnsWorkflow = records.find(item => (item.id === data.id && item.userId === currentUser.id))
         console.log(userOwnsWorkflow)
         if (userOwnsWorkflow) {
-          await WORKFLOWS.doc(data.slug).delete()
+          await WORKFLOWS.doc(data.id).delete()
             .catch(e => handleError(e))
-          return handleSuccess('successfully deleted')
+          return location.reload()
         } else {
           return handleError(`You can't edit this workflow`)
         }
@@ -111,17 +112,19 @@ async function deleteWorkflow(data) {
   $('.div-block-955').hide()
 }
 
-async function setWorkflow(data) {
+function setWorkflow(data) {
   if (!currentUser) return
-  return WORKFLOWS.doc(data.slug).set({
+  console.log(data)
+  return WORKFLOWS.doc(data.id).set({
     userId: currentUser.id,
     ...data
   }, { merge: true })
-    .then(doc => {
+    .then(async doc => {
       handleSuccess('Workflow updated')
-      addToolsFromTags(data.tags)
+      await addToolsFromTags(data.tags)
       if ($('#wf-form-Submit-Workflow').length > 0) $('#wf-form-Submit-Workflow')[0].reset()
       if ($('#wf-form-Edit-Workflow').length > 0) $('#wf-form-Edit-Workflow')[0].reset()
+      window.location.replace(`/workflows?id=${data.id}`)
     })
     .catch(error => handleError(error))
 }
@@ -148,13 +151,13 @@ $('#wf-form-Edit-Workflow').submit(function (event) {
   updateWorkflow(data)
 })
 
-$('.delete-workflow-button').click(function (event) {
+$('.delete-project-button').click(function (event) {
   let data = objectifyForm($('#wf-form-Edit-Workflow').serializeArray())
-  if (!data || !data.slug) return
+  if (!data || !data.id) return
   deleteWorkflow(data)
 })
 
-function addToolsFromTags(tags) {
+async function addToolsFromTags(tags) {
   let toolTags = tagsArray.filter(item => item.type === 'company').map(item => item.value)
   let userTags = firebaseCollections['user_company'].map(item => item.companyId)
   console.log({ toolTags, userTags })

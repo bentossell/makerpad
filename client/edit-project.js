@@ -102,7 +102,7 @@ async function deleteProject(data) {
         if (userOwnsProject) {
           await PROJECTS.doc(data.slug).delete()
             .catch(e => handleError(e))
-          return handleSuccess('successfully deleted')
+          return location.reload()
         } else {
           return handleError(`You can't edit this project`)
         }

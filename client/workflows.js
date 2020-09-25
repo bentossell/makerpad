@@ -39,7 +39,7 @@ async function renderWorkflow() {
       if (data.clone) $('.clone-workflow-link').attr('href', data.clone).show()
       if (data.cloned_from) {
         $('#cloned-from').show()
-        $('.cloned-from-workflow').attr('href', `/u/${data.cloned_from}`)
+        $('.cloned-from-workflow').attr('href', `/workflows?id=${data.cloned_from}`).text(data.cloned_from)
       }
 
       getTags()
