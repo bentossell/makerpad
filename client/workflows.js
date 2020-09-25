@@ -27,7 +27,7 @@ async function renderWorkflow() {
     .then(async doc => {
       let data = doc.data()
       console.log(data)
-      $('.w-name').text(data.name)
+      $('.workflow-name').text(data.name).show()
       $('.workflow-link').attr('href', data.url)
       $('.p-description').html(data.details)
       $('.workflow-user-link').attr('href', `/u/${data.username}`)
@@ -38,8 +38,13 @@ async function renderWorkflow() {
 
       if (data.clone) $('.clone-workflow-link').attr('href', data.clone).show()
       if (data.cloned_from) {
-        $('#cloned-from').show()
-        $('.cloned-from-workflow').attr('href', `/workflows?id=${data.cloned_from}`).text(data.cloned_from)
+        try {
+          WORKFLOWS.doc(data.cloned_from).get()
+            .then(doc => {
+              $('.cloned-from-workflow').attr('href', `/workflows?id=${data.cloned_from}`).text(doc.data().name)
+              $('#cloned-from').show()
+            })
+        } catch (error) { }
       }
 
       getTags()

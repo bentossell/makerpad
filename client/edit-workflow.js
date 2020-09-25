@@ -1,10 +1,15 @@
 var tinyElement = tinymce.get()
 var workflowId = getParamFromURL('id')
 $(document).ready(async () => {
+  console.log('document ready')
   $('#active-tags').empty()
   $('#workflow-tags').empty()
   $('.div-block-955').hide()
   getUsersWorkflows()
+  if (workflowId) {
+    $(`#user-workflow-dropdown option[value="${workflowId}"]`).attr('selected', true)
+    $('#user-workflow-dropdown').change()
+  }
   await populateTags()
   $('.fstQueryInput').click()
   await getCollections()
@@ -27,10 +32,6 @@ function getUsersWorkflows() {
       records.forEach(record => {
         $('#user-workflow-dropdown').append(new Option(record.name, record.id))
       })
-      if (workflowId) {
-        $(`#user-workflow-dropdown option[value="${workflowId}"]`).attr('selected', true)
-        $('#user-workflow-dropdown').change()
-      }
       return records
     })
 }
@@ -45,6 +46,7 @@ function populateWorkflowForm(workflow) {
       console.log(data)
       // loop
       populateFormFromData(data)
+      $(`#${data.publicity}`).prop("checked", true)
       $('#multipleSelect').val(data.tags)
       $('.project-sale').click()
       console.log(data.tags)

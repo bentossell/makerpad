@@ -422,6 +422,7 @@ function getParamFromURL(param) {
 
 function populateFormFromData(data) {
   for (let [key, value] of Object.entries(data)) {
+    if (key === 'id' || key === 'slug') return
     try {
       $(`[name=${key}]`).val(value)
     } catch (error) { }
