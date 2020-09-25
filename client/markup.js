@@ -59,7 +59,6 @@ async function renderWorkflows(target, items) {
   for (item of items) {
     console.log(item)
     // let target = item.status === 'public' ? '#tutorials-completed' : '#tutorials-saved'
-    let target = '#user-workflows'
     $(target).append(`
       <div id="w-node-7fb832c002a6-b8840649" class="div-block-917 user-tutorial-list">
         <div class="div-block-167">
