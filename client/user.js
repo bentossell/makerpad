@@ -92,7 +92,9 @@ function getUserCollection(collection) {
     .get()
     .then(snapshot => {
       if (snapshot.empty) return []
-      let data = snapshot.docs.map(doc => doc.data())
+      let data = snapshot.docs.map(doc => {
+        return { ...doc.data(), id: doc.id }
+      })
       return data
     })
     .catch(error => console.log(error))
@@ -162,10 +164,6 @@ function getSampleHTML() {
   $('.tools-followed').empty()
   $('.tutorial-watchlist').empty()
   $('.user-projects').empty()
-}
-
-async function getCompaniesData() {
-  // let userCompanies = await db.collection('user_company')
 }
 
 async function populateCompanies() {
@@ -279,4 +277,26 @@ async function populateProjects() {
   if (!items.length) return console.log('no projects')
   $('.alert-projects').hide()
   renderProjects('.user-projects', items)
+}
+
+async function populateWorkflows() {
+  let items = await getUserCollection(WORKFLOWS)
+  console.log(items)
+  if (!items.length) return console.log('no workflows')
+  // renderProjects('.user-projects', items)
+  for (item of items) {
+    console.log(item)
+    // let target = item.status === 'public' ? '#tutorials-completed' : '#tutorials-saved'
+    let target = '#user-workflows'
+    $(target).append(`
+      <div id="w-node-7fb832c002a6-b8840649" class="div-block-917 user-tutorial-list">
+        <div>
+          <a href="/workflows?id=${item.id}" class="workflow-name">${item.name}</a>
+        </div>
+        <div>
+
+        </div>
+      </div>`
+    )
+  }
 }

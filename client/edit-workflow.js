@@ -45,7 +45,6 @@ function populateWorkflowForm(workflow) {
       console.log(data)
       // loop
       populateFormFromData(data)
-      $('.image-180').attr('src', data.imageUrl)
       $('#multipleSelect').val(data.tags)
       $('.project-sale').click()
       console.log(data.tags)
@@ -65,20 +64,6 @@ async function createWorkflow(data) {
     ...data
   })
     .then(doc => {
-      let image = $('#image')[0].files[0] || null
-      if (image) {
-        console.log(image)
-        storage
-          .ref()
-          .child(`workflow_images/${doc.id}`)
-          .put(image)
-          .then((snapshot) => {
-            console.log(snapshot.ref.getDownloadURL())
-            snapshot.ref.getDownloadURL().then((imageUrl) => {
-              WORKFLOWS.doc(doc.id).update({ imageUrl })
-            })
-          })
-      }
       handleSuccess('Workflow updated')
       addToolsFromTags(data.tags)
       if ($('#wf-form-Submit-Workflow').length > 0) $('#wf-form-Submit-Workflow')[0].reset()
@@ -133,20 +118,6 @@ async function setWorkflow(data) {
     ...data
   }, { merge: true })
     .then(doc => {
-      let image = $('#image')[0].files[0] || null
-      if (image) {
-        console.log(image)
-        storage
-          .ref()
-          .child(`workflow_images/${data.slug}`)
-          .put(image)
-          .then((snapshot) => {
-            console.log(snapshot.ref.getDownloadURL())
-            snapshot.ref.getDownloadURL().then((imageUrl) => {
-              WORKFLOWS.doc(data.slug).update({ imageUrl })
-            })
-          })
-      }
       handleSuccess('Workflow updated')
       addToolsFromTags(data.tags)
       if ($('#wf-form-Submit-Workflow').length > 0) $('#wf-form-Submit-Workflow')[0].reset()

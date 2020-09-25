@@ -29,7 +29,6 @@ async function renderWorkflow() {
       console.log(data)
       $('.w-name').text(data.name)
       $('.workflow-link').attr('href', data.url)
-      $('.p-img').attr('src', data.imageUrl)
       $('.p-description').html(data.details)
       $('.workflow-user-link').attr('href', `/u/${data.username}`)
       $('.workflow-user-full-name').text(data.user['full-name'])
@@ -61,9 +60,11 @@ async function cloneWorkflow(workflowId) {
   if (!confirm(`Please confirm cloning this workflow`)) return
   return WORKFLOWS.doc(workflowId).get().then(doc => {
     if (doc.exists) {
-      WORKFLOWS.add({ ...doc.data(), cloned_from: workflowId })
+      let data = doc.data()
+      data.userId = currentUser.id
+      WORKFLOWS.add({ ...data, cloned_from: workflowId })
         .then(doc => {
-          window.location.replace(`/workflows?id=${doc.id}`)
+          window.location.replace(`/edit-workflow?id=${doc.id}`)
         })
     }
   })

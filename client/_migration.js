@@ -5,6 +5,24 @@
 // changeTargetUsers()
 // addCompanyLikes()
 // tutorialCompanies()
+// updateCompanyLikes()
+
+async function updateCompanyLikes() {
+  db.collection('company').get()
+    .then(async snap => {
+      for (doc of snap.docs) {
+        console.log(doc.id)
+        await db.collection('user_company')
+          .where('followed', '==', true)
+          .where('companyId', '==', doc.id)
+          .get()
+          .then(snapshot => {
+            console.log(snapshot.size)
+            doc.ref.update({ likes: snapshot.size })
+          })
+      }
+    })
+}
 
 async function tutorialCompanies() {
   await db.collection('tutorial').get()
