@@ -17,6 +17,7 @@ try {
 var db = firebase.firestore()
 var storage = firebase.storage()
 firebaseAuth()
+var debugMode = getParamFromURL('debug')
 
 var currentUser = {}
 var firebaseUser = {}

@@ -2,27 +2,28 @@ let workflow = getParamFromURL('id')
 renderWorkflow()
 
 $().ready(async () => {
-  $('#active-tags').empty()
-  $('#workflow-tags').empty()
-  await getCollections()
-  let isLiked = userSavedWorkflow(workflow)
-  if (isLiked) {
-    $('.unlike-workflow-button').show()
-    $('.like-workflow-button').hide()
-  } else {
-    $('.unlike-workflow-button').hide()
-    $('.like-workflow-button').show()
-  }
-  let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.userId === currentUser.id))
-  if (userOwnsWorkflow) {
-    $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
-    $('.delete-workflow').show()
-  }
+  !workflow ? $('#workflow-detail-container').hide() : $('#user-workflows').parent().hide()
+  if (!debugMode) $('#workflow-tags, #user-workflows').empty()
+  getCollections().then(() => {
+    let isLiked = userSavedWorkflow(workflow)
+    if (isLiked) {
+      $('.unlike-workflow-button').show()
+      $('.like-workflow-button').hide()
+    } else {
+      $('.unlike-workflow-button').hide()
+      $('.like-workflow-button').show()
+    }
+    renderWorkflows('#user-workflows', firebaseCollections['workflows'])
+    let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.userId === currentUser.id))
+    if (userOwnsWorkflow) {
+      $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
+      $('.delete-workflow').show()
+    }
+  })
 })
 
 async function renderWorkflow() {
-  if (!workflow) workflow = getParamFromURL('id')
-  if (workflow === 'add-workflow') return
+  if (!workflow || workflow === 'add-workflow') return
   WORKFLOWS.doc(workflow).get()
     .then(async doc => {
       let data = doc.data()

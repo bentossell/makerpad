@@ -25,10 +25,10 @@ function getUsersProjects() {
       records.forEach(record => {
         $('#user-project-dropdown').append(new Option(record.name, record.slug))
       })
-      if (projectId) {
-        $(`#user-project-dropdown option[value="${projectId}"]`).attr('selected', true)
-        $('#user-project-dropdown').change()
-      }
+      // if (projectId) {
+      //   $(`#user-project-dropdown option[value="${projectId}"]`).attr('selected', true)
+      //   $('#user-project-dropdown').change()
+      // }
       return records
     })
 }
@@ -52,11 +52,11 @@ function populateProjectForm(project) {
       $('#price').val(data.price)
       $('.project-sale').click()
       console.log(data.tags)
-      data.tags.forEach(tag => {
+      for (var tag of data.tags) {
         $(".fstResultItem").filter(function () {
           return $(this).text() === tag
         }).click()
-      })
+      }
       tinymce.get()[0].setContent(data.details)
     })
 }

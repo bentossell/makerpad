@@ -6,10 +6,6 @@ $(document).ready(async () => {
   $('#workflow-tags').empty()
   $('.div-block-955').hide()
   getUsersWorkflows()
-  if (workflowId) {
-    $(`#user-workflow-dropdown option[value="${workflowId}"]`).attr('selected', true)
-    $('#user-workflow-dropdown').change()
-  }
   await populateTags()
   $('.fstQueryInput').click()
   await getCollections()
@@ -30,8 +26,12 @@ function getUsersWorkflows() {
       })
       console.log(records)
       records.forEach(record => {
-        $('#user-workflow-dropdown').append(new Option(record.name, record.id))
+        $('#user-workflow-dropdown').append(new Option(`${record.name} (${record.id})`, record.id))
       })
+      // if (workflowId) {
+      //   $(`#user-workflow-dropdown option[value="${workflowId}"]`).attr('selected', true)
+      //   $('#user-workflow-dropdown').change()
+      // }
       return records
     })
 }
@@ -45,16 +45,20 @@ function populateWorkflowForm(workflow) {
       let data = doc.data()
       console.log(data)
       // loop
-      populateFormFromData(data)
+      // populateFormFromData(data)
+      $(`[name=name]`).val(data.name)
+      $(`[name=url]`).val(data.url)
+      $(`[name=sale-url]`).val(data['sale-url'])
+      $(`[name=price]`).val(data.price)
       $(`#${data.publicity}`).prop("checked", true)
       $('#multipleSelect').val(data.tags)
-      $('.project-sale').click()
+      // $('.project-sale').click()
       console.log(data.tags)
-      data.tags.forEach(tag => {
+      for (var tag of data.tags) {
         $(".fstResultItem").filter(function () {
           return $(this).text() === tag
         }).click()
-      })
+      }
       tinymce.get()[0].setContent(data.details)
     })
 }
