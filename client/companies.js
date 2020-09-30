@@ -2,7 +2,7 @@ var company = getElementFromURL()
 
 $().ready(async () => {
   $('.cc-follow-product.cc-checked').hide()
-  if (!debugMode) $('#user-workflows').empty()
+  if (!debugMode) $('#user-workflows, #tool-reviews').empty()
   company = getElementFromURL()
   console.log('company: ' + company)
   console.log('currentUser: ' + currentUser)

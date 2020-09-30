@@ -4,6 +4,7 @@ renderWorkflow()
 $().ready(async () => {
   !workflow ? $('#workflow-detail-container').hide() : $('#user-workflows').parent().hide()
   if (!debugMode) $('#workflow-tags, #user-workflows, #saved-workflows').empty()
+  $('.edit-workflow').hide()
   getCollections().then(() => {
     let isLiked = userLikesWorkflow(workflow)
     let isSaved = userSavedWorkflow(workflow)
@@ -14,9 +15,16 @@ $().ready(async () => {
       $('.unlike-workflow-button').hide()
       $('.like-workflow-button').show()
     }
+    if (isSaved) {
+      $('.unsave-workflow').show()
+      $('.save-workflow').hide()
+    } else {
+      $('.unsave-workflow').hide()
+      $('.save-workflow').show()
+    }
     renderWorkflows('#user-workflows', firebaseCollections['workflows'].filter(item => item.userId === currentUser.id))
     renderWorkflows('#saved-workflows', firebaseCollections['user_workflow'].filter(i => i.saved == true).map(item => item.workflow))
-    let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.userId === currentUser.id))
+    let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.id === workflow && item.userId === currentUser.id))
     if (userOwnsWorkflow) {
       $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
       $('.delete-workflow').show()
