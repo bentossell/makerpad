@@ -24,6 +24,7 @@ $().ready(async () => {
     }
     renderWorkflows('#user-workflows', firebaseCollections['workflows'].filter(item => item.userId === currentUser.id), 2)
     renderWorkflows('#saved-workflows', firebaseCollections['user_workflow'].filter(i => i.saved == true).map(item => item.workflow), 2)
+    renderWorkflows('#liked-workflows', firebaseCollections['user_workflow'].filter(i => i.liked == true).map(item => item.workflow), 2)
     let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.id === workflow && item.userId === currentUser.id))
     if (userOwnsWorkflow) {
       $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
