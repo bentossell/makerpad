@@ -162,7 +162,7 @@ async function populateUser() {
 }
 
 function getSampleHTML() {
-  $('.tools-followed, .tutorial-watchlist, .user-projects, #user-workflows').empty()
+  if (!debugMode) $('.tools-followed, .tutorial-watchlist, .user-projects, #user-workflows').empty()
 }
 
 async function populateCompanies() {
@@ -175,7 +175,6 @@ async function populateCompanies() {
 }
 
 async function populateTutorials() {
-  $('.tutorial-watchlist').empty()
   let items = await getUserCollection(USER_TUTORIAL)
   console.log(items)
   if (!items.length) return console.log('no tutorials found')

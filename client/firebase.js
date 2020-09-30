@@ -37,6 +37,7 @@ var USER_PROJECT = db.collection('user_project')
 var USER_USER = db.collection('user_user')
 var USER_COMPANY = db.collection('user_company')
 var USER_WORKFLOW = db.collection('user_workflow')
+var REVIEWS = db.collection('reviews')
 var WORKFLOWS = db.collection('workflows')
 
 var increment = firebase.firestore.FieldValue.increment(1)
