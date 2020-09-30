@@ -85,11 +85,11 @@ async function renderTutorials(items) {
       })
     }
 
-    if (thisIsMyUser()) {
-      $('.current-user-content').show()
-    } else {
-      $('.current-user-content').hide()
-    }
+    // if (thisIsMyUser()) {
+    //   $('.current-user-content').show()
+    // } else {
+    //   $('.current-user-content').hide()
+    // }
   }
 }
 
@@ -190,6 +190,14 @@ async function renderWorkflows(target, items, option = 1) {
       $(`[data-workflow="${item.id}"] .like-workflow-button`).show()
     }
 
+    if (userSavedWorkflow(item.id)) {
+      $('[data-workflow="${item.id}"] .unsave-workflow').show()
+      $('[data-workflow="${item.id}"] .save-workflow').hide()
+    } else {
+      $('[data-workflow="${item.id}"] .unsave-workflow').hide()
+      $('[data-workflow="${item.id}"] .save-workflow').show()
+    }
+
     if (item.tags) {
       item.tags.forEach(tag => {
         let company = firebaseCollections['company'].find(com => com.slug === tag)
@@ -203,7 +211,7 @@ async function renderWorkflows(target, items, option = 1) {
       })
     }
 
-    if (thisIsMyUser()) {
+    if (firebaseUser.username) {
       $('.current-user-content').show()
     } else {
       $('.current-user-content').hide()

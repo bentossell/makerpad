@@ -82,10 +82,6 @@ function followUser(user, reverse) {
     .catch(error => console.log(error))
 }
 
-function thisIsMyUser() {
-  return firebaseUser.username === userSlug
-}
-
 function getUserCollection(collection) {
   return collection
     .where("username", "==", userSlug)
