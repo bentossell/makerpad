@@ -490,6 +490,21 @@ function markTutorialComplete(tutorialId, reverse) {
   }
 }
 
+async function cloneWorkflow(workflowId) {
+  if (!currentUser) return
+  if (!confirm(`Please confirm cloning this workflow`)) return
+  return WORKFLOWS.doc(workflowId).get().then(doc => {
+    if (doc.exists) {
+      let data = doc.data()
+      data.userId = currentUser.id
+      WORKFLOWS.add({ ...data, cloned_from: workflowId })
+        .then(doc => {
+          window.open(`/edit-workflow?id=${doc.id}`)
+        })
+    }
+  })
+}
+
 function updateTutorial(id, object) {
   USER_TUTORIAL.doc(`${currentUser.id}-${id}`).set(object, { merge: true })
     .then(doc => console.log(object))

@@ -194,5 +194,5 @@ async function populateWorkflows() {
   let items = await getUserCollection(WORKFLOWS)
   console.log(items)
   if (!items.length) return console.log('no workflows')
-  renderWorkflows('#user-workflows', items)
+  renderWorkflows('#user-workflows', items, 2)
 }

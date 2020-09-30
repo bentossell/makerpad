@@ -22,8 +22,8 @@ $().ready(async () => {
       $('.unsave-workflow').hide()
       $('.save-workflow').show()
     }
-    renderWorkflows('#user-workflows', firebaseCollections['workflows'].filter(item => item.userId === currentUser.id))
-    renderWorkflows('#saved-workflows', firebaseCollections['user_workflow'].filter(i => i.saved == true).map(item => item.workflow))
+    renderWorkflows('#user-workflows', firebaseCollections['workflows'].filter(item => item.userId === currentUser.id), 2)
+    renderWorkflows('#saved-workflows', firebaseCollections['user_workflow'].filter(i => i.saved == true).map(item => item.workflow), 2)
     let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.id === workflow && item.userId === currentUser.id))
     if (userOwnsWorkflow) {
       $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
@@ -71,21 +71,6 @@ async function renderWorkflow() {
     .catch(error => handleError(error))
 }
 
-async function cloneWorkflow(workflowId) {
-  if (!currentUser) return
-  if (!confirm(`Please confirm cloning this workflow`)) return
-  return WORKFLOWS.doc(workflowId).get().then(doc => {
-    if (doc.exists) {
-      let data = doc.data()
-      data.userId = currentUser.id
-      WORKFLOWS.add({ ...data, cloned_from: workflowId })
-        .then(doc => {
-          window.location.replace(`/edit-workflow?id=${doc.id}`)
-        })
-    }
-  })
-}
-
 $('.clone-workflow').click(() => {
   cloneWorkflow(workflow)
 })
@@ -108,7 +93,7 @@ $('.save-workflow').click(() => {
   $('.save-workflow').hide()
 })
 
-$('.unlike-workflow-button').click(() => {
+$('.unsave-workflow').click(() => {
   saveWorkflow(workflow, true)
   $('.unsave-workflow').hide()
   $('.save-workflow').show()

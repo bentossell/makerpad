@@ -116,7 +116,7 @@ async function renderWorkflows(target, items, option = 1) {
     let userImage = getUserImage(item.user)
     if (option == 1) {
       $(target).append(`
-        <div data-workflow=${item.id} class="div-block-917 user-workflow-list _3-column">
+        <div data-workflow="${item.id}" class="div-block-917 user-workflow-list _3-column">
           <div class="div-block-167">
             <div class="div-block-169">
               ${item.publicity === 'private' ? `<div class="private-workflow">🔐</div>` : ``}
@@ -134,52 +134,60 @@ async function renderWorkflows(target, items, option = 1) {
     } else if (option == 2) {
       $(target).append(`
         <div
-          class="div-block-917 user-workflow-list _4-column">
+          class="div-block-917 user-workflow-list _3-column" data-workflow="${item.id}">
           <div class="div-block-167">
             <div class="div-block-169">
-              <div class="private-workflow">🔐</div><a
+              ${item.publicity === 'private' ? `<div class="private-workflow">🔐</div>` : ``}
+              <a
                 href="#"
                 class="workflow-list-link w-inline-block">
-                <h4 class="heading-259 workflow-name">Heading</h4>
+                <h4 class="heading-259 workflow-name">${item.name}</h4>
               </a>
             </div>
           </div>
-          <div class="div-block-914 tools-condensed">
-            <a href="#" class="user-tool tool-img w-inline-block" />
+          <div class="div-block-914 tutorial-tools-${item.id}">
+            
           </div>
-          ${userElement(item)}
-          <div id="w-node-a792f987a41d-b7840638" class="current-user-content">
-            <div
-              data-ms-content="profile"
-              class="dashboard-component save-complete my-user-content left-align">
-              <a href="#" class="hidden cc-save-item cc-checked w-button">Saved to
-                watchlist</a><a href="#" class="cc-save-item cc-unchecked w-button">Save
-                to watchlist</a><a
-                href="#"
-                class="cc-mark-as-complete cc-unchecked w-button">Mark as complete</a><a
-                href="#"
-                class="hidden cc-mark-as-complete cc-checked w-button">Completed</a>
-            </div>
-          </div>
-          <div class="div-block-925">
-            <a href="#" class="like-button like-workflow-button w-button" />
+          <div class="div-block-925 current-user-content">
+            <a onclick="likeWorkflow('${item.id}')" href="#" class="like-button like-workflow-button w-button" />
             <a
               href="#"
+              onclick="likeWorkflow('${item.id}', true)"
               class="hidden like-button unlike-workflow-button w-button" />
               <a href="#"
+                onclick="cloneWorkflow('${item.id}')"
                 target="_blank" class="clone-workflow w-button">
                 <span
                   class="button-icon-text">Clone
                 </span>
               </a>
               <a
-              href="#"
-              target="_blank"
-              class="save-workflow w-button"><span
-                class="button-icon-text">Save</span></a>
+                href="#"
+                onclick="saveWorkflow('${item.id}')"
+                target="_blank"
+                class="save-workflow w-button">
+                <span class="button-icon-text">Save</span>
+              </a>
+              <a
+                data-tippy-content="Remove from your saved list"
+                onclick="saveWorkflow('${item.id}', true)"
+                href="#"
+                target="_blank"
+                class="hidden unsave-workflow tippy w-button"
+                style="display: inline;">
+                <span class="button-icon-text">Saved</span>
+              </a>
           </div>
         </div>`
       )
+    }
+
+    if (userLikesWorkflow(item.id)) {
+      $(`[data-workflow="${item.id}"] .unlike-workflow-button`).show()
+      $(`[data-workflow="${item.id}"] .like-workflow-button`).hide()
+    } else {
+      $(`[data-workflow="${item.id}"] .unlike-workflow-button`).hide()
+      $(`[data-workflow="${item.id}"] .like-workflow-button`).show()
     }
 
     if (item.tags) {
@@ -193,6 +201,12 @@ async function renderWorkflows(target, items, option = 1) {
             `)
         }
       })
+    }
+
+    if (thisIsMyUser()) {
+      $('.current-user-content').show()
+    } else {
+      $('.current-user-content').hide()
     }
   }
 }
