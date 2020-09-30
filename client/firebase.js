@@ -165,6 +165,10 @@ function userLikesProject(id) {
   return firebaseCollections['user_project'].some(item => item.projectId === id && item.followed == true)
 }
 
+function userLikesWorkflow(id) {
+  return firebaseCollections['user_workflow'].some(item => item.workflowId === id && item.liked == true)
+}
+
 function userSavedWorkflow(id) {
   return firebaseCollections['user_workflow'].some(item => item.workflowId === id && item.saved == true)
 }
@@ -216,6 +220,31 @@ function followProject(projectId, reverse) {
   })
 }
 
+function likeWorkflow(workflowId, reverse) {
+  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
+
+  let object = {
+    userId: currentUser.id,
+    workflowId,
+    liked: reverse ? false : true
+  }
+
+  USER_WORKFLOW.doc(`${currentUser.id}-${workflowId}`).set(object, { merge: true })
+    .then(() => console.log(object))
+    .catch(error => handleError(error))
+
+  if (reverse) {
+    $(`[data-workflow="${workflowId}"] .unlike-workflow-button`).hide()
+    $(`[data-workflow="${workflowId}"] .like-workflow-button`).show()
+  } else {
+    $(`[data-workflow="${workflowId}"] .unlike-workflow-button`).show()
+    $(`[data-workflow="${workflowId}"] .like-workflow-button`).hide()
+  }
+  WORKFLOWS.doc(workflowId).update({
+    likes: reverse ? decrement : increment
+  })
+}
+
 function saveWorkflow(workflowId, reverse) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
 
@@ -230,11 +259,11 @@ function saveWorkflow(workflowId, reverse) {
     .catch(error => handleError(error))
 
   if (reverse) {
-    $(`[data-workflow="${workflowId}"] .unlike-workflow-button`).hide()
-    $(`[data-workflow="${workflowId}"] .like-workflow-button`).show()
+    $(`[data-workflow="${workflowId}"] .unsave-workflow`).hide()
+    $(`[data-workflow="${workflowId}"] .save-workflow`).show()
   } else {
-    $(`[data-workflow="${workflowId}"] .unlike-workflow-button`).show()
-    $(`[data-workflow="${workflowId}"] .like-workflow-button`).hide()
+    $(`[data-workflow="${workflowId}"] .unsave-workflow`).show()
+    $(`[data-workflow="${workflowId}"] .save-workflow`).hide()
   }
   WORKFLOWS.doc(workflowId).update({
     saves: reverse ? decrement : increment

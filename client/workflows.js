@@ -5,7 +5,8 @@ $().ready(async () => {
   !workflow ? $('#workflow-detail-container').hide() : $('#user-workflows').parent().hide()
   if (!debugMode) $('#workflow-tags, #user-workflows, #saved-workflows').empty()
   getCollections().then(() => {
-    let isLiked = userSavedWorkflow(workflow)
+    let isLiked = userLikesWorkflow(workflow)
+    let isSaved = userSavedWorkflow(workflow)
     if (isLiked) {
       $('.unlike-workflow-button').show()
       $('.like-workflow-button').hide()
@@ -81,16 +82,26 @@ $('.clone-workflow').click(() => {
   cloneWorkflow(workflow)
 })
 
-// follow
 $('.like-workflow-button').click(() => {
-  saveWorkflow(workflow)
+  likeWorkflow(workflow)
   $('.unlike-workflow-button').show()
   $('.like-workflow-button').hide()
 })
 
-// unfollow
 $('.unlike-workflow-button').click(() => {
-  saveWorkflow(workflow, true)
+  likeWorkflow(workflow, true)
   $('.unlike-workflow-button').hide()
   $('.like-workflow-button').show()
+})
+
+$('.save-workflow').click(() => {
+  saveWorkflow(workflow)
+  $('.unsave-workflow').show()
+  $('.save-workflow').hide()
+})
+
+$('.unlike-workflow-button').click(() => {
+  saveWorkflow(workflow, true)
+  $('.unsave-workflow').hide()
+  $('.save-workflow').show()
 })
