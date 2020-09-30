@@ -17,8 +17,10 @@ $().ready(async () => {
       }
       companyFollowers()
       var companyProjects = firebaseCollections['projects'].filter(item => item.tags && item.tags.includes(company))
+      var companyReviews = firebaseCollections['reviews'].filter(item => item.companyId === company)
       var companyWorkflows = firebaseCollections['workflows'].filter(item => item.tags && item.tags.includes(company))
       renderProjects('.recent-projects', companyProjects)
+      renderReviews('#tool-reviews', companyReviews)
       renderWorkflows('#user-workflows', companyWorkflows, 2)
     }
   })
@@ -59,7 +61,7 @@ $('#wf-form-Tool-Comment').submit(function (event) {
     userId: currentUser.id,
     review: data.review
   }
-  if (!data.value || !currentUser.id) return
+  if (!data.review || !currentUser.id) return
   REVIEWS.doc(currentUser.id + '-' + company).set(object, { merge: true })
     .then(() => console.log(object))
     .catch(e => handleError(e))

@@ -24,7 +24,7 @@ var firebaseUser = {}
 var tagsArray = []
 
 var firebaseCollections = {
-  'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_company': [], 'workflows': []
+  'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_company': [], 'reviews': [], 'workflows': []
 }
 
 var COMPANY = db.collection('company')
@@ -326,7 +326,17 @@ async function getCollections() {
         return records
       })
 
-    await Promise.all([userCompanyPromise, userTutorialPromise, userUserPromise, userProjectPromise, userWorkflowPromise])
+    let reviewPromise = REVIEWS
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) return false
+        let records = snapshot.docs.map(doc => doc.data())
+        console.log('got REVIEWS')
+        firebaseCollections['reviews'] = records
+        return records
+      })
+
+    await Promise.all([userCompanyPromise, userTutorialPromise, userUserPromise, userProjectPromise, userWorkflowPromise, reviewPromise])
   }
   await Promise.all([companyPromise, projectPromise, workflowPromise])
 }

@@ -93,6 +93,21 @@ async function renderTutorials(items) {
   }
 }
 
+async function renderReviews(target, items) {
+  for (item of items) {
+    $(target).append(`
+      <div class="div-block-917 tool-review-list">
+        <div class="div-block-167">
+          <div class="div-block-169">
+            <h4 class="heading-259 review-text">${item.review}</h4>
+          </div>
+        </div>
+        ${userElement(item)}
+      </div>`
+    )
+  }
+}
+
 async function renderWorkflows(target, items, option = 1) {
   for (item of items) {
     if (item.userId !== currentUser.id && item.publicity === 'private') continue
@@ -186,5 +201,15 @@ async function renderWorkflows(target, items, option = 1) {
       })
     }
   }
+}
+
+function userElement(item) {
+  let userImage = getUserImage(item.user)
+  return `
+    <a href="/u/${item.username}" class="link-block-73 workflow-user-link w-inline-block"><img
+      src="${userImage}" alt="${item.username}"
+      class="image-179 workflow-user-avatar">
+      <div class="text-block-441 workflow-user-full-name">${item.user['full-name']}</div>
+    </a>`
 }
 
