@@ -21,7 +21,7 @@ $().ready(async () => {
       var companyWorkflows = firebaseCollections['workflows'].filter(item => item.tags && item.tags.includes(company))
       renderProjects('.recent-projects', companyProjects)
       renderReviews('#tool-reviews', companyReviews)
-      renderWorkflows('#user-workflows', companyWorkflows, 2)
+      renderWorkflows('#user-workflows', companyWorkflows, 1)
     }
   })
 })

@@ -128,11 +128,7 @@ async function renderWorkflows(target, items, option = 1) {
           <div class="tutorial-tools-${item.id}">
   
           </div>
-          <a href="/u/${item.username}" class="link-block-73 workflow-user-link w-inline-block"><img
-            src="${userImage}" alt="${item.username}"
-            class="image-179 workflow-user-avatar">
-          <div class="text-block-441 workflow-user-full-name">${item.user['full-name']}</div>
-          </a>
+          ${userElement(item)}
         </div>`
       )
     } else if (option == 2) {
@@ -150,10 +146,8 @@ async function renderWorkflows(target, items, option = 1) {
           </div>
           <div class="div-block-914 tools-condensed">
             <a href="#" class="user-tool tool-img w-inline-block" />
-          </div><a href="#" class="link-block-73 workflow-user-link w-inline-block"><img
-              src="https://assets-global.website-files.com/plugins/Basic/assets/placeholder.60f9b1840c.svg"
-              alt=""
-              class="image-179 workflow-user-avatar" /></a>
+          </div>
+          ${userElement(item)}
           <div id="w-node-a792f987a41d-b7840638" class="current-user-content">
             <div
               data-ms-content="profile"
