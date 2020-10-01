@@ -111,72 +111,38 @@ async function renderReviews(target, items) {
 async function renderWorkflows(target, items, option = 1) {
   for (item of items) {
     if (item.userId !== currentUser.id && item.publicity === 'private') continue
-    console.log(item)
-    // let target = item.status === 'public' ? '#tutorials-completed' : '#tutorials-saved'
-    let userImage = getUserImage(item.user)
-    if (option == 1) {
+    if (option) {
       $(target).append(`
-        <div data-workflow="${item.id}" class="div-block-917 user-workflow-list _3-column">
+        <div class="div-block-917 user-workflow-list _4-column" data-workflow="${item.id}">
           <div class="div-block-167">
             <div class="div-block-169">
               ${item.publicity === 'private' ? `<div class="private-workflow">🔐</div>` : ``}
-              <a href="/workflows?id=${item.id}" class="tutorial-list-link">
-                <h4 class="heading-259 tutorial-name">${item.name}</h4>
-              </a>
-            </div>
-          </div>
-          <div class="tutorial-tools-${item.id}">
-  
-          </div>
-          ${userElement(item)}
-        </div>`
-      )
-    } else if (option == 2) {
-      $(target).append(`
-        <div
-          class="div-block-917 user-workflow-list _3-column" data-workflow="${item.id}">
-          <div class="div-block-167">
-            <div class="div-block-169">
-              ${item.publicity === 'private' ? `<div class="private-workflow">🔐</div>` : ``}
-              <a
-                href="#"
-                class="workflow-list-link w-inline-block">
+              <a href="#" class="workflow-list-link w-inline-block">
                 <h4 class="heading-259 workflow-name">${item.name}</h4>
               </a>
             </div>
           </div>
-          <div class="div-block-914 tutorial-tools-${item.id}">
-            
+
+          <div class="div-block-914 tools-condensed">
+
           </div>
-          <div class="div-block-925 current-user-content">
-            <a onclick="likeWorkflow('${item.id}')" href="#" class="like-button like-workflow-button w-button" />
-            <a
-              href="#"
-              onclick="likeWorkflow('${item.id}', true)"
-              class="hidden like-button unlike-workflow-button w-button" />
-              <a href="#"
-                onclick="cloneWorkflow('${item.id}')"
-                target="_blank" class="clone-workflow w-button">
-                <span
-                  class="button-icon-text">Clone
-                </span>
+
+          ${userElement(item)}
+          
+          <div class="current-user-content" style="display: block;">
+            <div class="div-block-925">
+              <a href="#" onclick="likeWorkflow('${item.id}')" class="like-button like-workflow-button w-button"></a>
+              <a href="#" onclick="likeWorkflow('${item.id}', true)" class="hidden like-button unlike-workflow-button w-button"></a>
+              <a href="#" target="_blank" class="hidden clone-workflow tippy w-button">
+                <span class="button-icon-text">Clone</span>
               </a>
-              <a
-                href="#"
-                onclick="saveWorkflow('${item.id}')"
-                target="_blank"
-                class="save-workflow w-button">
+              <a href="#" onclick="saveWorkflow('${item.id}')" target="_blank" class="save-workflow tippy w-button">
                 <span class="button-icon-text">Save</span>
               </a>
-              <a
-                data-tippy-content="Remove from your saved list"
-                onclick="saveWorkflow('${item.id}', true)"
-                href="#"
-                target="_blank"
-                class="hidden unsave-workflow tippy w-button"
-                style="display: inline;">
+              <a href="#" onclick="saveWorkflow('${item.id}', true)" target="_blank" class="hidden unsave-workflow w-button">
                 <span class="button-icon-text">Saved</span>
               </a>
+            </div>
           </div>
         </div>`
       )
@@ -191,18 +157,18 @@ async function renderWorkflows(target, items, option = 1) {
     }
 
     if (userSavedWorkflow(item.id)) {
-      $('[data-workflow="${item.id}"] .unsave-workflow').show()
-      $('[data-workflow="${item.id}"] .save-workflow').hide()
+      $(`[data-workflow="${item.id}"] .unsave-workflow`).show()
+      $(`[data-workflow="${item.id}"] .save-workflow`).hide()
     } else {
-      $('[data-workflow="${item.id}"] .unsave-workflow').hide()
-      $('[data-workflow="${item.id}"] .save-workflow').show()
+      $(`[data-workflow="${item.id}"] .unsave-workflow`).hide()
+      $(`[data-workflow="${item.id}"] .save-workflow`).show()
     }
 
     if (item.tags) {
       item.tags.forEach(tag => {
         let company = firebaseCollections['company'].find(com => com.slug === tag)
         if (company) {
-          $(`.tutorial-tools-${item.id}`).append(`
+          $(`[data-workflow="${item.id}"] .tools-condensed`).append(`
             <a href="/company/${tag}" class="user-tool tool-img w-inline-block">
               <img src="${company.logo ? company.logo.url : ''}" width="40/">
             </a>
@@ -219,13 +185,13 @@ async function renderWorkflows(target, items, option = 1) {
   }
 }
 
-function userElement(item) {
+function userElement(item, showName = true) {
   let userImage = getUserImage(item.user)
   return `
     <a href="/u/${item.username}" class="link-block-73 workflow-user-link w-inline-block"><img
       src="${userImage}" alt="${item.username}"
       class="image-179 workflow-user-avatar">
-      <div class="text-block-441 workflow-user-full-name">${item.user['full-name']}</div>
+      <div class="text-block-441 workflow-user-full-name ${showName ? '' : 'hidden'}">${item.user['full-name']}</div>
     </a>`
 }
 
