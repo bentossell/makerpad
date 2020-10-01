@@ -1,9 +1,9 @@
-let workflow = getParamFromURL('id')
-renderWorkflow()
+// let workflow = getParamFromURL('id')
+// renderWorkflow()
 
 $().ready(async () => {
   !workflow ? $('#workflow-detail-container').hide() : $('#user-workflows').parent().hide()
-  if (!debugMode) $('#workflow-tags, #user-workflows, #saved-workflows').empty()
+  if (!debugMode) $('#workflow-tags, #user-workflows, #saved-workflows, #all-workflows').empty()
   $('.edit-workflow').hide()
   getCollections().then(() => {
     let isLiked = userLikesWorkflow(workflow)
@@ -22,9 +22,10 @@ $().ready(async () => {
       $('.unsave-workflow').hide()
       $('.save-workflow').show()
     }
-    renderWorkflows('#user-workflows', firebaseCollections['workflows'].filter(item => item.userId === currentUser.id), true)
-    renderWorkflows('#saved-workflows', firebaseCollections['user_workflow'].filter(i => i.saved == true).map(item => item.workflow), true)
-    renderWorkflows('#liked-workflows', firebaseCollections['user_workflow'].filter(i => i.liked == true).map(item => item.workflow), true)
+    // renderWorkflows('#user-workflows', firebaseCollections['workflows'].filter(item => item.userId === currentUser.id), true)
+    renderWorkflows('#all-workflows', firebaseCollections['workflows'].filter(i => i.publicity === 'public' || i.userId === currentUser.id), true)
+    // renderWorkflows('#saved-workflows', firebaseCollections['user_workflow'].filter(i => i.saved == true).map(item => item.workflow), true)
+    // renderWorkflows('#liked-workflows', firebaseCollections['user_workflow'].filter(i => i.liked == true).map(item => item.workflow), true)
     let userOwnsWorkflow = firebaseCollections['workflows'].find(item => (item.id === workflow && item.userId === currentUser.id))
     if (userOwnsWorkflow) {
       $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
