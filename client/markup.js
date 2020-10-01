@@ -126,7 +126,7 @@ async function renderWorkflows(target, items) {
 
           </div>
 
-          ${userElement(item)}
+          ${userElement(item, false)}
           
           <div class="current-user-content" style="display: block;">
             <div class="div-block-925">
