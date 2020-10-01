@@ -127,13 +127,13 @@ async function renderWorkflows(target, items, option = 1) {
 
           </div>
 
-          ${userElement(item)}
+          ${userElement(item, false)}
           
           <div class="current-user-content" style="display: block;">
             <div class="div-block-925">
               <a href="#" onclick="likeWorkflow('${item.id}')" class="like-button like-workflow-button w-button"></a>
               <a href="#" onclick="likeWorkflow('${item.id}', true)" class="hidden like-button unlike-workflow-button w-button"></a>
-              <a href="#" target="_blank" class="hidden clone-workflow tippy w-button">
+              <a href="#" onclick="cloneWorkflow('${item.id}')" target="_blank" class="hidden clone-workflow tippy w-button">
                 <span class="button-icon-text">Clone</span>
               </a>
               <a href="#" onclick="saveWorkflow('${item.id}')" target="_blank" class="save-workflow tippy w-button">

@@ -524,9 +524,9 @@ function getUserImage(userObject) {
   }
 }
 
-function thisIsMyUser() {
-  return firebaseUser.username === userSlug
-}
+// function thisIsMyUser() {
+//   return firebaseUser.username === userSlug
+// }
 
 async function renderUsers(target, items) {
   console.log(items)
