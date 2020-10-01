@@ -497,7 +497,6 @@ async function cloneWorkflow(workflowId) {
     if (doc.exists) {
       let data = doc.data()
       data.userId = currentUser.id
-      data.id = workflowId
       WORKFLOWS.add({ ...data, cloned_from: workflowId })
         .then(doc => {
           window.open(`/edit-workflow?id=${doc.id}`)
