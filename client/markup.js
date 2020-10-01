@@ -108,16 +108,15 @@ async function renderReviews(target, items) {
   }
 }
 
-async function renderWorkflows(target, items, option = 1) {
+async function renderWorkflows(target, items) {
   for (item of items) {
     if (item.userId !== currentUser.id && item.publicity === 'private') continue
-    if (option) {
-      $(target).append(`
+    $(target).append(`
         <div class="div-block-917 user-workflow-list _4-column" data-workflow="${item.id}">
           <div class="div-block-167">
             <div class="div-block-169">
               ${item.publicity === 'private' ? `<div class="private-workflow">🔐</div>` : ``}
-              <a href="#" class="workflow-list-link w-inline-block">
+              <a href="/workflows?id=${item.id}" class="workflow-list-link w-inline-block">
                 <h4 class="heading-259 workflow-name">${item.name}</h4>
               </a>
             </div>
@@ -127,7 +126,7 @@ async function renderWorkflows(target, items, option = 1) {
 
           </div>
 
-          ${userElement(item, false)}
+          ${userElement(item)}
           
           <div class="current-user-content" style="display: block;">
             <div class="div-block-925">
@@ -145,8 +144,7 @@ async function renderWorkflows(target, items, option = 1) {
             </div>
           </div>
         </div>`
-      )
-    }
+    )
 
     if (userLikesWorkflow(item.id)) {
       $(`[data-workflow="${item.id}"] .unlike-workflow-button`).show()
@@ -165,6 +163,7 @@ async function renderWorkflows(target, items, option = 1) {
     }
 
     if (item.tags) {
+      $(`[data-workflow="${item.id}"] .tools-condensed`).empty()
       item.tags.forEach(tag => {
         let company = firebaseCollections['company'].find(com => com.slug === tag)
         if (company) {

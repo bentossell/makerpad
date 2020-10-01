@@ -52,7 +52,7 @@ function getUserUsers() {
 
 function recommendUser(user) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
-  if (thisIsMyUser() || !currentUser.id) return
+  if (thisIsMyUser(userSlug) || !currentUser.id) return
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
     targetUser: user,
@@ -63,7 +63,7 @@ function recommendUser(user) {
 
 function followUser(user, reverse) {
   if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
-  if (thisIsMyUser()) return console.log("C'mon, can't follow yourself")
+  if (thisIsMyUser(userSlug)) return console.log("C'mon, can't follow yourself")
   return USER_USER.doc(`${currentUser.id}-${user}`).set({
     userId: currentUser.id,
     targetUser: user,
@@ -137,7 +137,7 @@ async function populateUser() {
     populateProjects()
     populateWorkflows()
 
-    if (thisIsMyUser()) {
+    if (thisIsMyUser(userSlug)) {
       $('.current-user-content').show()
       $('.follow-user-button').hide()
     } else {
