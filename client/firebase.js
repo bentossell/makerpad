@@ -24,7 +24,7 @@ var firebaseUser = {}
 var tagsArray = []
 
 var firebaseCollections = {
-  'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_company': [], 'reviews': [], 'workflows': []
+  'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_workflow': [], 'user_company': [], 'reviews': [], 'workflows': []
 }
 
 var COMPANY = db.collection('company')
