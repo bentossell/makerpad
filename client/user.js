@@ -132,10 +132,10 @@ async function populateUser() {
     getUserUsers()
 
     await getCollections()
-    populateTutorials()
-    populateCompanies()
     populateProjects()
     populateWorkflows()
+    populateTutorials()
+    populateCompanies()
 
     if (thisIsMyUser(userSlug)) {
       $('.current-user-content').show()
