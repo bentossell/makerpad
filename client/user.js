@@ -164,7 +164,10 @@ function getSampleHTML() {
 async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
   console.log(items)
-  if (!items.length) return console.log('no tools found')
+  if (!items.length) {
+    // $('[data-w-tab="Projects"]').hide()
+    return $('[data-w-tab="Watchlist"]').click()
+  }
   $('.alert-tools').hide()
 
   renderCompanies('.tools-followed', items)
@@ -173,7 +176,10 @@ async function populateCompanies() {
 async function populateTutorials() {
   let items = await getUserCollection(USER_TUTORIAL)
   console.log(items)
-  if (!items.length) return console.log('no tutorials found')
+  if (!items.length) {
+    // $('[data-w-tab="Watchlist"]').hide()
+    return
+  }
   $('.alert-watchlist').hide()
   renderTutorials(items)
 }
@@ -181,7 +187,10 @@ async function populateTutorials() {
 async function populateProjects() {
   let items = await getUserCollection(PROJECTS)
   console.log(items)
-  if (!items.length) return console.log('no projects')
+  if (!items.length) {
+    // $('[data-w-tab="Projects"]').hide()
+    return $('[data-w-tab="Workflows"]').click()
+  }
   $('.alert-projects').hide()
   renderProjects('.user-projects', items)
 }
@@ -189,6 +198,9 @@ async function populateProjects() {
 async function populateWorkflows() {
   let items = await getUserCollection(WORKFLOWS)
   console.log(items)
-  if (!items.length) return console.log('no workflows')
+  if (!items.length) {
+    $('[data-w-tab="Workflows"]').hide()
+    return $('[data-w-tab="Tools"]').click()
+  }
   renderWorkflows('#user-workflows', items, 2)
 }
