@@ -1,5 +1,5 @@
 let workflow = getParamFromURL('id')
-renderWorkflow()
+if (workflow) renderWorkflow()
 
 $().ready(async () => {
   !workflow ? $('#workflow-detail-container').hide() : $('#user-workflows').parent().hide()
@@ -31,6 +31,7 @@ $().ready(async () => {
       $('.edit-workflow').attr('href', `/edit-workflow?id=${workflow}`).show()
       $('.delete-workflow').show()
     }
+    getRandomUsers()
   })
 })
 

@@ -194,3 +194,34 @@ function userElement(item, showName = true) {
     </a>`
 }
 
+async function getRandomUsers() {
+  let randomNumber = (Math.floor(Math.random() * 1100))
+  let items = await USERS
+    .orderBy('username')
+    .startAt(randomNumber)
+    .limit(300)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) return []
+      let data = snapshot.docs.map(doc => doc.data())
+      return data
+    })
+    .catch(error => console.log(error))
+  items = items.filter(i => getUserImage(i) !== 'https://w5insight.com/wp-content/uploads/2014/07/placeholder-user-400x400.png')
+  renderUsers('.random-users', items)
+  let random10 = Math.floor(Math.random() * items.length)
+  let pick10 = items.slice(random10, random10 + 10)
+  console.log(pick10)
+  $('.div-block-932').empty()
+  pick10.forEach(item => {
+    let profileImage = getUserImage(item)
+    if (profileImage === 'https://w5insight.com/wp-content/uploads/2014/07/placeholder-user-400x400.png') return
+    $('.div-block-932').append(`
+      <a href="/u/${item.username}" class="link-block-74 w-inline-block">
+        <img src="${profileImage}" alt=""
+          class="directory-user-image">
+      </a>
+    `)
+  })
+}
+
