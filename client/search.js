@@ -12,7 +12,7 @@ function createTypeahead(selector) {
   var source = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.nonword('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: searchArray,
+    local: tagsArray,
     // filter: function (data) {
     //   return $.map(data, function (item) {
     //     return {
