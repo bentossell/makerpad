@@ -22,6 +22,7 @@ var debugMode = getParamFromURL('debug')
 var currentUser = {}
 var firebaseUser = {}
 var tagsArray = []
+var searchArray = []
 
 var firebaseCollections = {
   'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_workflow': [], 'user_company': [], 'reviews': [], 'workflows': []

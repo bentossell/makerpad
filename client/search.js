@@ -1,10 +1,18 @@
+populateSearch()
+
+function populateSearch() {
+  getTags().then(() => {
+    createTypeahead('.typeahead')
+  })
+}
+
 function createTypeahead(selector) {
   if (!selector) selector = '.typeahead'
   console.log('creating Typeahead')
   var source = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: tagsArray,
+    local: searchArray,
     // filter: function (data) {
     //   return $.map(data, function (item) {
     //     return {
