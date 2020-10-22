@@ -1,4 +1,5 @@
-function createTypeahead(path, selector) {
+function createTypeahead(selector) {
+  if (!selector) selector = '.typeahead'
   console.log('creating Typeahead')
   var source = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -14,7 +15,11 @@ function createTypeahead(path, selector) {
   })
   source.initialize()
 
-  $('#searchMakerpad').typeahead(null, {
+  $(selector).typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 1
+  }, {
     name: 'search',
     // display: 'value',
     source: source,
