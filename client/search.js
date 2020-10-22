@@ -10,7 +10,7 @@ function createTypeahead(selector) {
   if (!selector) selector = '.typeahead'
   console.log('creating Typeahead')
   var source = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    datumTokenizer: Bloodhound.tokenizers.obj.nonword('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     local: searchArray,
     // filter: function (data) {
