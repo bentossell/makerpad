@@ -1,8 +1,14 @@
 populateSearch()
 
 function populateSearch() {
-  getTags().then(() => {
+  populateSearchArray().then(() => {
     createTypeahead('.typeahead')
+  })
+}
+
+async function populateSearchArray() {
+  return db.collection('SEARCH').doc('_index').get().then(doc => {
+    searchArray = [].concat(...Object.values(doc.data()))
   })
 }
 
@@ -10,9 +16,9 @@ function createTypeahead(selector) {
   if (!selector) selector = '.typeahead'
   console.log('creating Typeahead')
   var source = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.nonword('value'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('searchString'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: tagsArray,
+    local: searchArray,
     // filter: function (data) {
     //   return $.map(data, function (item) {
     //     return {
@@ -29,11 +35,11 @@ function createTypeahead(selector) {
     minLength: 1
   }, {
     name: 'search',
-    // display: 'value',
+    display: 'label',
     source: source,
     templates: {
       suggestion: function (data) {
-        return `<a class="dropdown-item" href="/${data.type}/${data.value}">${data.value}</a>`
+        return `<a class="dropdown-item" href="/${data.link}">${data.label}</a>`
       }
     }
   })
