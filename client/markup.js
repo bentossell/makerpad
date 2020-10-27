@@ -112,7 +112,7 @@ async function renderWorkflows(target, items) {
   for (item of items) {
     if (item.userId !== currentUser.id && item.publicity === 'private') continue
     $(target).append(`
-        <div class="div-block-917 user-workflow-list _4-column" data-workflow="${item.id}">
+        <div class="div-block-917 user-workflow-list _4-column bottom-border" data-workflow="${item.id}">
           <div class="div-block-167">
             <div class="div-block-169">
               ${item.publicity === 'private' ? `<div class="private-workflow">🔐</div>` : ``}
