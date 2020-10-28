@@ -134,16 +134,17 @@ async function populateUser() {
     await getCollections()
     populateProjects()
     populateWorkflows()
-    populateTutorials()
+    populateTutorials().then(() => {
+      if (thisIsMyUser(userSlug)) {
+        $('.current-user-content').show()
+        $('.follow-user-button').hide()
+      } else {
+        $('.current-user-content').hide()
+        $('.alert-watchlist, .alert-tools, .alert-projects').hide()
+      }
+    })
     populateCompanies()
 
-    if (thisIsMyUser(userSlug)) {
-      $('.current-user-content').show()
-      $('.follow-user-button').hide()
-    } else {
-      $('.current-user-content').hide()
-      $('.alert-watchlist, .alert-tools, .alert-projects').hide()
-    }
 
     let isFollowed = await userFollowsUser(getElementFromURL())
     if (await userFollowsUser(getElementFromURL())) {
