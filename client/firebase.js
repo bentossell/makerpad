@@ -121,9 +121,9 @@ function firebaseAuth() {
 function objectifyForm(formArray) {
   var returnArray = {}
   for (var i = 0; i < formArray.length; i++) {
-    returnArray[formArray[i]['name']] = formArray[i]['value'];
+    returnArray[formArray[i]['name']] = formArray[i]['value']
   }
-  return returnArray;
+  return returnArray
 }
 
 function slugify(text) {
@@ -560,7 +560,7 @@ async function renderProjects(target, items) {
     <div class="project-div" data-project="${project.slug}">
       <a href="/p/${project.slug}" class="user-project w-inline-block">
         <img
-          src="${project.imageUrl}"
+          src="${project.imageUrl || 'https://source.unsplash.com/400x300/?office'}"
           alt="${project.name}"
           class="image-175 project-image" />
       </a>

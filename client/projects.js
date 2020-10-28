@@ -32,7 +32,7 @@ async function renderProject() {
       $('.p-name').text(data.name)
       $('.p-tagline').text(data.tagline)
       $('.p-link').attr('href', data.url)
-      $('.p-img').attr('src', data.imageUrl)
+      data.imageUrl ? $('.p-img').attr('src', data.imageUrl) : $('.p-img').hide()
       $('.p-description').html(data.details)
       $('.project-user-link').attr('href', `/u/${data.username}`)
 
