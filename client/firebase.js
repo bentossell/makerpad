@@ -386,9 +386,9 @@ async function populateTags() {
   $('.div-block-970').hide()
 
   const options = [
-    { element: '#tags-tools', type: 'company', label: 'Tools' },
-    { element: '#tags-types', type: 'type', label: 'Types' },
-    { element: '#tags-challenges', type: 'challenge', label: 'Challenges' },
+    { element: 'tags-tools', type: 'company', label: 'Tools' },
+    { element: 'tags-types', type: 'type', label: 'Types' },
+    { element: 'tags-challenges', type: 'challenge', label: 'Challenges' },
   ]
   if (searchArray.length == 0) await populateSearchArray()
 
@@ -398,8 +398,7 @@ async function populateTags() {
       `)
     return searchArray.filter(i => i.type === item.type).forEach(tag => {
       tagsArray.push({ type: item.type, value: tag.id })
-      $(item.element).append(`<option value="${tag.id}">${tag.id}</option>`)
-      console.log(tag)
+      $(`#${item.element}`).append(`<option value="${tag.id}">${tag.id}</option>`)
     })
   })
 
