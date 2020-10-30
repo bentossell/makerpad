@@ -2,18 +2,11 @@ var project = getElementFromURL()
 renderProject()
 
 $().ready(async () => {
-  $('#active-tags').empty()
-  $('#project-tags').empty()
+  $('#active-tags, #project-tags').empty()
   await getCollections()
   console.log('Ready, project: ' + project)
   let isLiked = userLikesProject(project)
-  if (isLiked) {
-    $('.unlike-project-button').show()
-    $('.like-project-button').hide()
-  } else {
-    $('.unlike-project-button').hide()
-    $('.like-project-button').show()
-  }
+  if (isLiked) $('.unlike-project-button, .like-project-button').toggle()
   let userOwnsProject = firebaseCollections['projects'].find(item => (item.slug === project && item.userId === currentUser.id))
   console.log(userOwnsProject)
   if (userOwnsProject) {
@@ -45,30 +38,25 @@ async function renderProject() {
       if (data.price) $('.project-price-text').text(data.price)
       if (data['sale-url'] || data.price) $('#project-purchase-block').show()
 
-      // $('.user-image').removeClass('w-dyn-bind-empty')
-
-      await getTags()
-
-      if (data.tags) data.tags.forEach(tag => {
-        let tagItem = tagsArray.find(item => item.value === tag)
-        $('#project-tags').append(`
-          <a href="/${tagItem.type}/${tagItem.value}" class="project-tag">${tag}</a>
-        `)
+      populateSearchArray().then(() => {
+        if (data.tags) data.tags.forEach(tag => {
+          let tagItem = searchArray.find(item => item.id === tag)
+          $('#project-tags').append(`
+            <a href="${tagItem.link}" class="project-tag">${tag}</a>
+          `)
+        })
       })
+
     })
     .catch(error => handleError(error))
 }
 
-// follow
 $('.like-project-button').click(() => {
   followProject(project)
-  $('.unlike-project-button').show()
-  $('.like-project-button').hide()
+  $('.unlike-project-button, .like-project-button').toggle()
 })
 
-// unfollow
 $('.unlike-project-button').click(() => {
   followProject(project, true)
-  $('.unlike-project-button').hide()
-  $('.like-project-button').show()
+  $('.unlike-project-button, .like-project-button').toggle()
 })

@@ -17,12 +17,6 @@ function populateSearch() {
   })
 }
 
-async function populateSearchArray() {
-  return db.collection('SEARCH').doc('_index').get().then(doc => {
-    searchArray = [].concat(...Object.values(doc.data()))
-  })
-}
-
 function createTypeahead(selector, local) {
   if (!selector) selector = '.typeahead'
   if (!local) local = searchArray

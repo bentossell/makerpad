@@ -39,7 +39,6 @@ async function renderCompanies(target, items) {
 async function renderTutorials(items) {
   for (item of items) {
     let tutorial = item.tutorial
-    console.log(item)
     let target = item.completed ? '#tutorials-completed' : '#tutorials-saved'
     $(target).append(`
       <div data-tutorial="${item.tutorialId}" class="div-block-917 user-tutorial-list">

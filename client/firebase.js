@@ -272,6 +272,8 @@ function saveWorkflow(workflowId, reverse) {
 }
 
 async function getCollections() {
+  if (firebaseCollections['company'].length > 0) return
+  await populateSearchArray()
 
   let companyPromise = COMPANY
     .get()
@@ -371,41 +373,65 @@ async function getCollections() {
   await Promise.all([companyPromise, projectPromise, workflowPromise])
 }
 
+async function populateSearchArray() {
+  return db.collection('SEARCH').doc('_index').get().then(doc => {
+    searchArray = [].concat(...Object.values(doc.data()))
+    console.log('Search Array Populated')
+  })
+}
+
 async function populateTags() {
   if (!$('.multiple-select')[0]) return console.log('no multiSelect found')
+
+  $('.div-block-970').hide()
+
+  const options = [
+    { element: '#tags-tools', type: 'company', label: 'Tools' },
+    { element: '#tags-types', type: 'type', label: 'Types' },
+    { element: '#tags-challenges', type: 'challenge', label: 'Challenges' },
+  ]
+
   try {
-    $('.multiple-select').append(`
-    <optgroup label="Types" id="tags-types"></optgroup>
-    <optgroup label="Challenges" id="tags-challenges"></optgroup>
-    <optgroup label="Tools" id="tags-tools"></optgroup>
-  `)
+    if (searchArray.length == 0) await populateSearchArray()
 
-    await db.collection('company').get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          let data = doc.data()
-          // tagsArray.push({ type: 'company', value: data.slug })
-          $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
-        })
+    options.forEach(item => {
+      $('.multiple-select').append(`
+        <optgroup label="${item.label}" id="${item.element}"></optgroup>
+      `)
+      searchArray.filter(i => i.type === item.type).forEach(tag => {
+        console.log(tag)
+        tagsArray.push({ type: item.type, value: tag.id })
+        $(item.element).append(`<option value="${tag.id}">${tag.id}</option>`)
       })
+    })
 
-    await db.collection('type').get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          let data = doc.data()
-          // tagsArray.push({ type: 'type', value: data.slug })
-          $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
-        })
-      })
+    // await db.collection('company').get()
+    //   .then(snapshot => {
+    //     snapshot.forEach(doc => {
+    //       let data = doc.data()
+    //       // tagsArray.push({ type: 'company', value: data.slug })
+    //       $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
+    //     })
+    //   })
 
-    await db.collection('challenges').get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          let data = doc.data()
-          // tagsArray.push({ type: 'challenges', value: data.slug })
-          $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
-        })
-      })
+    // await db.collection('type').get()
+    //   .then(snapshot => {
+    //     snapshot.forEach(doc => {
+    //       let data = doc.data()
+    //       // tagsArray.push({ type: 'type', value: data.slug })
+    //       $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
+    //     })
+    //   })
+
+    // await db.collection('challenges').get()
+    //   .then(snapshot => {
+    //     snapshot.forEach(doc => {
+    //       let data = doc.data()
+    //       // tagsArray.push({ type: 'challenges', value: data.slug })
+    //       $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
+    //     })
+    //   })
+    $('.div-block-970').show()
   } catch (e) { }
   return
 }
@@ -560,7 +586,7 @@ async function renderProjects(target, items) {
     <div class="project-div" data-project="${project.slug}">
       <a href="/p/${project.slug}" class="user-project w-inline-block">
         <img
-          src="${project.imageUrl || 'https://source.unsplash.com/400x300/?office'}"
+          src="${project.imageUrl || 'https://source.unsplash.com/400x300/?imac'}"
           alt="${project.name}"
           class="image-175 project-image" />
       </a>

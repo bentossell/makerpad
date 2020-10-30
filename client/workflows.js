@@ -80,24 +80,20 @@ $('.clone-workflow').click(() => {
 
 $('.like-workflow-button').click(() => {
   likeWorkflow(workflow)
-  $('.unlike-workflow-button').show()
-  $('.like-workflow-button').hide()
+  $('.unlike-workflow-button, .like-workflow-button').toggle()
 })
 
 $('.unlike-workflow-button').click(() => {
   likeWorkflow(workflow, true)
-  $('.unlike-workflow-button').hide()
-  $('.like-workflow-button').show()
+  $('.unlike-workflow-button, .like-workflow-button').toggle()
 })
 
 $('.save-workflow').click(() => {
   saveWorkflow(workflow)
-  $('.unsave-workflow').show()
-  $('.save-workflow').hide()
+  $('.unsave-workflow, .save-workflow').toggle()
 })
 
 $('.unsave-workflow').click(() => {
   saveWorkflow(workflow, true)
-  $('.unsave-workflow').hide()
-  $('.save-workflow').show()
+  $('.unsave-workflow, .save-workflow').toggle()
 })

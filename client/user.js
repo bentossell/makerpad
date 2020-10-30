@@ -39,7 +39,6 @@ function getUserUsers() {
   return USER_USER.get()
     .then(snapshot => {
       userUsers = snapshot.docs.map(doc => doc.data())
-      console.log(userUsers)
 
       let followingCount = userUsers.filter(item => item.username === userSlug && item.followed == true).length
       let followedCount = userUsers.filter(item => item.targetUser === userSlug && item.followed == true).length
@@ -102,7 +101,6 @@ async function populateUser() {
     U.doc(userSlug).get().then(doc => {
       if (!doc.exists) return
       let userProfile = doc.data()
-      console.log(userProfile)
       $('.user-full-name').text(userProfile.name)
       $('.user-username').text('@' + userProfile.slug)
       // CHANGE THIS!
@@ -164,7 +162,6 @@ function getSampleHTML() {
 
 async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
-  console.log(items)
   if (!items.length) {
     // $('[data-w-tab="Projects"]').hide()
     return $('[data-w-tab="Watchlist"]').click()
