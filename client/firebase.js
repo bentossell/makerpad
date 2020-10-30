@@ -538,6 +538,17 @@ function updateTutorial(id, object) {
     .catch(error => handleError(error))
 }
 
+async function addToolsFromTags(tags) {
+  let toolTags = searchArray.filter(item => item.type === 'company').map(item => item.id)
+  let userTags = firebaseCollections['user_company'].map(item => item.companyId)
+  console.log({ toolTags, userTags })
+  let newTools = tags.filter(item => toolTags.includes(item) && !userTags.includes(item))
+  console.log(newTools)
+  return newTools.forEach(item => {
+    followCompany(item)
+  })
+}
+
 function getUserImage(userObject) {
   // return `https://firebasestorage.googleapis.com/v0/b/makerpad-94656.appspot.com/o/profile_pictures%2F${username}?alt=media&token=acf25318-5b18-454e-85d5-b3d2e694b04a`
   if (userObject.imageUrl) {

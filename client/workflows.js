@@ -61,15 +61,8 @@ async function renderWorkflow() {
         } catch (error) { }
       }
 
-      getTags()
-        .then(() => {
-          if (data.tags) data.tags.forEach(tag => {
-            let tagItem = tagsArray.find(item => item.value === tag)
-            $('#workflow-tags').append(`
-              <a href="/${tagItem.type}/${tagItem.value}" class="workflow-tag">${tag}</a>
-            `)
-          })
-        })
+      renderTags('#workflow-tags', data, 'workflow-tag')
+
     })
     .catch(error => handleError(error))
 }

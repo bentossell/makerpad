@@ -38,14 +38,7 @@ async function renderProject() {
       if (data.price) $('.project-price-text').text(data.price)
       if (data['sale-url'] || data.price) $('#project-purchase-block').show()
 
-      populateSearchArray().then(() => {
-        if (data.tags) data.tags.forEach(tag => {
-          let tagItem = searchArray.find(item => item.id === tag)
-          $('#project-tags').append(`
-            <a href="${tagItem.link}" class="project-tag">${tag}</a>
-          `)
-        })
-      })
+      renderTags('#project-tags', data, 'project-tag')
 
     })
     .catch(error => handleError(error))

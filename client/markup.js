@@ -224,3 +224,13 @@ async function getRandomUsers() {
   })
 }
 
+async function renderTags(target, data, class) {
+  populateSearchArray().then(() => {
+    if (data.tags) data.tags.forEach(tag => {
+      let tagItem = searchArray.find(item => item.id === tag)
+      $(target).append(`
+            <a href="${tagItem.link}" class="${class}">${tag}</a>
+          `)
+    })
+  })
+}

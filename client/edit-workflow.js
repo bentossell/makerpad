@@ -162,14 +162,3 @@ $('.delete-project-button').click(function (event) {
   if (!data || !data.id) return
   deleteWorkflow(data)
 })
-
-async function addToolsFromTags(tags) {
-  let toolTags = tagsArray.filter(item => item.type === 'company').map(item => item.value)
-  let userTags = firebaseCollections['user_company'].map(item => item.companyId)
-  console.log({ toolTags, userTags })
-  let newTools = tags.filter(item => toolTags.includes(item) && !userTags.includes(item))
-  console.log(newTools)
-  return newTools.forEach(item => {
-    followCompany(item)
-  })
-}
