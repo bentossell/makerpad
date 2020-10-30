@@ -390,50 +390,46 @@ async function populateTags() {
     { element: '#tags-types', type: 'type', label: 'Types' },
     { element: '#tags-challenges', type: 'challenge', label: 'Challenges' },
   ]
+  if (searchArray.length == 0) await populateSearchArray()
 
-  try {
-    if (searchArray.length == 0) await populateSearchArray()
-
-    options.forEach(item => {
-      $('.multiple-select').append(`
+  options.forEach(item => {
+    $('.multiple-select').append(`
         <optgroup label="${item.label}" id="${item.element}"></optgroup>
       `)
-      searchArray.filter(i => i.type === item.type).forEach(tag => {
-        console.log(tag)
-        tagsArray.push({ type: item.type, value: tag.id })
-        $(item.element).append(`<option value="${tag.id}">${tag.id}</option>`)
-      })
+    return searchArray.filter(i => i.type === item.type).forEach(tag => {
+      tagsArray.push({ type: item.type, value: tag.id })
+      $(item.element).append(`<option value="${tag.id}">${tag.id}</option>`)
+      console.log(tag)
     })
+  })
 
-    // await db.collection('company').get()
-    //   .then(snapshot => {
-    //     snapshot.forEach(doc => {
-    //       let data = doc.data()
-    //       // tagsArray.push({ type: 'company', value: data.slug })
-    //       $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
-    //     })
-    //   })
+  // await db.collection('company').get()
+  //   .then(snapshot => {
+  //     snapshot.forEach(doc => {
+  //       let data = doc.data()
+  //       // tagsArray.push({ type: 'company', value: data.slug })
+  //       $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
+  //     })
+  //   })
 
-    // await db.collection('type').get()
-    //   .then(snapshot => {
-    //     snapshot.forEach(doc => {
-    //       let data = doc.data()
-    //       // tagsArray.push({ type: 'type', value: data.slug })
-    //       $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
-    //     })
-    //   })
+  // await db.collection('type').get()
+  //   .then(snapshot => {
+  //     snapshot.forEach(doc => {
+  //       let data = doc.data()
+  //       // tagsArray.push({ type: 'type', value: data.slug })
+  //       $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
+  //     })
+  //   })
 
-    // await db.collection('challenges').get()
-    //   .then(snapshot => {
-    //     snapshot.forEach(doc => {
-    //       let data = doc.data()
-    //       // tagsArray.push({ type: 'challenges', value: data.slug })
-    //       $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
-    //     })
-    //   })
-    $('.div-block-970').show()
-  } catch (e) { }
-  return
+  // await db.collection('challenges').get()
+  //   .then(snapshot => {
+  //     snapshot.forEach(doc => {
+  //       let data = doc.data()
+  //       // tagsArray.push({ type: 'challenges', value: data.slug })
+  //       $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
+  //     })
+  //   })
+  return $('.div-block-970').show()
 }
 
 async function getTaggedProjects(tags) {
