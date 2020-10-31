@@ -113,7 +113,7 @@ function handleSuccess(message) {
 
 function firebaseAuth() {
   // Sign in anonymously to restrict firestore access to makerpad.com
-  if (firebase.auth().currentUser.uid) return
+  if (firebase.auth().currentUser && firebase.auth().currentUser.uid) return
   firebase.auth().signInAnonymously()
     .then(user => console.log('Firebase signed in anon'))
     .catch(error => console.log(error))
@@ -367,7 +367,7 @@ async function getCollections() {
 }
 
 async function populateSearchArray() {
-  if (searchArray.length > 0) return
+  if (searchArray && searchArray.length > 0) return
   return db.collection('SEARCH').doc('_index').get().then(doc => {
     searchArray = [].concat(...Object.values(doc.data()))
     console.log('Search Array Populated')
