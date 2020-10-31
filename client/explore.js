@@ -15,6 +15,5 @@ async function getRecentProjects() {
       return data
     })
     .catch(error => console.log(error))
-  console.log(items)
   renderProjects('.recent-projects', items)
 }

@@ -1,63 +1,32 @@
 var userSlug = getElementFromURL()
-var userUsers = []
 
 $().ready(async () => {
+  if (!debugMode) $('.tools-followed, .tutorial-watchlist, .user-projects, #user-workflows').empty()
   populateUser()
-  let body = {
+})
+
+function logClick(type) {
+  return db.collection('click_log').add({
     userId: currentUser.id || null,
     targetUser: userSlug,
+    type,
     created_at: new Date()
-  }
-  $('.sponsor').click(() => {
-    return db.collection('click_log').add({
-      ...body,
-      type: 'sponsor',
-    })
   })
-  $('.hire').click(() => {
-    return db.collection('click_log').add({
-      ...body,
-      type: 'hire',
-    })
-  })
-})
+}
 
-$('#wf-form-Recommendation').submit(function (event) {
-  event.preventDefault()
-  recommendUser(userSlug)
-})
-
-$('.follow-user-button').click(function (event) {
-  followUser(userSlug)
-})
-
-$('.unfollow-user-button').click(function (event) {
-  followUser(userSlug, true)
-})
+$('.sponsor').click(() => logClick('sponsor'))
+$('.hire').click(() => logClick('hire'))
+$('.follow-user-button').click(() => followUser(userSlug))
+$('.unfollow-user-button').click(() => followUser(userSlug, true))
 
 function getUserUsers() {
   return USER_USER.get()
     .then(snapshot => {
-      userUsers = snapshot.docs.map(doc => doc.data())
+      let userUsers = snapshot.docs.map(doc => doc.data())
 
-      let followingCount = userUsers.filter(item => item.username === userSlug && item.followed == true).length
-      let followedCount = userUsers.filter(item => item.targetUser === userSlug && item.followed == true).length
-      console.log(followingCount, followedCount)
-
-      $('.user-followers-count').text(followedCount + ' Followers')
-      $('.user-following-count').text(followingCount + ' Following')
+      $('.user-followers-count').text(userUsers.filter(item => item.targetUser === userSlug && item.followed == true).length + ' Followers')
+      $('.user-following-count').text(userUsers.filter(item => item.username === userSlug && item.followed == true).length + ' Following')
     })
-}
-
-function recommendUser(user) {
-  if (!currentUser || !currentUser.id) return window.location = 'https://www.makerpad.co/pricing'
-  if (thisIsMyUser(userSlug) || !currentUser.id) return
-  return USER_USER.doc(`${currentUser.id}-${user}`).set({
-    userId: currentUser.id,
-    targetUser: user,
-    recommended: true
-  }, { merge: true })
-    .catch(error => console.log(error))
 }
 
 function followUser(user, reverse) {
@@ -70,13 +39,7 @@ function followUser(user, reverse) {
   }, { merge: true })
     .then(() => {
       console.log(reverse ? 'user unfollowed' : 'user followed')
-      if (reverse) {
-        $('.follow-user-button').show()
-        $('.unfollow-user-button').hide()
-      } else {
-        $('.follow-user-button').hide()
-        $('.unfollow-user-button').show()
-      }
+      $('.follow-user-button, .unfollow-user-button').toggle()
     })
     .catch(error => console.log(error))
 }
@@ -103,7 +66,6 @@ async function populateUser() {
       let userProfile = doc.data()
       $('.user-full-name').text(userProfile.name)
       $('.user-username').text('@' + userProfile.slug)
-      // CHANGE THIS!
       $('.user-bio').text(userProfile.bio)
       $('.user-location').text(userProfile.location)
       $('.user-twitter').attr('href', userProfile['twitter-url'])
@@ -113,20 +75,11 @@ async function populateUser() {
 
       let userImage = getUserImage(userProfile)
 
-      if (userImage) {
-        $('.user-image').attr("src", userImage)
-        $('.user-image').removeClass('w-dyn-bind-empty')
-      }
-
-      if (userProfile.sponsor) {
-        $('.sponsor').attr('href', userProfile.sponsor).show()
-      }
-      if (userProfile.hire) {
-        $('.hire').attr('href', userProfile.hire).show()
-      }
+      if (userImage) $('.user-image').attr("src", userImage).removeClass('w-dyn-bind-empty')
+      if (userProfile.sponsor) $('.sponsor').attr('href', userProfile.sponsor).show()
+      if (userProfile.hire) $('.hire').attr('href', userProfile.hire).show()
     })
 
-    getSampleHTML()
     getUserUsers()
 
     await getCollections()
@@ -134,71 +87,47 @@ async function populateUser() {
     populateWorkflows()
     populateTutorials().then(() => {
       if (thisIsMyUser(userSlug)) {
-        $('.current-user-content').show()
-        $('.follow-user-button').hide()
+        $('.current-user-content, .follow-user-button').toggle()
       } else {
-        $('.current-user-content').hide()
-        $('.alert-watchlist, .alert-tools, .alert-projects').hide()
+        $('.alert-watchlist, .alert-tools, .alert-projects, .current-user-content').hide()
       }
     })
     populateCompanies()
 
-
-    let isFollowed = await userFollowsUser(getElementFromURL())
-    if (await userFollowsUser(getElementFromURL())) {
-      $('.follow-user-button').hide()
-      $('.unfollow-user-button').show()
+    if (await userFollowsUser(userSlug)) {
+      $('.follow-user-button, .unfollow-user-button').toggle()
     }
-
-    try {
-
-    } catch (e) { }
   }
-}
-
-function getSampleHTML() {
-  if (!debugMode) $('.tools-followed, .tutorial-watchlist, .user-projects, #user-workflows').empty()
 }
 
 async function populateCompanies() {
   let items = await getUserCollection(USER_COMPANY)
-  if (!items.length) {
-    // $('[data-w-tab="Projects"]').hide()
-    return $('[data-w-tab="Watchlist"]').click()
-  }
-  $('.alert-tools').hide()
-
+  processItems(items, '', '.alert-tools')
   renderCompanies('.tools-followed', items)
 }
 
 async function populateTutorials() {
   let items = await getUserCollection(USER_TUTORIAL)
-  console.log(items)
-  if (!items.length) {
-    // $('[data-w-tab="Watchlist"]').hide()
-    return
-  }
-  $('.alert-watchlist').hide()
+  processItems(items, 'Tools', '.alert-watchlist')
   renderTutorials(items)
 }
 
 async function populateProjects() {
   let items = await getUserCollection(PROJECTS)
-  console.log(items)
-  if (!items.length) {
-    // $('[data-w-tab="Projects"]').hide()
-    return $('[data-w-tab="Workflows"]').click()
-  }
-  $('.alert-projects').hide()
+  processItems(items, 'Workflows', '.alert-workflows')
   renderProjects('.user-projects', items)
 }
 
 async function populateWorkflows() {
   let items = await getUserCollection(WORKFLOWS)
+  processItems(items, 'Tutorials', '.alert-workflows')
+  renderWorkflows('#user-workflows', items, 2)
+}
+
+function processItems(items, fallbackTab, alertElement) {
   console.log(items)
   if (!items.length) {
-    $('[data-w-tab="Workflows"]').hide()
-    return $('[data-w-tab="Tools"]').click()
+    return $(`[data-w-tab="${fallbackTab}"]`).click()
   }
-  renderWorkflows('#user-workflows', items, 2)
+  $(alertElement).hide()
 }

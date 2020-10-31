@@ -402,32 +402,6 @@ async function populateTags() {
     })
   })
 
-  // await db.collection('company').get()
-  //   .then(snapshot => {
-  //     snapshot.forEach(doc => {
-  //       let data = doc.data()
-  //       // tagsArray.push({ type: 'company', value: data.slug })
-  //       $('#tags-tools').append(`<option value="${doc.id}">${data.slug}</option>`)
-  //     })
-  //   })
-
-  // await db.collection('type').get()
-  //   .then(snapshot => {
-  //     snapshot.forEach(doc => {
-  //       let data = doc.data()
-  //       // tagsArray.push({ type: 'type', value: data.slug })
-  //       $('#tags-types').append(`<option value="${doc.id}">${data.slug}</option>`)
-  //     })
-  //   })
-
-  // await db.collection('challenges').get()
-  //   .then(snapshot => {
-  //     snapshot.forEach(doc => {
-  //       let data = doc.data()
-  //       // tagsArray.push({ type: 'challenges', value: data.slug })
-  //       $('#tags-challenges').append(`<option value="${doc.id}">${data.slug}</option>`)
-  //     })
-  //   })
   return $('.div-block-970').show()
 }
 
