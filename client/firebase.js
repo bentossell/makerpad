@@ -113,6 +113,7 @@ function handleSuccess(message) {
 
 function firebaseAuth() {
   // Sign in anonymously to restrict firestore access to makerpad.com
+  if (firebase.auth().currentUser.uid) return
   firebase.auth().signInAnonymously()
     .then(user => console.log('Firebase signed in anon'))
     .catch(error => console.log(error))
@@ -280,7 +281,6 @@ async function getCollections() {
     .then(snapshot => {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
-      console.log('got COMPANY')
       firebaseCollections['company'] = records
       return records
     })
@@ -290,7 +290,6 @@ async function getCollections() {
     .then(snapshot => {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
-      console.log('got PROJECTS')
       firebaseCollections['projects'] = records
       return records
     })
@@ -300,7 +299,6 @@ async function getCollections() {
     .then(snapshot => {
       if (snapshot.empty) return false
       let records = snapshot.docs.map(doc => doc.data())
-      console.log('got WORKFLOWS')
       firebaseCollections['workflows'] = records
       return records
     })
@@ -312,7 +310,6 @@ async function getCollections() {
       .get()
       .then(snapshot => {
         let records = snapshot.docs.map(doc => doc.data())
-        console.log('got USER_PROJECT')
         firebaseCollections['user_project'] = records
         return records
       })
@@ -321,7 +318,6 @@ async function getCollections() {
       .get()
       .then(snapshot => {
         let records = snapshot.docs.map(doc => doc.data())
-        console.log('got USER_USER')
         firebaseCollections['user_user'] = records
         return records
       })
@@ -331,7 +327,6 @@ async function getCollections() {
       .then(snapshot => {
         if (snapshot.empty) return false
         let records = snapshot.docs.map(doc => doc.data())
-        console.log('got USER_TUTORIAL')
         firebaseCollections['user_tutorial'] = records
         return records
       })
@@ -342,7 +337,6 @@ async function getCollections() {
       .then(snapshot => {
         if (snapshot.empty) return false
         let records = snapshot.docs.map(doc => doc.data())
-        console.log('got USER_COMPANY')
         firebaseCollections['user_company'] = records
         return records
       })
@@ -353,7 +347,6 @@ async function getCollections() {
       .then(snapshot => {
         if (snapshot.empty) return false
         let records = snapshot.docs.map(doc => doc.data())
-        console.log('got USER_WORKFLOW')
         firebaseCollections['user_workflow'] = records
         return records
       })
@@ -363,7 +356,6 @@ async function getCollections() {
       .then(snapshot => {
         if (snapshot.empty) return false
         let records = snapshot.docs.map(doc => doc.data())
-        console.log('got REVIEWS')
         firebaseCollections['reviews'] = records
         return records
       })
@@ -371,9 +363,11 @@ async function getCollections() {
     await Promise.all([userCompanyPromise, userTutorialPromise, userUserPromise, userProjectPromise, userWorkflowPromise, reviewPromise])
   }
   await Promise.all([companyPromise, projectPromise, workflowPromise])
+  console.log('Got Collections')
 }
 
 async function populateSearchArray() {
+  if (searchArray.length > 0) return
   return db.collection('SEARCH').doc('_index').get().then(doc => {
     searchArray = [].concat(...Object.values(doc.data()))
     console.log('Search Array Populated')
@@ -390,7 +384,7 @@ async function populateTags() {
     { element: 'tags-types', type: 'type', label: 'Types' },
     { element: 'tags-challenges', type: 'challenge', label: 'Challenges' },
   ]
-  if (searchArray.length == 0) await populateSearchArray()
+  await populateSearchArray()
 
   options.forEach(item => {
     $('.multiple-select').append(`

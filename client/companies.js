@@ -5,7 +5,6 @@ $().ready(async () => {
   if (!debugMode) $('#user-workflows, #tool-reviews').empty()
   company = getElementFromURL()
   console.log('company: ' + company)
-  console.log('currentUser: ' + currentUser)
   getCollections().then(() => {
     if (company && currentUser) {
       if (userFollowsCompany(company)) {

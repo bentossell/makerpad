@@ -1,4 +1,5 @@
 async function renderCompanies(target, items) {
+  console.log(`Render companies to ${target}`)
   for (item of items) {
     let company = item.company
     let record = firebaseCollections['company'].find(item => item.slug === company.slug)
@@ -37,6 +38,7 @@ async function renderCompanies(target, items) {
 }
 
 async function renderTutorials(items) {
+  console.log(`Rendering tutorials`)
   for (item of items) {
     let tutorial = item.tutorial
     let target = item.completed ? '#tutorials-completed' : '#tutorials-saved'
@@ -93,7 +95,7 @@ async function renderTutorials(items) {
 }
 
 async function renderProjects(target, items) {
-  console.log(items)
+  console.log(`Render projects to ${target}`)
   if (firebaseCollections['projects'].length == 0) await getCollections()
   if (!items) return
 
@@ -150,6 +152,7 @@ async function renderReviews(target, items) {
 }
 
 async function renderWorkflows(target, items) {
+  console.log(`Render workflows to ${target}`)
   for (item of items) {
     if (item.userId !== currentUser.id && item.publicity === 'private') continue
     $(target).append(`
@@ -267,7 +270,7 @@ async function getRandomUsers() {
 }
 
 async function renderUsers(target, items) {
-  console.log(items)
+  console.log(`Render users to ${target}`)
   $(target).empty()
   items.forEach(item => {
     let profileImage = getUserImage(item)
@@ -287,6 +290,7 @@ async function renderUsers(target, items) {
 }
 
 async function renderTags(target, data, classes) {
+  console.log(`Render tags to ${target}`)
   populateSearchArray().then(() => {
     if (data.tags) data.tags.forEach(tag => {
       let tagItem = searchArray.find(item => item.id === tag)
