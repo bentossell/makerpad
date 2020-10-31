@@ -28,7 +28,7 @@ async function renderCompanies(target, items) {
       </div>
       `)
 
-    $('.tools-condensed').append(`
+    $('#user-sidebar .tools-condensed').append(`
        <a href="/company/${company.slug}" class="user-tool tool-img w-inline-block">
          <img src="${company.logo.url}" width=40/>
        </a>
