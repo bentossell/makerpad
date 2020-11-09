@@ -2,6 +2,7 @@ var userSlug = getElementFromURL()
 
 $().ready(async () => {
   if (!debugMode) $('.tools-followed, .tutorial-watchlist, .user-projects, #user-workflows').empty()
+  $('.alert-watchlist, .alert-tools, .alert-projects, .current-user-content').show()
   populateUser()
 })
 
@@ -114,7 +115,7 @@ async function populateTutorials() {
 
 async function populateProjects() {
   let items = await getUserCollection(PROJECTS)
-  processItems(items, 'Workflows', '.alert-workflows')
+  processItems(items, 'Workflows', '.alert-projects')
   renderProjects('.user-projects', items)
 }
 
