@@ -1,5 +1,6 @@
 var tinyElement = tinymce.get()
 var workflowId = getParamFromURL('id')
+
 $(document).ready(async () => {
   console.log('document ready')
   $('#active-tags').empty()
@@ -10,6 +11,11 @@ $(document).ready(async () => {
   $('.fstQueryInput').click()
   await getCollections()
   await getTags()
+
+  if (workflowId) {
+    $(`#user-workflow-dropdown option[value="${workflowId}"]`).attr('selected', true)
+    $('#user-workflow-dropdown').change()
+  }
 })
 
 $('#user-workflow-dropdown').change(function () {

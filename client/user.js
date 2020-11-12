@@ -2,7 +2,12 @@ var userSlug = getElementFromURL()
 
 $().ready(async () => {
   if (!debugMode) $('.tools-followed, .tutorial-watchlist, .user-projects, #user-workflows').empty()
-  $('.alert-watchlist, .alert-tools, .alert-projects, .current-user-content').show()
+  if (thisIsMyUser(userSlug)) {
+    $('.current-user-content, .follow-user-button').toggle()
+    $('.alert-watchlist, .alert-tools, .alert-projects, .current-user-content').show()
+  } else {
+    $('.alert-watchlist, .alert-tools, .alert-projects, .current-user-content').hide()
+  }
   populateUser()
 })
 
@@ -86,13 +91,7 @@ async function populateUser() {
     await getCollections()
     populateProjects()
     populateWorkflows()
-    populateTutorials().then(() => {
-      if (thisIsMyUser(userSlug)) {
-        $('.current-user-content, .follow-user-button').toggle()
-      } else {
-        $('.alert-watchlist, .alert-tools, .alert-projects, .current-user-content').hide()
-      }
-    })
+    populateTutorials()
     populateCompanies()
 
     if (await userFollowsUser(userSlug)) {

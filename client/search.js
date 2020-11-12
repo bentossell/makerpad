@@ -108,7 +108,7 @@ function createTypeahead(selector, local) {
 
   $('.twitter-typeahead').on('keyup', function (e) {
     if (e.which == 13) {
-      try { document.querySelector('.tt-suggestion').click() } catch { }
+      try { document.querySelector('.tt-suggestion').click() } catch (e) { }
     }
   })
   console.log('Typeahead done')

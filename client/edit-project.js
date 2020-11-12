@@ -9,6 +9,11 @@ $(document).ready(async () => {
   $('.fstQueryInput').click()
   await getCollections()
   await getTags()
+
+  if (projectId) {
+    $(`#user-project-dropdown option[value="${projectId}"]`).attr('selected', true)
+    $('#user-project-dropdown').change()
+  }
 })
 
 $('#user-project-dropdown').change(function () {
@@ -25,10 +30,6 @@ function getUsersProjects() {
       records.forEach(record => {
         $('#user-project-dropdown').append(new Option(record.name, record.slug))
       })
-      // if (projectId) {
-      //   $(`#user-project-dropdown option[value="${projectId}"]`).attr('selected', true)
-      //   $('#user-project-dropdown').change()
-      // }
       return records
     })
 }

@@ -2,7 +2,7 @@ let workflow = getParamFromURL('id')
 if (workflow) renderWorkflow()
 
 $().ready(async () => {
-  !workflow ? $('#workflow-detail-container').hide() : $('#user-workflows').parent().hide()
+  !workflow ? $('#workflow-detail-container').hide() : $('#workflow-dashboard').hide()
   if (!debugMode) $('#workflow-tags, #user-workflows, #saved-workflows, #all-workflows').empty()
   $('.edit-workflow').hide()
   getCollections().then(() => {

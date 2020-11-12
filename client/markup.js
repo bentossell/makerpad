@@ -8,13 +8,14 @@ async function renderCompanies(target, items) {
     let logo = (company.logo && company.logo.url) ? company.logo.url : ""
     $(target).append(`
       <div data-company="${company.companyId}" class="div-block-917 user-tool-list">
-        <div class="div-block-167"><img width="40"
+        <div class="div-block-167"><img width="40" loading="lazy" 
             src="${logo}" alt="${company.name}"
             class="image-37 tool-img">
           <div class="div-block-168 vertical">
             <div class="div-block-169">
               <h4 class="heading-259 tool-name">${company.name}</h4>
               ${company.verified ? `<img
+                loading="lazy" 
                 src = "https://assets-global.website-files.com/5c1a1fb9f264d636fe4b69fa/5cc1f1edad50d9c97c425e83_check-badge%20copy%202.svg"
                 width = "15" tooltipster = "top" alt = "" class= "image-41 tool-verified tooltipstered" >` : ''}
             </div>
@@ -31,7 +32,7 @@ async function renderCompanies(target, items) {
 
     $('#user-sidebar .tools-condensed').append(`
        <a href="/company/${company.slug}" class="user-tool tool-img w-inline-block">
-         <img src="${company.logo.url}" width=40/>
+         <img loading="lazy" src="${company.logo.url}" width=40/>
        </a>
       `)
   }
@@ -80,7 +81,7 @@ async function renderTutorials(items) {
         let company = firebaseCollections['company'].find(com => com.slug === item)
         $(`.tutorial-tools-${tutorial.slug}`).append(`
           <a href="/company/${item}" class="user-tool tool-img w-inline-block">
-            <img src="${company.logo ? company.logo.url : ''}" width="40/">
+            <img loading="lazy" src="${company.logo ? company.logo.url : ''}" width="40/">
           </a>
           `)
       })
@@ -105,6 +106,7 @@ async function renderProjects(target, items) {
     <div class="project-div" data-project="${project.slug}">
       <a href="/p/${project.slug}" class="user-project w-inline-block">
         <img
+          loading="lazy" 
           src="${project.imageUrl || 'https://source.unsplash.com/400x300/?imac'}"
           alt="${project.name}"
           class="image-175 project-image" />
@@ -213,7 +215,7 @@ async function renderWorkflows(target, items) {
         if (company) {
           $(`[data-workflow="${item.id}"] .tools-condensed`).append(`
             <a href="/company/${tag}" class="user-tool tool-img w-inline-block">
-              <img src="${company.logo ? company.logo.url : ''}" width="40/">
+              <img loading="lazy" src="${company.logo ? company.logo.url : ''}" width="40/">
             </a>
             `)
         }
@@ -231,7 +233,9 @@ async function renderWorkflows(target, items) {
 function userElement(item, showName = true) {
   let userImage = getUserImage(item.user)
   return `
-    <a href="/u/${item.username}" class="link-block-73 workflow-user-link w-inline-block"><img
+    <a href="/u/${item.username}" class="link-block-73 workflow-user-link w-inline-block">
+    <img
+      loading="lazy" 
       src="${userImage}" alt="${item.username}"
       class="image-179 workflow-user-avatar">
       <div class="text-block-441 workflow-user-full-name ${showName ? '' : 'hidden'}">${item.user['full-name']}</div>
@@ -262,7 +266,7 @@ async function getRandomUsers() {
     if (profileImage === 'https://w5insight.com/wp-content/uploads/2014/07/placeholder-user-400x400.png') return
     $('.div-block-932').append(`
       <a href="/u/${item.username}" class="link-block-74 w-inline-block">
-        <img src="${profileImage}" alt=""
+        <img loading="lazy" src="${profileImage}" alt=""
           class="directory-user-image">
       </a>
     `)
@@ -275,7 +279,7 @@ async function renderUsers(target, items) {
   items.forEach(item => {
     let profileImage = getUserImage(item)
     $(target).append(`
-      <a href="/u/${item.username}" class="div-block-167 w-inline-block"><img width="40"
+      <a href="/u/${item.username}" class="div-block-167 w-inline-block"><img loading="lazy" width="40"
         src="${profileImage}"
         alt="" class="image-37 tool-img">
       <div class="div-block-168 vertical">
