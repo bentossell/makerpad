@@ -1,0 +1,65 @@
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fireflow</title>
+    <link href="https://unpkg.com/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div>
+      <div class="w-2/3 p-8 mx-auto mt-24 rounded shadow">
+        <h1 class="mb-3 font-bold">Projects</h1>
+        <ul class="divide-y divide-gray-200 fireflow-list" data-fireflow-collection="projects">
+          <li class="fireflow-sample">
+            <a href="" class="flex py-4 space-x-3" data-fireflow-href="makerpad.co/p/{{$id}}">
+              <img class="w-10 h-10 rounded-full" src="https://source.unsplash.com/400x300/?imac"
+                data-fireflow-field="imageUrl" alt="">
+              <div class="flex flex-col">
+                <span class="text-sm font-medium leading-5 text-gray-900" data-fireflow-field="name">Project Name</span>
+                <span class="text-sm leading-5 text-gray-500" data-fireflow-field="tagline">Description</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="w-2/3 p-8 mx-auto mt-24 rounded shadow">
+        <h1 class="mb-3 font-bold">Users</h1>
+        <ul class="divide-y divide-gray-200 fireflow-list" data-fireflow-collection="u" data-fireflow-limit=15>
+          <li class="fireflow-sample">
+            <a href="" class="flex py-4 space-x-3" data-fireflow-href="makerpad.co/u/{{$id}}">
+              <img class="w-10 h-10 rounded-full" src="https://source.unsplash.com/400x300/?imac"
+                data-fireflow-field="imageUrl" alt="">
+              <div class="flex flex-col">
+                <span class="text-sm font-medium leading-5 text-gray-900" data-fireflow-field="full-name"
+                  data-fireflow-fallback="username">Username</span>
+                <span class="text-sm leading-5 text-gray-500" data-fireflow-field="bio"></span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-firestore.js"></script>
+
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyAyeQF-e3zLH63-EQPb8TmNT6kPbPDQ-9Q",
+        authDomain: "makerpad-94656.firebaseapp.com",
+        databaseURL: "https://makerpad-94656.firebaseio.com",
+        projectId: "makerpad-94656",
+        storageBucket: "makerpad-94656.appspot.com",
+        messagingSenderId: "605558417729",
+        appId: "1:605558417729:web:335367a103d85d967519c0",
+        measurementId: "G-Y9ZL70K32T"
+      }
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig)
+    </script>
+
+    <script src="fireflow.js"></script>
+  </body>
+
+</html>

@@ -17,7 +17,9 @@ async function renderCompanies(target, items) {
               ${company.verified ? `<img
                 loading="lazy" 
                 src = "https://assets-global.website-files.com/5c1a1fb9f264d636fe4b69fa/5cc1f1edad50d9c97c425e83_check-badge%20copy%202.svg"
-                width = "15" tooltipster = "top" alt = "" class= "image-41 tool-verified tooltipstered" >` : ''}
+                width = "15" tooltipster = "top" 
+                alt = "" 
+                class= "image-41 tool-verified tooltipstered" >` : ''}
             </div>
             <div class="text-block-438 tool-tagline">${company.tagline}</div>
           </div>

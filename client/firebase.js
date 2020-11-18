@@ -28,6 +28,10 @@ var firebaseCollections = {
   'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_workflow': [], 'user_company': [], 'reviews': [], 'workflows': []
 }
 
+var stockImages = {
+  user: 'https://w5insight.com/wp-content/uploads/2014/07/placeholder-user-400x400.png'
+}
+
 var COMPANY = db.collection('company')
 var TUTORIAL = db.collection('tutorial')
 var PROJECTS = db.collection('projects')
@@ -521,7 +525,7 @@ function getUserImage(userObject) {
   } else if (userObject.profile && userObject.profile['profile-pic']) {
     return userObject.profile['profile-pic']
   } else {
-    return 'https://w5insight.com/wp-content/uploads/2014/07/placeholder-user-400x400.png'
+    return stockImages.user
   }
 }
 

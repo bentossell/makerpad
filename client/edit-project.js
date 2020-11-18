@@ -143,10 +143,12 @@ async function setProject(data) {
 $('#wf-form-Submit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
+
   data.details = tinymce.get()[0].getContent()
+
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
-  selectedTags = [...new Set(selectedTags)]
-  data.tags = selectedTags
+  data.tags = [...new Set(selectedTags)]
+  
   console.log(data)
   createProject(data)
 })
@@ -154,10 +156,12 @@ $('#wf-form-Submit-Project').submit(function (event) {
 $('#wf-form-Edit-Project').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray())
+
   data.details = tinymce.get()[0].getContent()
+
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
-  selectedTags = [...new Set(selectedTags)]
-  data.tags = selectedTags
+  data.tags = [...new Set(selectedTags)]
+
   console.log(data)
   updateProject(data)
 })

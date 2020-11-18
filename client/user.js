@@ -81,6 +81,8 @@ async function populateUser() {
 
       let userImage = getUserImage(userProfile)
 
+      if (userImage === stockImages.user && thisIsMyUser(userSlug)) $('.alert-profile').show()
+
       if (userImage) $('.user-image').attr("src", userImage).removeClass('w-dyn-bind-empty')
       if (userProfile.sponsor) $('.sponsor').attr('href', userProfile.sponsor).show()
       if (userProfile.hire) $('.hire').attr('href', userProfile.hire).show()
