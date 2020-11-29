@@ -74,8 +74,8 @@ async function populateUser() {
       $('.user-username').text('@' + userProfile.slug)
       $('.user-bio').text(userProfile.bio)
       $('.user-location').text(userProfile.location)
-      $('.user-twitter').attr('href', userProfile['twitter-url'])
-      $('.user-website').attr('href', userProfile['website-url'])
+      $('.user-twitter').attr('href', userProfile['twitter-url'] || userProfile['twitter-2'])
+      $('.user-website').attr('href', userProfile['website-url'] || userProfile['website-2'])
       $('.user-newsletter').attr('href', userProfile.newsletter)
       $('.user-youtube').attr('href', userProfile['youtube-channel'])
 

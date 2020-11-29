@@ -1,9 +1,11 @@
 var Fireflow = function () {
+  auth()
   var db = firebase.firestore()
   console.log('Fireflow init')
 
   var Colls = document.querySelectorAll(".fireflow-list")
   var start = performance.now()
+
   populateCollectionLists()
 
   function populateCollectionLists() {
@@ -44,6 +46,10 @@ var Fireflow = function () {
     })
 
     el.appendChild(clone)
+  }
+
+  function auth() {
+    return true || console.error('Fireflow authentication failed')
   }
 
   function time(msg) {

@@ -1,10 +1,10 @@
 $().ready(() => {
   console.log(firebaseUser)
   setTimeout(() => {
-    $('#username-2').val(firebaseUser.username)
+    $('#username').val(firebaseUser.username)
     $('#sponsor').val(firebaseUser.sponsor)
     $('#hire').val(firebaseUser.hire)
-    $('#bio-5').val(firebaseUser.bio)
+    $('#bio').val(firebaseUser.bio)
   }, 1000)
   // populateFormFromData(firebaseUser)
 })
