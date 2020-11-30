@@ -58,7 +58,7 @@ MemberStack.onReady.then(async function (member) {
           firebaseUser = doc.data()
           $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
           $('.image-111').attr('src', firebaseUser.imageUrl)
-          $('#username-2').val(firebaseUser.username)
+          $('#username').val(firebaseUser.username)
           $('#sponsor').val(firebaseUser.sponsor)
           $('#hire').val(firebaseUser.hire)
         } else {
@@ -69,7 +69,7 @@ MemberStack.onReady.then(async function (member) {
               USERS.doc(member.id).get()
                 .then(doc => {
                   firebaseUser = doc.data()
-                  $('#username-2').val(firebaseUser.username)
+                  $('#username').val(firebaseUser.username)
                   $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
                 })
             })
