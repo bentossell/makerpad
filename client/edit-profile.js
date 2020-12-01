@@ -1,11 +1,16 @@
 $().ready(() => {
   console.log(firebaseUser)
   setTimeout(() => {
-    $('#username').val(firebaseUser.username)
-    $('#sponsor').val(firebaseUser.sponsor)
-    $('#hire').val(firebaseUser.hire)
-    $('#bio').val(firebaseUser.bio)
-  }, 1000)
+    $('[name="username"]').val(firebaseUser.username)
+    $('[name="website-url"]').val(firebaseUser['website-url'] || firebaseUser['website-2'])
+    $('[name="twitter-url"]').val(firebaseUser['twitter-url'] || firebaseUser['twitter-2'])
+    $('[name="newsletter"]').val(firebaseUser.newsletter)
+    $('[name="youtube"]').val(firebaseUser.youtube)
+    $('[name="location"]').val(firebaseUser.location)
+    $('[name="bio"]').val(firebaseUser.bio || firebaseUser['bio-5'])
+    $('[name="sponsor"]').val(firebaseUser.sponsor)
+    $('[name="hire"]').val(firebaseUser.hire)
+  }, 1500)
   // populateFormFromData(firebaseUser)
 })
 

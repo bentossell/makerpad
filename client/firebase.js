@@ -61,6 +61,10 @@ MemberStack.onReady.then(async function (member) {
           $('#username').val(firebaseUser.username)
           $('#sponsor').val(firebaseUser.sponsor)
           $('#hire').val(firebaseUser.hire)
+          $('#username').val(firebaseUser.username)
+          $('#sponsor').val(firebaseUser.sponsor)
+          $('#hire').val(firebaseUser.hire)
+          $('#bio').val(firebaseUser.bio)
         } else {
           console.log('new user detected, adding to firebase')
           var info = memberstack.information
