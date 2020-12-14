@@ -65,6 +65,11 @@ MemberStack.onReady.then(async function (member) {
           $('#sponsor').val(firebaseUser.sponsor)
           $('#hire').val(firebaseUser.hire)
           $('#bio').val(firebaseUser.bio)
+
+          // Update membership in firebase if doesn't exist
+          if (member.membership && !firebaseUser.membership) {
+            doc.ref.update({ membership: member.membership })
+          }
         } else {
           console.log('new user detected, adding to firebase')
           var info = memberstack.information
