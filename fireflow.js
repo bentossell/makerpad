@@ -1,118 +1,51 @@
-var Fireflow = function () {
-  auth()
-  var db = firebase.firestore()
-  var auth = firebase.auth()
-  console.log('Fireflow init')
-
-  var event = new Event('fireflow-ready')
-  document.dispatchEvent(event)
-
-  var Colls = document.querySelectorAll("[data-fireflow-collection]")
-  var start = performance.now()
-
-  var sampleQueryElements = {
-    sample: '[data-fireflow-sample]',
-    field: '[data-fireflow-field]',
-    href: '[data-fireflow-href]'
+!function () {
+  var e = firebase.firestore()
+  firebase.auth(), console.log("Fireflow init")
+  var o = new Event("fireflow-ready")
+  document.dispatchEvent(o)
+  var o = document.querySelectorAll("[data-fireflow-collection]"), t = performance.now(), l = {
+    sample: "[data-fireflow-sample]",
+    field: "[data-fireflow-field]",
+    href: "[data-fireflow-href]"
   }
-
-  populateCollectionLists()
-
-  function populateCollectionLists() {
-    test()
-    Colls.forEach(function (el) {
-
-      db.collection(el.dataset.fireflowCollection).limit(5).get()
-        .then(function (snap) {
-          time('query done')
-          return snapshotToHTML(snap, el)
-        })
-        .catch(function (e) { handleError(e) })
-    })
+  function r(e, r) {
+    console.log(e.size + " docs to " + r)
+    var n = function (e) {
+      var o = e.querySelector(l.sample) || null
+      if (!o) return null
+      e = o.cloneNode(!0)
+      return o.classList.add("fireflow-hide"), o.style.display = "none", console.log(e),
+        e
+    }(r)
+    return e ? n ? 0 == e.size ? f("No documents") : e && e.docs ? e.docs.forEach(function (e) {
+      var o, t, l, f
+      o = r, t = n, l = (e = e).id, f = e.data(), t.querySelectorAll("[data-fireflow-field], [data-fireflow-href]").forEach(function (e) {
+        var o, t = e.nodeName, r = f[e.dataset.fireflowField], n = e.dataset.fireflowHref;
+        ((r = r || f[e.dataset.fireflowFallback]) || n) && (["IMG", "A"].includes(t) || (e.innerText = r),
+          "IMG" === t && (e.src = r), "A" === t && (e.href = (o = [l], n.replace(/\{\{(.+?)\}\}/g, function (e) {
+            return o.shift().toLowerCase() || e
+          }))))
+      }), o.appendChild(t.cloneNode(!0))
+    }) : void 0 : f("No sample element detected") : f("No snapshot detected")
   }
-
-  function test() {
-    var el = document.querySelector('#data-fireflow-test')
-    firebase.firestore().collection('users').limit(15).get()
-      .then(function (snap) {
-        snapshotToHTML(snap, el)
-      })
-      .catch(function (e) { console.error(e) })
+  function n(e) {
+    console.log(e + ": " + Math.round(performance.now() - t) + "ms"), t = performance.now()
   }
-
-  function snapshotToHTML(snap, target) {
-    console.log(snap.size + ' docs to ' + target)
-    var sample = processSample(target)
-
-    if (!snap) return handleError('No snapshot detected')
-    if (!sample) return handleError('No sample element detected')
-    if (snap.size == 0) return handleError('No documents')
-
-    if (snap && snap.docs) {
-      return snap.docs.forEach(function (doc) { populateData(target, doc, sample) })
-      time('done')
-    }
-  }
-
-  function processSample(target) {
-    var sample = target.querySelector(sampleQueryElements.sample) || null
-    if (!sample) return null
-    var clone = sample.cloneNode(true)
-    sample.classList.add('fireflow-hide')
-    sample.style.display = 'none'
-    console.log(clone)
-    return clone
-  }
-
-  function populateData(el, doc, sample) {
-    var $id = doc.id
-    var data = doc.data()
-
-    sample.querySelectorAll("[data-fireflow-field], [data-fireflow-href]").forEach(function (f) {
-      var n = f.nodeName
-
-      var val = data[f.dataset.fireflowField]
-      var href = f.dataset.fireflowHref
-
-      if (!val) val = data[f.dataset.fireflowFallback]
-      if (!val && !href) return
-
-      if (!['IMG', 'A'].includes(n)) f.innerText = val
-      if (n === 'IMG') f.src = val
-      if (n === 'A') {
-        f.href = parseVariable(href, [$id])
-      }
-    })
-
-    el.appendChild(sample.cloneNode(true))
-  }
-
-  function auth() {
-    return true || console.error('Fireflow authentication failed')
-  }
-
-  function handleAuth() {
-
-  }
-
-  function time(msg) {
-    console.log(msg + ": " + (Math.round(performance.now() - start)) + 'ms')
-    start = performance.now()
-  }
-
-  function filter(q, el) {
-
-  }
-
-  function parseVariable(str, data) {
-    return str.replace(/\{\{(.+?)\}\}/g, function (match) {
-      return data.shift().toLowerCase() || match
-    })
-  }
-
-  function handleError(e) {
+  function f(e) {
     console.error(e)
   }
-}
-
-Fireflow()
+  (function () {
+    var o = document.querySelector("#data-fireflow-test")
+    firebase.firestore().collection("users").limit(15).get().then(function (e) {
+      r(e, o)
+    }).catch(function (e) {
+      console.error(e)
+    })
+  })(), o.forEach(function (o) {
+    e.collection(o.dataset.fireflowCollection).limit(5).get().then(function (e) {
+      return n("query done"), r(e, o)
+    }).catch(function (e) {
+      f(e)
+    })
+  })
+}();
