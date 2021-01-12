@@ -13,7 +13,7 @@
       <div class="w-2/3 p-8 mx-auto mt-24 rounded shadow">
         <h1 class="mb-3 font-bold">Projects</h1>
         <ul class="divide-y divide-gray-200 fireflow-list" data-fireflow-collection="projects">
-          <li class="fireflow-sample">
+          <li class="fireflow-sample" data-fireflow-sample="true">
             <a href="" class="flex py-4 space-x-3" data-fireflow-href="makerpad.co/p/{{$id}}">
               <img class="w-10 h-10 rounded-full" src="https://source.unsplash.com/400x300/?imac"
                 data-fireflow-field="imageUrl" alt="">
@@ -43,6 +43,21 @@
       }
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig)
+
+      fetch('https://jsonplaceholder.typicode.com/users').then(res => res.json()).then(json => {
+        console.log(json)
+        for (let item of json) {
+          console.log(item.id)
+          firebase.firestore().collection('users').doc(item.id.toString()).set(item)
+        }
+      })
+      fetch('https://jsonplaceholder.typicode.com/photos').then(res => res.json()).then(json => {
+        console.log(json)
+        for (let item of json) {
+          console.log(item.id)
+          firebase.firestore().collection('photos').doc(item.id.toString()).set(item)
+        }
+      })
     </script>
 
     <script src="fireflow.js"></script>

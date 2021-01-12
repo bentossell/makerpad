@@ -1,4 +1,5 @@
 var project = getElementFromURL()
+// tryJSON()
 renderProject()
 
 $().ready(async () => {
@@ -15,33 +16,42 @@ $().ready(async () => {
   }
 })
 
+function tryJSON() {
+  if (cachedJSON) {
+    paintMarkup(JSON.parse(cachedJSON))
+  }
+}
+
 async function renderProject() {
   if (!project) project = await getProjectFromUrl()
   if (project === 'add-project') return
   PROJECTS.doc(project).get()
     .then(async doc => {
       let data = doc.data()
-      console.log(data)
-      $('.p-name').text(data.name)
-      $('.p-tagline').text(data.tagline)
-      $('.p-link').attr('href', data.url)
-      data.imageUrl ? $('.p-img').attr('src', data.imageUrl) : $('.p-img').hide()
-      $('.p-description').html(data.details)
-      $('.project-user-link').attr('href', `/u/${data.username}`)
-
-      let userPic = getUserImage(data.user)
-      $('.project-user-full-name').text(data.user['full-name'] || data.user.profile['full-name'])
-      $('.project-user-avatar').attr("src", userPic)
-
-      if (data.clone) $('.clone').attr('href', data.clone).show()
-      if (data['sale-url']) $('.purchase').attr('href', data['sale-url'])
-      if (data.price) $('.project-price-text').text(data.price)
-      if (data['sale-url'] || data.price) $('#project-purchase-block').show()
-
-      renderTags('#project-tags', data, 'project-tag')
-
+      paintMarkup(data)
     })
     .catch(error => handleError(error))
+}
+
+function paintMarkup(data) {
+  console.log(data)
+  $('.p-name').text(data.name)
+  $('.p-tagline').text(data.tagline)
+  $('.p-link').attr('href', data.url)
+  data.imageUrl ? $('.p-img').attr('src', data.imageUrl) : $('.p-img').hide()
+  $('.p-description').html(data.details)
+  $('.project-user-link').attr('href', `/u/${data.username}`)
+
+  let userPic = getUserImage(data.user)
+  $('.project-user-full-name').text(data.user['full-name'] || data.user.profile['full-name'])
+  $('.project-user-avatar').attr("src", userPic)
+
+  if (data.clone) $('.clone').attr('href', data.clone).show()
+  if (data['sale-url']) $('.purchase').attr('href', data['sale-url'])
+  if (data.price) $('.project-price-text').text(data.price)
+  if (data['sale-url'] || data.price) $('#project-purchase-block').show()
+
+  renderTags('#project-tags', data, 'project-tag')
 }
 
 $('.like-project-button').click(() => {
