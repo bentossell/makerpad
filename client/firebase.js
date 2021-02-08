@@ -51,56 +51,48 @@ var decrement = firebase.firestore.FieldValue.increment(-1)
 
 initMemberstack()
 
-function initMemberstack(retries = 5, backoff = 100) {
-  if (!MemberStack) {
-    timeout = setTimeout(() => {
-      console.log(`No Memberstack found, retrying ${retries} more times`)
-      initMemberstack(retries - 1, backoff * 2)
-    }, backoff)
-  } else {
-    if (timeout) clearTimeout(timeout)
-    MemberStack.onReady.then(async function (member) {
-      console.log(member)
-      currentUser = member
-      if (member.id) {
-        USERS.doc(member.id).get()
-          .then(doc => {
-            if (doc.exists) {
-              firebaseUser = doc.data()
-              $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
-              $('.image-111').attr('src', firebaseUser.imageUrl)
-              $('#username').val(firebaseUser.username)
-              $('#sponsor').val(firebaseUser.sponsor)
-              $('#hire').val(firebaseUser.hire)
-              $('#username').val(firebaseUser.username)
-              $('#sponsor').val(firebaseUser.sponsor)
-              $('#hire').val(firebaseUser.hire)
-              $('#bio').val(firebaseUser.bio)
+function initMemberstack() {
+  MemberStack.onReady.then(async function (member) {
+    console.log(member)
+    currentUser = member
+    if (member.id) {
+      USERS.doc(member.id).get()
+        .then(doc => {
+          if (doc.exists) {
+            firebaseUser = doc.data()
+            $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
+            $('.image-111').attr('src', firebaseUser.imageUrl)
+            $('#username').val(firebaseUser.username)
+            $('#sponsor').val(firebaseUser.sponsor)
+            $('#hire').val(firebaseUser.hire)
+            $('#username').val(firebaseUser.username)
+            $('#sponsor').val(firebaseUser.sponsor)
+            $('#hire').val(firebaseUser.hire)
+            $('#bio').val(firebaseUser.bio)
 
-              // Update membership in firebase if doesn't exist
-              if (member.membership && !firebaseUser.membership) {
-                doc.ref.update({ membership: member.membership })
-              }
-            } else {
-              console.log('new user detected, adding to firebase')
-              var info = memberstack.information
-              USERS.doc(member.id).set(info, { merge: true })
-                .then(() => {
-                  USERS.doc(member.id).get()
-                    .then(doc => {
-                      firebaseUser = doc.data()
-                      $('#username').val(firebaseUser.username)
-                      $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
-                    })
-                })
+            // Update membership in firebase if doesn't exist
+            if (member.membership && !firebaseUser.membership) {
+              doc.ref.update({ membership: member.membership })
             }
-          })
-          .catch(error => console.log(error))
-      } else {
-        console.log('no memberstack user')
-      }
-    })
-  }
+          } else {
+            console.log('new user detected, adding to firebase')
+            var info = memberstack.information
+            USERS.doc(member.id).set(info, { merge: true })
+              .then(() => {
+                USERS.doc(member.id).get()
+                  .then(doc => {
+                    firebaseUser = doc.data()
+                    $('#username').val(firebaseUser.username)
+                    $('.current-user-profile-link').attr('href', `/u/${firebaseUser.username}`)
+                  })
+              })
+          }
+        })
+        .catch(error => console.log(error))
+    } else {
+      console.log('no memberstack user')
+    }
+  })
 }
 
 function getUserNameFromMemberstackId(memberstackId) {
