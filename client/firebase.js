@@ -23,6 +23,7 @@ var currentUser = {}
 var firebaseUser = {}
 var tagsArray = []
 var searchArray = []
+var timeout
 
 var firebaseCollections = {
   'company': [], 'projects': [], 'user_project': [], 'user_user': [], 'user_tutorial': [], 'user_workflow': [], 'user_company': [], 'reviews': [], 'workflows': []
@@ -52,11 +53,12 @@ initMemberstack()
 
 function initMemberstack(retries = 5, backoff = 100) {
   if (!MemberStack) {
-    setTimeout(() => {
+    timeout = setTimeout(() => {
       console.log(`No Memberstack found, retrying ${retries} more times`)
       initMemberstack(retries - 1, backoff * 2)
     }, backoff)
   } else {
+    if (timeout) clearTimeout(timeout)
     MemberStack.onReady.then(async function (member) {
       console.log(member)
       currentUser = member
