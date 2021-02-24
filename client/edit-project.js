@@ -148,14 +148,14 @@ $('#wf-form-Submit-Project').submit(function (event) {
 
   let selectedTags = $('.multiple-select').serializeArray().map(item => item.value)
   data.tags = [...new Set(selectedTags)]
-  
+
   console.log(data)
   createProject(data)
 })
 
 $('#wf-form-Edit-Project').submit(function (event) {
   event.preventDefault()
-  let data = objectifyForm($(this).serializeArray())
+  let data = objectifyForm($(this).serializeArray().filter(i => i.value))
 
   data.details = tinymce.get()[0].getContent()
 

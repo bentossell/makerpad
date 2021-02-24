@@ -12,8 +12,7 @@ setTimeout(() => {
 
 $('#wf-form-Editing-Profile').submit(function (event) {
   event.preventDefault()
-  let data = objectifyForm($(this).serializeArray())
-  data = data.filter(i => i.value)
+  let data = objectifyForm($(this).serializeArray().filter(i => i.value))
   console.log(data)
   updateUser(data)
 })

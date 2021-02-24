@@ -156,7 +156,7 @@ $('#wf-form-Submit-Workflow').submit(function (event) {
 
 $('#wf-form-Edit-Workflow').submit(function (event) {
   event.preventDefault()
-  let data = objectifyForm($(this).serializeArray())
+  let data = objectifyForm($(this).serializeArray().filter(i => i.value))
 
   data.details = tinymce.get()[0].getContent()
 
