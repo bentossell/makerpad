@@ -13,12 +13,12 @@ setTimeout(() => {
 $('#wf-form-Editing-Profile').submit(function (event) {
   event.preventDefault()
   let data = objectifyForm($(this).serializeArray().filter(i => i.value))
-  console.log(data)
+  console.log({ data })
   updateUser(data)
 })
 
 async function updateUser(data) {
-  console.log(firebaseUser)
+  console.log({ firebaseUser })
   if (!firebaseUser || firebaseUser.username === data.username || await searchUserBySlug(slugify(data.username)) == false) {
     data.username = slugify(data.username)
     return USERS.doc(currentUser.id).set({

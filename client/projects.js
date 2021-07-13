@@ -8,7 +8,9 @@ $().ready(async () => {
   console.log('Ready, project: ' + project)
   let isLiked = userLikesProject(project)
   if (isLiked) $('.unlike-project-button, .like-project-button').toggle()
-  let userOwnsProject = firebaseCollections['projects'].find(item => (item.slug === project && item.userId === currentUser.id))
+  let userOwnsProject = firebaseCollections['projects'].find(
+    item => item.slug === project && item.userId === currentUser.id
+  )
   console.log(userOwnsProject)
   if (userOwnsProject) {
     $('.edit-project').attr('href', `/edit-project?projectId=${project}`).show()
@@ -25,7 +27,8 @@ function tryJSON() {
 async function renderProject() {
   if (!project) project = await getProjectFromUrl()
   if (project === 'add-project') return
-  PROJECTS.doc(project).get()
+  PROJECTS.doc(project)
+    .get()
     .then(async doc => {
       let data = doc.data()
       paintMarkup(data)
@@ -43,8 +46,10 @@ function paintMarkup(data) {
   $('.project-user-link').attr('href', `/u/${data.username}`)
 
   let userPic = getUserImage(data.user)
-  $('.project-user-full-name').text(data.user['full-name'] || data.user.profile['full-name'])
-  $('.project-user-avatar').attr("src", userPic)
+  $('.project-user-full-name').text(
+    data.user['full-name'] || data.user.profile['full-name']
+  )
+  $('.project-user-avatar').attr('src', userPic)
 
   if (data.clone) $('.clone').attr('href', data.clone).show()
   if (data['sale-url']) $('.purchase').attr('href', data['sale-url'])
